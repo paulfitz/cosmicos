@@ -1,0 +1,103 @@
+COS_License:
+COS_Unary:
+COS_NotLogic: COS_Unary
+COS_Addition:
+COS_Subtraction: COS_Addition
+COS_Multiplication: COS_Subtraction
+
+COS_Binary:
+COS_Evaluation: COS_Binary
+COS_DefineFunction: COS_Evaluation
+COS_TrueFalse:
+COS_If:
+
+COS_AndLogic: COS_NotLogic
+COS_OrLogic: COS_AndLogic
+
+COS_Cons:
+
+COS_Mutable:
+
+COS_ListPre:
+COS_Translate:
+
+COS_List:
+COS_Let:
+COS_MultipleParameter:
+COS_Map:
+
+COS_CommentBase:
+
+COS_Recursion:
+
+COS_Pure:
+
+COS_Quantifier:
+COS_Implication: COS_Quantifier
+COS_Set:
+COS_Graph:
+
+
+COS_Begin:
+COS_Hash:
+
+COS_MutableStructure:
+
+COS_Method:
+COS_Turing: COS_Method
+
+
+COS_NewType:
+
+
+COS_CommentBase2:
+
+COS_Unless:
+
+COS_NOT:
+COS_AND:
+COS_OR:
+COS_NOR:
+COS_OSC:
+COS_SR:
+COS_D:
+
+COS_UnlessProbe:
+
+COS_CommentBase3:
+
+COS_Message:
+
+COS_MARK:
+
+COS_JavaPrep:
+
+COS_JavaTest: COS_JavaPrep
+COS_JavaValidate: COS_JavaTest
+
+COS_Geo:
+
+COS_JList_impl:
+
+COS_JList:
+COS_JHashMap:
+
+COS_JList_test:
+
+COS_JListIterator_impl:
+COS_JListIterator:
+
+COS_JDoor:
+
+COS_JThing:
+
+COS_JRoom:
+
+COS_JNamed:
+
+COS_JWorld:
+
+COS_JRobo:
+
+COS_JRoom_test:
+
