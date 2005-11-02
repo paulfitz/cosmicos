@@ -319,7 +319,7 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 	}
     }
 
-    public void visitDeprecated(Deprecated attribute) { printEndMethod(attribute); }
+    public void visitDeprecated(org.apache.bcel.classfile.Deprecated attribute) { printEndMethod(attribute); }
     public void visitSynthetic(Synthetic attribute) { printEndMethod(attribute); }
 
     public void visitMethod(Method method) {
