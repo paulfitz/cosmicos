@@ -1,0 +1,13 @@
+#!/bin/bash
+
+echo Updating sourceforge webpages from local system
+
+target="shell.sf.net"
+
+post=`pwd | sed 's|.*/cosmicos||' | sed 's|^/*||' | sed 's|/*$||'`
+
+echo "[$post]"
+sink="$post"
+#cd $HOME
+#cd $sink
+rsync --rsh="ssh -x -l paulfitz" --modify-window=2 -lauvzP . eshuy@$target:cosmicos/htdocs/current/$sink
