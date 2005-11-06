@@ -203,10 +203,10 @@ Makefile.plan: $(DEPFILE) bin/planner.pl
 	$(BINDIR)/planner.pl $(DEPFILE) | tee Makefile.plan
 
 clean:
-	rm -f $(OBJDIR)/*
-	rm -f $(MSGDIR)/*
+	rm -f $(OBJDIR)/*.*
+	rm -f $(MSGDIR)/*.*
 	rm -f $(BINDIR)/*.class
-	rm -f $(TESTDIR)/*
+	rm -f $(TESTDIR)/*.*
 	echo -n | tee $(TESTDIR)/test_all.txt
 	rm -f incremental-test.txt
 	rm -rf $(WWWDIR)/*

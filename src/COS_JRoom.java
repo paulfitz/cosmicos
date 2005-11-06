@@ -2,8 +2,16 @@
 import java.util.Iterator;
 
 public class COS_JRoom extends COS_JNamed {
-    private COS_JList content = new COS_JList();
-    private COS_JList doors = new COS_JList();
+    //private COS_JList content = new COS_JList();
+    //private COS_JList doors = new COS_JList();
+
+    private COS_JList content;
+    private COS_JList doors;
+
+    public COS_JRoom() {
+	content = new COS_JList();
+	doors = new COS_JList();
+    }
 
     public COS_JList get() {
 	return content;

@@ -2,8 +2,13 @@
 import java.util.Iterator;
 
 public class COS_JWorld {
-    private COS_JHashMap content = new COS_JHashMap();
-    private COS_JList inventory = new COS_JList();
+    private COS_JHashMap content;
+    private COS_JList inventory;
+
+    public COS_JWorld() {
+	content = new COS_JHashMap();
+	inventory = new COS_JList();
+    }
 
     public void add(COS_JNamed named, String name) {
 	named.setName(name);

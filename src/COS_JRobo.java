@@ -2,8 +2,14 @@
 import java.util.Iterator;
 
 public class COS_JRobo extends COS_JThing {
-    private COS_JHashMap times = new COS_JHashMap();
-    private int now = 1;
+    private COS_JHashMap times;
+    private int now;
+
+    public COS_JRobo() {
+	times = new COS_JHashMap();
+	now = 1;
+    }
+
     public void update() {
 	COS_JRoom location = getRoom();
 	//System.out.println("Updating robo...");
