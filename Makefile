@@ -148,7 +148,7 @@ color.txt: all.txt pp.txt  $(BINDIR)/colorize.pl
 index.html: color.txt template.html COMMENTS.TXT $(BINDIR)/makedoc.pl sound.cgi view.png numeric.txt
 	perl -I$(BINDIR) $(BINDIR)/makedoc.pl $(BASEDIR) $(BASEFILE) | tee $(WWWDIR)/index.html
 	cd $(WWWDIR) && ../$(BINDIR)/splitdoc.pl < message-verbose.html
-	cp $(WWWSRCDIR)/images/* $(WWWDIR)
+	cp $(WWWSRCDIR)/images/*.* $(WWWDIR)
 	cp $(MSGDIR)/*.png  $(WWWDIR) || echo -n
 	cp $(OBJDIR)/*.gif $(WWWDIR) || echo -n
 	cp $(BINDIR)/fritz.scm $(WWWDIR)/fritz.scm.txt

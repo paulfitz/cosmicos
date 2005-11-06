@@ -10,4 +10,4 @@ echo "[$post]"
 sink="$post"
 #cd $HOME
 #cd $sink
-rsync --rsh="ssh -x -l paulfitz" --modify-window=2 -lauvzP . eshuy@$target:cosmicos/htdocs/current/$sink
+rsync --rsh="ssh -x -l paulfitz" --exclude="*.save" --modify-window=2 -lauvzP . eshuy@$target:cosmicos/htdocs/current/$sink
