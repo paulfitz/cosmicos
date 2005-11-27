@@ -69,10 +69,12 @@ include Makefile.plan
 
 # rules for making the basic CosmicOS code
 %.ftz: %.pl
+	mkdir -p $(OBJDIR)
 	perl -I$(BINDIR) -I$(SRCDIR) $< > $(OBJDIR)/$@
 
 
 %.ftz: %.scm
+	mkdir -p $(OBJDIR)
 	cp $< $(OBJDIR)/$@
 
 
