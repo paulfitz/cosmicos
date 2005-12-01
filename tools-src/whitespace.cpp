@@ -47,7 +47,12 @@ public:
   }
 
   Exp(const Exp& alt) {
+    auto_paren = alt.auto_paren;
+    commentary = alt.commentary;
+    terminated = alt.terminated;
+    bag = alt.bag;
     tparent = alt.tparent;
+    content = alt.content;
   }
 
   Exp *add() {
@@ -60,14 +65,12 @@ public:
   }
 
   Exp *autoParent() {
-    Exp *nparent = parent();
-    if (nparent!=NULL) {
-      while (nparent->auto_paren) {
-	nparent = nparent->parent();
-	assert(nparent!=NULL);
-      }
+    Exp *current = this;
+    while (current->auto_paren) {
+      current = current->parent();
     }
-    return nparent;
+    if (current==NULL) { return current; }
+    return current->parent();
   }
 
   void setName(const char *name) {
@@ -113,8 +116,8 @@ public:
       if (!bag) {
 	if (!auto_paren) {
 	  os << ")";
-	}
-      }
+	} 
+      } 
     } else {
       os << content;
     }
@@ -188,6 +191,8 @@ public:
 
 
 void ExpBuilder::apply(char ch) {
+  //printf("[apply %c]", ch);
+  //write(cout);
   if (sym) {
     if (comment) {
       if (ch!='\n') {
@@ -252,10 +257,17 @@ void ExpBuilder::apply(const Text& text) {
 
 
 int main() {
+  cerr << "This program basically does nothing right now.  If you feed in a ftz file, it regenerates it" << endl;
   ExpBuilder exp;
-  exp.apply(Text("#blah blah\n(define make-graph / lambda (nodes links) (pair (nodes) (links)));#more blah\n(+ 1 1);"));
-  exp.apply(Text("#blah blah\n(define make-graph / lambda (nodes links) (pair (nodes) (links)));#more blah\n(+ 1 1);"));
+  string in;
+  while (!(cin.eof()||cin.bad())) {
+    getline(cin,in);
+    //cout << "INPUT IS <" << in << ">" << endl;
+    in += "\n";
+    exp.apply(Text(in.c_str()));
+  }
   exp.write(cout);
+
   return 0;
 }
 
