@@ -79,7 +79,8 @@ VIEWING:
 
   To build web-pages and material related to viewing the message, type:
     make web
-  The output appears in the www directory.
+  The output appears in the www directory.  You can view it by opening:
+    www/index.html
   You may need to run "make test" before this step (see "EXECUTION"), 
   since the latest results of testing are made available for viewing.
 
