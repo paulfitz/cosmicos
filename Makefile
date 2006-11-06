@@ -117,6 +117,7 @@ $(JAVAMAIN).txt: $(JAVAMAIN).class
 	cd $(BINDIR) && java -ea -cp /usr/share/java/bcel.jar:../$(SRCDIR):../$(BINDIR) $(JAVAMAIN) | tee ../$(TESTDIR)/$(JAVAMAIN).txt
 
 %.cgi: %.cpp
+	mkdir -p $(WWWDIR)
 	g++ $< -o $(WWWDIR)/$(notdir $@)
 
 weak-numeric.txt: pp.txt $(BINDIR)/strip-identifiers.pl $(BINDIR)/identifiers.pm
