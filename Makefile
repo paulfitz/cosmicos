@@ -85,7 +85,7 @@ include Makefile.plan
 # need BCEL library (http://jakarta.apache.org/bcel/)
 %.ftz: %.java Fritzifier.class bin/java-comment.pl
 	grep -q "STUB:" $< || ( javac -source 1.4 -classpath /usr/share/java/bcel.jar:.:src $< && \
-	java -cp /usr/share/java/bcel.jar:.:src:bin Fritzifier $(basename $<).class && \
+	java -cp /usr/share/java/bcel.jar:.:src:bin Fritzifier $(basename $<) && \
 	./bin/java-comment.pl $@ $< > tmp.java && mv tmp.java $(OBJDIR)/$@ && \
 	rm -f $(basename $<).class && rm -f $@ )
 	grep -q "STUB:" $< && ( grep "STUB:" $< | sed "s/^.*: //" | sed "s/ \*\///" | tee $(OBJDIR)/$@ ) || echo -n
@@ -94,7 +94,7 @@ include Makefile.plan
 # there's an inconsistency in the order of coordinates describing gates
 %.ftz: %.gate UnlessDriver.class bin/drawgate-txt.pl bin/drawgate-ppm.pl
 	java -cp bin:. UnlessDriver $< | tee $<.tmp
-	cat $<.tmp | ./bin/drawgate-txt.pl | sed "s/IMAGE_SRC/IMAGE_SRC=$*.gif/" | sed "s/CIRCUIT_NAME/$*/g" > $(OBJDIR)/$@
+	cat $<.tmp | ./bin/drawgate-txt.pl | sed "s/IMAGE_SRC/IMAGE_SRC=$*.gif/" | sed "s/CIRCUIT_NAME/`echo $* | tr '[:upper:]' '[:lower:]'`/g" > $(OBJDIR)/$@
 	cat $<.tmp | ./bin/drawgate-ppm.pl > $<.ppm
 	convert $<.ppm $(OBJDIR)/$*.gif
 	rm -f $<.ppm
