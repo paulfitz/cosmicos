@@ -1,16 +1,46 @@
-
 CosmicOS
 ========
 
 Sending the lambda calculus into deep space.
 
-Copyright (C) 2013 Paul Fitzpatrick
+Long-distance relationships
+----------------------------
 
-CosmicOS is released under the GNU General Public Licence --
-See COPYING.txt for license information.
+It's a familiar problem. You've finally managed to contact that alien 
+civilization. Things are going great. You feel like your world will 
+never be the same, that whole new realms of possibilities are opening up 
+before your eyes. Then, inevitably, a hint of strain starts to creep into 
+your relationship. You find that you don't really have all that much in 
+common. Heck, sometimes it feels like you're not even in the same 
+galaxy. It's as if there is this vast gulf between you, making communication 
+almost impossible. You're not even sure you'd understand each other no matter 
+how physically close you become. What do you do?
 
-CosmicOS was written back in 2005/2006 and is currently in a 
-state of neglect.
+You design a language for cosmic intercourse. Hans Freudenthal made a start at 
+one in his book, Lincos, published in 1960. I think it's time for version II, 
+the all-new action-packed sequel guaranteed to have you on the edge of your 
+seat, which is a specific structure with a flat surface perpendicular to the 
+pull of gravity, which is a thing that, oh never mind.
+
+Goals of CosmicOS
+-----------------
+
+ * To create a complete message which, if noticed by a non-human intelligence, stands some chance of being understood. The message should introduce the intelligence to a significant portion of the human world view.
+ * To develop this message in a form that is easy to edit and extend, so that anyone interested can simply take it and make it better without having to track down out-of-print books.
+ * To avoid making too many assumptions about the perceptual abilities of the non-human intelligence; for example that they make sense of 2D images in the same way we do. While some arguments can be made for this, as a machine vision guy I am very skeptical that we really understand the variability possible here.
+ * To send Scheme into deep space.
+ * To send the GPL into deep space.
+
+The "intelligence" reading the message could be extra-terrestrial, or artificial. It is this second possibility that motivates me -- I want this message as a challenge for AI -- but the ET possibility is also fun.
+
+Status
+------
+
+The current goal of development work on CosmicOS is to communicate enough structure to simulate a simple MUD (multi-user dungeon) and to use the interactions between locations, objects, and characters as an alternative to the clever "morality plays" in Lincos.
+
+The message has a strong backbone of actual executable code. The results of executing code is fundamentally what gets talked about in most of the message so far. This has the advantage that it can be understood on two levels: working out what the code does by looking at its details, or just treating it as a black box and learning from examples what it does. It also gives the listener the ability to do experiments using the code that are not talked about in the message. At the level of the MUD, this means the listener is free to play around with the simulated world and understand its logic through experimentation.
+
+A difficulty with using code is that it assumes the listener has a computer to run the code on, or is computer-like enough themselves to work through the code with excruciating patience. I'm okay with this assumption for now, since it is hard to imagine the message being detected in the first place without some good hardware.
 
 Links
 -----
@@ -109,3 +139,14 @@ To render the message in the form of glyphs, type:
 Until you do this, there will be a broken link on www/index.html
 going to a page of the form "iconic-000000.html"
 
+
+License
+-------
+
+Copyright (C) 2013 Paul Fitzpatrick
+
+CosmicOS is released under the GNU General Public Licence --
+See COPYING.txt for license information.
+
+CosmicOS was written back in 2005/2006 and is currently in a 
+state of neglect.
