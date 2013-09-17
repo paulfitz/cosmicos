@@ -1,0 +1,54 @@
+
+<HTML><HEAD><TITLE>CosmicOS message</TITLE></HEAD>
+<BODY BGCOLOR='#ffffff'>
+<HR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT><A NAME='23'><FONT COLOR=red>#&nbsp;MATH some pure lambda calculus definitions - optional</FONT></A></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;these definitions are not quite what we want</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;since thinking of everything as a function requires headscratching</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;it would be better to use these as a parallel means of evaluation</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;... for expressions</TT><BR>
+<TT>[<A HREF='sound.cgi?s=21101321011010302321100321001013023211003210010030232110032100110302321001013221001003322100110332233'>hear</A>] </TT><TT>(define pure-if / ? x / ? y / ? z / x <font style='background-color: #cdffff'>(y)</font> <font style='background-color: #ffcdff'>(z)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132101101130232110032100100302321100321001103023210010032233'>hear</A>] </TT><TT>(define pure-true / ? y / ? z / y);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132101110030232110032100100302321100321001103023210011032233'>hear</A>] </TT><TT>(define pure-false / ? y / ? z / z);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132101110130232110032100101302321100321001003023211003210011030232101101032210011033221001013322100100332233'>hear</A>] </TT><TT>(define pure-cons / ? x / ? y / ? z / pure-if <font style='background-color: #cdffff'>(z)</font> <font style='background-color: #ffcdff'>(x)</font> <font style='background-color: #ffffcd'>(y)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132101111030232110032100101302321001013221011011332233'>hear</A>] </TT><TT>(define pure-car / ? x / x <font style='background-color: #cdffff'>(pure-true)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132101111130232110032100101302321001013221011100332233'>hear</A>] </TT><TT>(define pure-cdr / ? x / x <font style='background-color: #cdffff'>(pure-false)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132110000030232110032110011302321100321001013023210010132233'>hear</A>] </TT><TT>(define zero / ? f / ? x / x);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21101321100001302321100321100113023211003210010130232110011322100101332233'>hear</A>] </TT><TT>(define one / ? f / ? x / f <font style='background-color: #cdffff'>(x)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=211013211000103023211003211001130232110032100101302321100113221100113221001013332233'>hear</A>] </TT><TT>(define two / ? f / ? x / f <font style='background-color: #cdffff'>(f </font><font style='background-color: #9bffff'>(x)</font><font style='background-color: #cdffff'>)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21101321100011302321100321100003023211003211001130232110032100101302321100113222110000322110011333221001013332233'>hear</A>] </TT><TT>(define succ / ? n / ? f / ? x / f <font style='background-color: #cdffff'>(</font><font style='background-color: #9bffff'>(n </font><font style='background-color: #69ffff'>(f)</font><font style='background-color: #9bffff'>)</font><font style='background-color: #cdffff'> </font><font style='background-color: #cdcdff'>(x)</font><font style='background-color: #cdffff'>)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132110010030232110032110010130232110032110011030232211001013221100011333221100110332233'>hear</A>] </TT><TT>(define add / ? a / ? b / <font style='background-color: #cdffff'>(a </font><font style='background-color: #9bffff'>(succ)</font><font style='background-color: #cdffff'>)</font> <font style='background-color: #ffcdff'>(b)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132110011130232110032110010130232110032110011030232211001013221100100302321100110333221100000332233'>hear</A>] </TT><TT>(define mult / ? a / ? b / <font style='background-color: #cdffff'>(a </font><font style='background-color: #9bffff'>(add / b)</font><font style='background-color: #cdffff'>)</font> <font style='background-color: #ffcdff'>(zero)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132110100030232110032110000302321011111302322110000322110032101011030232101110132211000113023210111103023210101103322101111030232101011033332210111013221100000332211000003332233'>hear</A>] </TT><TT>(define pred / ? n / pure-cdr / <font style='background-color: #cdffff'>(n </font><font style='background-color: #9bffff'>(? p / pure-cons </font><font style='background-color: #69ffff'>(succ / pure-car / p)</font><font style='background-color: #9bffff'> </font><font style='background-color: #9bcdff'>(pure-car / p)</font><font style='background-color: #9bffff'>)</font><font style='background-color: #cdffff'>)</font> <font style='background-color: #ffcdff'>(pure-cons </font><font style='background-color: #ff9bff'>(zero)</font><font style='background-color: #ffcdff'> </font><font style='background-color: #ffcdcd'>(zero)</font><font style='background-color: #ffcdff'>)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21101321101001302321100321100003023221100003221100321101010302321011100332210110113332233'>hear</A>] </TT><TT>(define is-zero / ? n / <font style='background-color: #cdffff'>(n </font><font style='background-color: #9bffff'>(? dummy / pure-false)</font><font style='background-color: #cdffff'> </font><font style='background-color: #cdcdff'>(pure-true)</font><font style='background-color: #cdffff'>)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132110101130232110032110011302322110032100101302321100113221001013221001013333221100321001013023211001132210010132210010133332233'>hear</A>] </TT><TT>(define fixed-point / ? f / <font style='background-color: #cdffff'>(? x / f </font><font style='background-color: #9bffff'>(x </font><font style='background-color: #69ffff'>(x)</font><font style='background-color: #9bffff'>)</font><font style='background-color: #cdffff'>)</font> <font style='background-color: #ffcdff'>(? x / f </font><font style='background-color: #ff9bff'>(x </font><font style='background-color: #ff69ff'>(x)</font><font style='background-color: #ff9bff'>)</font><font style='background-color: #ffcdff'>)</font>);</TT><BR>
+<BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;.. but for rest of message will assume that define does fixed-point for us</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;now build a link between numbers and church number functions</TT><BR>
+<TT>[<A HREF='sound.cgi?s=211013211011003023211003211011013023211011013221100321001013023210103221001013321332032233'>hear</A>] </TT><TT>(define unchurch / ? c / c <font style='background-color: #cdffff'>(? x / + </font><font style='background-color: #9bffff'>(x)</font><font style='background-color: #cdffff'> 1)</font> 0);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2103203221101100302321100000332233'>hear</A>] </TT><TT>(= 0 <font style='background-color: #cdffff'>(unchurch / zero)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2103213221101100302321100001332233'>hear</A>] </TT><TT>(= 1 <font style='background-color: #cdffff'>(unchurch / one)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21032103221101100302321100010332233'>hear</A>] </TT><TT>(= 2 <font style='background-color: #cdffff'>(unchurch / two)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=211013211011103023211003210010130232111132210320322100101333221100000332211000113023211011103023210113221001013321332233'>hear</A>] </TT><TT>(define church / ? x / if <font style='background-color: #cdffff'>(= 0 </font><font style='background-color: #9bffff'>(x)</font><font style='background-color: #cdffff'>)</font> <font style='background-color: #ffcdff'>(zero)</font> <font style='background-color: #ffffcd'>(succ / church / - </font><font style='background-color: #ffff9b'>(x)</font><font style='background-color: #ffffcd'> 1)</font>);</TT><BR>
+<BR>
+
+</BODY>
+</HTML>

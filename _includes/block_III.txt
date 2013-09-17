@@ -1,0 +1,69 @@
+<TABLE BORDER=0><TR><TD><B>Sect.</B></TD><TD></TD><TD><B>Comment</B></TD><TD><B>Type</B></TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000000.html'>0</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce numbers (in unary notation) </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000001.html'>1</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce equality for unary numbers </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000002.html'>2</A> </TD><TD>&nbsp;&nbsp;</TD><TD> now introduce other relational operators </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000003.html'>3</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce the NOT logical operator </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000004.html'>4</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce addition </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000005.html'>5</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce subtraction </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000006.html'>6</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce multiplication </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000007.html'>7</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce a simple form of binary notation </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000008.html'>8</A> </TD><TD>&nbsp;&nbsp;</TD><TD> show local assignment </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000009.html'>9</A> </TD><TD>&nbsp;&nbsp;</TD><TD> demonstrate existence of memory </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000010.html'>10</A> </TD><TD>&nbsp;&nbsp;</TD><TD> use equality for truth values </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000011.html'>11</A> </TD><TD>&nbsp;&nbsp;</TD><TD> show mechanisms for branching </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000012.html'>12</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce the AND logical operator </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000013.html'>13</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce the OR logical operator </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000014.html'>14</A> </TD><TD>&nbsp;&nbsp;</TD><TD> illustrate pairs </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000015.html'>15</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce mutable objects, and side-effects </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000016.html'>16</A> </TD><TD>&nbsp;&nbsp;</TD><TD> illustrate lists and some list operators </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000017.html'>17</A> </TD><TD>&nbsp;&nbsp;</TD><TD> describe changes to the implicit interpreter to allow new special forms </TD><TD> (HACK) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000018.html'>18</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce sugar for let </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000019.html'>19</A> </TD><TD>&nbsp;&nbsp;</TD><TD> build up functions of several variables </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000020.html'>20</A> </TD><TD>&nbsp;&nbsp;</TD><TD> show map function for applying a function across the elements of a list </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000021.html'>21</A> </TD><TD>&nbsp;&nbsp;</TD><TD> <font color=red><b>end of part 1, start of part 2</b></font> </TD><TD> <font color=red><b>(NOTE)</b></font> </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000022.html'>22</A> </TD><TD>&nbsp;&nbsp;</TD><TD> show an example of recursive evaluation </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000023.html'>23</A> </TD><TD>&nbsp;&nbsp;</TD><TD> some pure lambda calculus definitions - optional </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000024.html'>24</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce universal quantifier </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000025.html'>25</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce existential quantifier </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000026.html'>26</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce logical implication </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000027.html'>27</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce sets and set membership </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000028.html'>28</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce graph structures </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000029.html'>29</A> </TD><TD>&nbsp;&nbsp;</TD><TD> show how to execute a sequence of instructions </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000030.html'>30</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce environment/hashmap structure </TD><TD> (MATH) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000031.html'>31</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce simple mutable structures </TD><TD> (OBJECT) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000032.html'>32</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce method handler wrappers </TD><TD> (OBJECT) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000033.html'>33</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce turing machine model </TD><TD> (TURING) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000034.html'>34</A> </TD><TD>&nbsp;&nbsp;</TD><TD> introduce simple form of typing, for ease of documentation. </TD><TD> (OBJECT) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000035.html'>35</A> </TD><TD>&nbsp;&nbsp;</TD><TD> an example object -- a 2D point </TD><TD> (OBJECT) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000036.html'>36</A> </TD><TD>&nbsp;&nbsp;</TD><TD> an example object -- a container </TD><TD> (OBJECT) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000037.html'>37</A> </TD><TD>&nbsp;&nbsp;</TD><TD> expressing inheritance </TD><TD> (OBJECT) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000038.html'>38</A> </TD><TD>&nbsp;&nbsp;</TD><TD> adding a special form for classes </TD><TD> (OBJECT) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000039.html'>39</A> </TD><TD>&nbsp;&nbsp;</TD><TD> wrapper class for cells </TD><TD> (OBJECT) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000040.html'>40</A> </TD><TD>&nbsp;&nbsp;</TD><TD> playing around with doors and rooms </TD><TD> (MUD) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000041.html'>41</A> </TD><TD>&nbsp;&nbsp;</TD><TD> <font color=red><b>end of part 2, start of part 3</b></font> </TD><TD> <font color=red><b>(NOTE)</b></font> </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000042.html'>42</A> </TD><TD>&nbsp;&nbsp;</TD><TD> simulating unless gates </TD><TD> (GATE) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000043.html'>43</A> </TD><TD>&nbsp;&nbsp;</TD><TD> testing alternate primer based on gates: cos_not circuit </TD><TD> (GATE) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000044.html'>44</A> </TD><TD>&nbsp;&nbsp;</TD><TD> testing alternate primer based on gates: cos_and circuit </TD><TD> (GATE) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000045.html'>45</A> </TD><TD>&nbsp;&nbsp;</TD><TD> testing alternate primer based on gates: cos_or circuit </TD><TD> (GATE) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000046.html'>46</A> </TD><TD>&nbsp;&nbsp;</TD><TD> testing alternate primer based on gates: cos_nor circuit </TD><TD> (GATE) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000047.html'>47</A> </TD><TD>&nbsp;&nbsp;</TD><TD> testing alternate primer based on gates: cos_osc circuit </TD><TD> (GATE) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000048.html'>48</A> </TD><TD>&nbsp;&nbsp;</TD><TD> testing alternate primer based on gates: cos_sr circuit </TD><TD> (GATE) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000049.html'>49</A> </TD><TD>&nbsp;&nbsp;</TD><TD> testing alternate primer based on gates: cos_d circuit </TD><TD> (GATE) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000050.html'>50</A> </TD><TD>&nbsp;&nbsp;</TD><TD> probing networks of unless gates </TD><TD> (GATE) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000051.html'>51</A> </TD><TD>&nbsp;&nbsp;</TD><TD> <font color=red><b>end of part 3, start of part 4</b></font> </TD><TD> <font color=red><b>(NOTE)</b></font> </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000052.html'>52</A> </TD><TD>&nbsp;&nbsp;</TD><TD> a mechanism for referring to parts of the message </TD><TD> (SELF) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000053.html'>53</A> </TD><TD>&nbsp;&nbsp;</TD><TD> some preparatory work for integrating with Java code </TD><TD> (JAVA) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000054.html'>54</A> </TD><TD>&nbsp;&nbsp;</TD><TD> class translation 'COS_JavaTest' </TD><TD> (JAVA) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000055.html'>55</A> </TD><TD>&nbsp;&nbsp;</TD><TD> check that automatic conversion is workable </TD><TD> (JAVA) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000056.html'>56</A> </TD><TD>&nbsp;&nbsp;</TD><TD> another simple little text-adventure space </TD><TD> (MUD) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000057.html'>57</A> </TD><TD>&nbsp;&nbsp;</TD><TD> native implementation of a Java list, hash classes </TD><TD> (JAVA) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000058.html'>58</A> </TD><TD>&nbsp;&nbsp;</TD><TD> testing the JList class </TD><TD> (JAVA) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000059.html'>59</A> </TD><TD>&nbsp;&nbsp;</TD><TD> basic iterator implementation </TD><TD> (JAVA) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000060.html'>60</A> </TD><TD>&nbsp;&nbsp;</TD><TD> class translation 'COS_JDoor' </TD><TD> (JAVA) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000061.html'>61</A> </TD><TD>&nbsp;&nbsp;</TD><TD> class translation 'COS_JThing' </TD><TD> (JAVA) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000062.html'>62</A> </TD><TD>&nbsp;&nbsp;</TD><TD> class translation 'COS_JRoom' </TD><TD> (JAVA) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000063.html'>63</A> </TD><TD>&nbsp;&nbsp;</TD><TD> class translation 'COS_JNamed' </TD><TD> (JAVA) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000064.html'>64</A> </TD><TD>&nbsp;&nbsp;</TD><TD> class translation 'COS_JWorld' </TD><TD> (JAVA) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000065.html'>65</A> </TD><TD>&nbsp;&nbsp;</TD><TD> class translation 'COS_JRobo' </TD><TD> (JAVA) </TD></TR>
+<TR><TD ALIGN=RIGHT><A HREF='message-section-000066.html'>66</A> </TD><TD>&nbsp;&nbsp;</TD><TD> test JRoom, JDoor, JThing, etc </TD><TD> (JAVA) </TD></TR>
+</TABLE>

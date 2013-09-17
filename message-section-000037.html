@@ -1,0 +1,30 @@
+
+<HTML><HEAD><TITLE>CosmicOS message</TITLE></HEAD>
+<BODY BGCOLOR='#ffffff'>
+<HR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT><A NAME='37'><FONT COLOR=red>#&nbsp;OBJECT expressing inheritance</FONT></A></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;counter-container adds one method to container: count</TT><BR>
+<TT>[<A HREF='sound.cgi?s=21101321100101032211010322100101332210011013222110010113221100001132110010003333221011111032211010322100110003211000000332210110101322210322110000003321100101033221001100033322210322110000003321100110033221111013221100101132110001013333221100101132211000000333333332233'>hear</A>] </TT><TT>(define counter-container</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;<font style='background-color: #cdffff'>(lambda </font><font style='background-color: #9bffff'>(x)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #cdcdff'>(let </font><font style='background-color: #cd9bff'>(</font><font style='background-color: #cd69ff'>(super </font><font style='background-color: #cd37ff'>(container new)</font><font style='background-color: #cd69ff'>)</font><font style='background-color: #cd9bff'>)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #cdcdcd'>(reflective</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #cdcd9b'>(lambda </font><font style='background-color: #cdcd69'>(self msg)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #9bcd9b'>(cond </font><font style='background-color: #69cd9b'>(</font><font style='background-color: #37cd9b'>(= </font><font style='background-color: #05cd9b'>(msg)</font><font style='background-color: #37cd9b'> counter-container)</font><font style='background-color: #69cd9b'> </font><font style='background-color: #699b9b'>(self)</font><font style='background-color: #69cd9b'>)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #9b9b9b'>(</font><font style='background-color: #9b699b'>(= </font><font style='background-color: #9b379b'>(msg)</font><font style='background-color: #9b699b'> count)</font><font style='background-color: #9b9b9b'> </font><font style='background-color: #9b9b69'>(list-length </font><font style='background-color: #9b9b37'>(super inventory)</font><font style='background-color: #9b9b69'>)</font><font style='background-color: #9b9b9b'>)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #9bcd69'>(super </font><font style='background-color: #9bcd37'>(msg)</font><font style='background-color: #9bcd69'>)</font><font style='background-color: #9bcd9b'>)</font><font style='background-color: #cdcd9b'>)</font><font style='background-color: #cdcdcd'>)</font><font style='background-color: #cdcdff'>)</font><font style='background-color: #cdffff'>)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=211013211001101322110010103211001000332233'>hear</A>] </TT><TT>(define cc1 <font style='background-color: #cdffff'>(counter-container new)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=210320322110011013211001100332233'>hear</A>] </TT><TT>(= 0 <font style='background-color: #cdffff'>(cc1 count)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110011013211001003210032233'>hear</A>] </TT><TT>(cc1 add 4);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=210321322110011013211001100332233'>hear</A>] </TT><TT>(= 1 <font style='background-color: #cdffff'>(cc1 count)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110011013211001003210132233'>hear</A>] </TT><TT>(cc1 add 5);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2103210322110011013211001100332233'>hear</A>] </TT><TT>(= 2 <font style='background-color: #cdffff'>(cc1 count)</font>);</TT><BR>
+<BR>
+
+</BODY>
+</HTML>

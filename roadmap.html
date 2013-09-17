@@ -1,0 +1,93 @@
+---
+layout: default
+title: Roadmap for CosmicOS
+---
+
+<h2>CosmicOS Development Roadmap</h2>
+
+There isn't quite a roadmap for CosmicOS yet, but here is a report on
+its status.  Development work on CosmicOS can be decomposed into the
+following activities:
+
+<ul>
+
+<li><B>Medium</B>: Finding the most
+productive ways to encode the message in physical processes, for
+transmission or long-term storage.  
+</li>
+
+<li><B>Kernel</B>: Communicating a core set of logical and
+mathematical ideas, a simple programming language, and the overall
+structure of the message.  
+</li>
+
+<li><B>Library</B>: Contructing a broad collection of derived concepts
+from the kernel, enriching the shared language.
+</li>
+
+<li><B>Bridging</B>: Making it possible to include code written in a
+conventional programming language in the message.  This is important
+to simplify development, and to insulate as much of the message as
+possible from changes to the kernel.  
+</li>
+
+<li><B>Alternative primers</B>: Integrating entirely different
+kernels/primers into the message, to give alternate starting 
+points to a reader.
+</li>
+
+<li><B>Simulations</B>: A key advantage of the algorithmic 
+approach to communication is that it is possible to 
+include simulations and games, to communicate about
+physical and social properties by demonstrating behavior.
+</li>
+
+
+</ul>
+
+
+<h3>Medium</h3>
+
+This issue has been studied extensively by others, so it is dealt with
+only superficially in this project.  A toy auditory form of the
+message has been developed, and a few toy visualizations.  Given that
+the message can be compiled to a sequence of 4 symbols, and has a very
+regular structure, encoding it physically should not be difficult.
+
+<h3>Kernel</h3>
+
+A basic kernel has been developed, reminiscent of scheme or lisp (but
+much simpified).  The major limitation currently is that there is no
+treatment of real numbers yet, just integers.
+
+<h3>Library</h3>
+
+Again, a very basic library is in place.  The issue of efficiency
+needs to be addressed -- some of the constructs used are 
+very inefficient.  It seems better to go for the simplest possible
+constructs, but this trade-off could be re-evaluated.
+
+<h3>Bridging</h3>
+
+The approach adopted here has been to support a subset of Java.
+Java byte-code is translated into code that can be inserted 
+into the message, and evaluated in terms of the kernel+library.
+The Java support is being added step by step, and is far from
+complete (and again, uses inefficient constructs to maximize
+simplicity).
+
+<h3>Alternative primers</h3>
+
+Work on this has just begun.  Based on discussions with Brian
+McConnell, logic circuits have been chosen as an alternate starting
+point.  2D images of circuits have been introduced into the message,
+and related to the kernel.  But a lot more needs to be done to
+make this a true alternate starting point for the message.
+
+<h3>Simulations</h3>
+
+Pending the introduction of real numbers, there are no 
+physical simulations.  There is the beginning of a
+simulated adventure game with rooms and doors and
+characters moving around, but it is very rudimentary
+and wouldn't be very understandable yet.

@@ -1,0 +1,38 @@
+
+<HTML><HEAD><TITLE>CosmicOS message</TITLE></HEAD>
+<BODY BGCOLOR='#ffffff'>
+<HR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT><A NAME='32'><FONT COLOR=red>#&nbsp;OBJECT introduce method handler wrappers</FONT></A></TT><BR>
+<TT>[<A HREF='sound.cgi?s=211013210010000302321101032210010001321001001032100100113322100000103221001000133221001001033221100321101010302321001001130232100100013332233'>hear</A>] </TT><TT>(define add-method / lambda <font style='background-color: #cdffff'>(object name method)</font> <font style='background-color: #ffcdff'>(hash-add </font><font style='background-color: #ff9bff'>(object)</font><font style='background-color: #ffcdff'> </font><font style='background-color: #ffcdcd'>(name)</font><font style='background-color: #ffcdff'> </font><font style='background-color: #cdcdff'>(? dummy / method / object)</font><font style='background-color: #ffcdff'>)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=211013210010100302321100321001013023210010132032233'>hear</A>] </TT><TT>(define call / ? x / x 0);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21101321001010130232100010103023210000321001013210010032233'>hear</A>] </TT><TT>(define test-struct2 / mutable-struct / vector x y);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2111003221001010132100101332101032233'>hear</A>] </TT><TT>(set! <font style='background-color: #cdffff'>(test-struct2 x)</font> 10);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21110032210010101321001003321010032233'>hear</A>] </TT><TT>(set! <font style='background-color: #cdffff'>(test-struct2 y)</font> 20);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21032211101302321001010132100101332101032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(get! / test-struct2 x)</font> 10);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=210322111013023210010101321001003321010032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(get! / test-struct2 y)</font> 20);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132100101103023210010000322100101013321001011132211003210011000302321010322111013023210011000321001013322111013023210011000321001003332233'>hear</A>] </TT><TT>(define test-struct3 / add-method <font style='background-color: #cdffff'>(test-struct2)</font> sum <font style='background-color: #ffcdff'>(? self / + </font><font style='background-color: #ff9bff'>(get! / self x)</font><font style='background-color: #ffcdff'> </font><font style='background-color: #ffcdcd'>(get! / self y)</font><font style='background-color: #ffcdff'>)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21032211101302321001011032100101332101032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(get! / test-struct3 x)</font> 10);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=210322111013023210010110321001003321010032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(get! / test-struct3 y)</font> 20);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21032210010100302321001011032100101113321111032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(call / test-struct3 sum)</font> 30);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2111003221001011032100100332101032233'>hear</A>] </TT><TT>(set! <font style='background-color: #cdffff'>(test-struct3 y)</font> 10);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21032210010100302321001011032100101113321010032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(call / test-struct3 sum)</font> 20);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=211100322100101013210010033210132233'>hear</A>] </TT><TT>(set! <font style='background-color: #cdffff'>(test-struct2 y)</font> 5);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2103221001010030232100101103210010111332111132233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(call / test-struct3 sum)</font> 15);</TT><BR>
+<BR>
+
+</BODY>
+</HTML>

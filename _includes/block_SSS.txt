@@ -1,0 +1,1 @@
+/ is not gif, xbm or jpeg (or has stupid name)

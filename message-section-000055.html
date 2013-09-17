@@ -1,0 +1,34 @@
+
+<HTML><HEAD><TITLE>CosmicOS message</TITLE></HEAD>
+<BODY BGCOLOR='#ffffff'>
+<HR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT><A NAME='55'><FONT COLOR=red>#&nbsp;JAVA check that automatic conversion is workable</FONT></A></TT><BR>
+<TT>[<A HREF='sound.cgi?s=21101321111001113221110110013211001000332233'>hear</A>] </TT><TT>(define test1 <font style='background-color: #cdffff'>(COS_JavaTest new)</font>);</TT><BR>
+<BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;Note that the names of methods include type information.</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;This could easily be removed, but is retained so that overloading</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;is possible in the Java code.</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;I is integer, V is void.  The last type in the name is the return type.</TT><BR>
+<TT>[<A HREF='sound.cgi?s=210322111100111321110111113211113210103321001011032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(test1 mult-I-I-I 15 10)</font> 150);</TT><BR>
+<BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;The type information can be safely omitted if there is no ambiguity</TT><BR>
+<TT>[<A HREF='sound.cgi?s=2103221111001113211001113211113210103321001011032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(test1 mult 15 10)</font> 150);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21032211110011132111100000321003211113210103321001101032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(test1 addmult-I-I-I-I 4 15 10)</font> 154);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21000000032211110011132111100011321010111332210322111100111321111001003321010111332233'>hear</A>] </TT><TT>(begin</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;<font style='background-color: #cdffff'>(test1 set-I-V 87)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;<font style='background-color: #ffcdff'>(= </font><font style='background-color: #ff9bff'>(test1 get-I)</font><font style='background-color: #ffcdff'> 87)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21032211110011132111100101320332132233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(test1 fact-I-I 0)</font> 1);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21032211110011132111100101321332132233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(test1 fact-I-I 1)</font> 1);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2103221111001113211110010132101332111100032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(test1 fact-I-I 5)</font> 120);</TT><BR>
+<BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;Yay! testing says this works.</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;So structure for bytecode interpretation is in place.</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;Very few opcodes actually implemented yet though.</TT><BR>
+
+</BODY>
+</HTML>

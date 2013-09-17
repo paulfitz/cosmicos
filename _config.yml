@@ -1,0 +1,4 @@
+name: CosmicOS
+markdown: redcarpet
+pygments: true
+baseurl: /cosmicos

@@ -1,0 +1,46 @@
+
+<HTML><HEAD><TITLE>CosmicOS message</TITLE></HEAD>
+<BODY BGCOLOR='#ffffff'>
+<HR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT><A NAME='15'><FONT COLOR=red>#&nbsp;MATH introduce mutable objects, and side-effects</FONT></A></TT><BR>
+<TT>[<A HREF='sound.cgi?s=20321101132233'>hear</A>] </TT><TT>(intro make-cell);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=20321110032233'>hear</A>] </TT><TT>(intro set!);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=20321110132233'>hear</A>] </TT><TT>(intro get!);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132110101302321101132032233'>hear</A>] </TT><TT>(define demo-mut1 / make-cell 0);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=211100322110101332111132233'>hear</A>] </TT><TT>(set! <font style='background-color: #cdffff'>(demo-mut1)</font> 15);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2103221110130232110101332111132233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(get! / demo-mut1)</font> 15);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21110032211010133210132233'>hear</A>] </TT><TT>(set! <font style='background-color: #cdffff'>(demo-mut1)</font> 5);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21110032211010133211132233'>hear</A>] </TT><TT>(set! <font style='background-color: #cdffff'>(demo-mut1)</font> 7);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=210322111013023211010133211132233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(get! / demo-mut1)</font> 7);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132110110302321101132101132233'>hear</A>] </TT><TT>(define demo-mut2 / make-cell 11);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2103221110130232110110332101132233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(get! / demo-mut2)</font> 11);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2111003221101103321011032233'>hear</A>] </TT><TT>(set! <font style='background-color: #cdffff'>(demo-mut2)</font> 22);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21032211101302321101103321011032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(get! / demo-mut2)</font> 22);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=210322111013023211010133211132233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(get! / demo-mut1)</font> 7);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=210322101032211101302321101013322111013023211011033321110132233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(+ </font><font style='background-color: #9bffff'>(get! / demo-mut1)</font><font style='background-color: #cdffff'> </font><font style='background-color: #cdcdff'>(get! / demo-mut2)</font><font style='background-color: #cdffff'>)</font> 29);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2111132210322111013023211010133211133221110032211010133210110003322111003221101013321100011332233'>hear</A>] </TT><TT>(if <font style='background-color: #cdffff'>(= </font><font style='background-color: #9bffff'>(get! / demo-mut1)</font><font style='background-color: #cdffff'> 7)</font> <font style='background-color: #ffcdff'>(set! </font><font style='background-color: #ff9bff'>(demo-mut1)</font><font style='background-color: #ffcdff'> 88)</font> <font style='background-color: #ffffcd'>(set! </font><font style='background-color: #ffff9b'>(demo-mut1)</font><font style='background-color: #ffffcd'> 99)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2103221110130232110101332101100032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(get! / demo-mut1)</font> 88);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2111132210322111013023211010133211133221110032211010133210110003322111003221101013321100011332233'>hear</A>] </TT><TT>(if <font style='background-color: #cdffff'>(= </font><font style='background-color: #9bffff'>(get! / demo-mut1)</font><font style='background-color: #cdffff'> 7)</font> <font style='background-color: #ffcdff'>(set! </font><font style='background-color: #ff9bff'>(demo-mut1)</font><font style='background-color: #ffcdff'> 88)</font> <font style='background-color: #ffffcd'>(set! </font><font style='background-color: #ffff9b'>(demo-mut1)</font><font style='background-color: #ffffcd'> 99)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2103221110130232110101332110001132233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(get! / demo-mut1)</font> 99);</TT><BR>
+<BR>
+
+</BODY>
+</HTML>

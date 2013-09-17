@@ -1,0 +1,53 @@
+
+<HTML><HEAD><TITLE>CosmicOS message</TITLE></HEAD>
+<BODY BGCOLOR='#ffffff'>
+<HR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT><A NAME='36'><FONT COLOR=red>#&nbsp;OBJECT an example object -- a container</FONT></A></TT><BR>
+<TT>[<A HREF='sound.cgi?s=211013211000011322110103221001013322100110132221100010032211011322100003333322101111103221101032210011000321100000033221011010132221032211000000332110000113322100110003332221032211000000332110001013322111013221100010033332221032211000000332110010033221101032210010133221111322100322111000032210010133221110132211000100333332211100322110001003322111111322100101332211101322110001003333322101100333332221032211000000332110001103322110103221001013322111003221100010033221011101032210010133221110132211000100333333322210322110000003321033221101032221101101321100001133322111001032210011000321100010133221101101321100010133333203333332233'>hear</A>] </TT><TT>(define container</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;<font style='background-color: #cdffff'>(lambda </font><font style='background-color: #9bffff'>(x)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #cdcdff'>(let </font><font style='background-color: #cd9bff'>(</font><font style='background-color: #cd69ff'>(contents </font><font style='background-color: #cd37ff'>(make-cell </font><font style='background-color: #cd05ff'>(vector)</font><font style='background-color: #cd37ff'>)</font><font style='background-color: #cd69ff'>)</font><font style='background-color: #cd9bff'>)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #cdcdcd'>(reflective</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #cdcd9b'>(lambda </font><font style='background-color: #cdcd69'>(self msg)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #9bcd9b'>(cond </font><font style='background-color: #69cd9b'>(</font><font style='background-color: #37cd9b'>(= </font><font style='background-color: #05cd9b'>(msg)</font><font style='background-color: #37cd9b'> container)</font><font style='background-color: #69cd9b'> </font><font style='background-color: #699b9b'>(self)</font><font style='background-color: #69cd9b'>)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #9b9b9b'>(</font><font style='background-color: #9b699b'>(= </font><font style='background-color: #9b379b'>(msg)</font><font style='background-color: #9b699b'> inventory)</font><font style='background-color: #9b9b9b'> </font><font style='background-color: #9b9b69'>(get! </font><font style='background-color: #9b9b37'>(contents)</font><font style='background-color: #9b9b69'>)</font><font style='background-color: #9b9b9b'>)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #9bcd69'>(</font><font style='background-color: #9bcd37'>(= </font><font style='background-color: #9bcd05'>(msg)</font><font style='background-color: #9bcd37'> add)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #69cd69'>(lambda </font><font style='background-color: #37cd69'>(x)</font><font style='background-color: #69cd69'> </font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #699b69'>(if </font><font style='background-color: #969696'>(not </font><font style='background-color: #966496'>(element </font><font style='background-color: #963296'>(x)</font><font style='background-color: #966496'> </font><font style='background-color: #966464'>(get! </font><font style='background-color: #966432'>(contents)</font><font style='background-color: #966464'>)</font><font style='background-color: #966496'>)</font><font style='background-color: #969696'>)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #699b37'>(set! </font><font style='background-color: #699b05'>(contents)</font><font style='background-color: #699b37'> </font><font style='background-color: #379b37'>(prepend </font><font style='background-color: #059b37'>(x)</font><font style='background-color: #379b37'> </font><font style='background-color: #969696'>(get! </font><font style='background-color: #966496'>(contents)</font><font style='background-color: #969696'>)</font><font style='background-color: #379b37'>)</font><font style='background-color: #699b37'>)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #379b69'>(false)</font><font style='background-color: #699b69'>)</font><font style='background-color: #69cd69'>)</font><font style='background-color: #9bcd69'>)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #69cd9b'>(</font><font style='background-color: #37cd9b'>(= </font><font style='background-color: #05cd9b'>(msg)</font><font style='background-color: #37cd9b'> remove)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #699b9b'>(lambda </font><font style='background-color: #69699b'>(x)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #699b69'>(set! </font><font style='background-color: #699b37'>(contents)</font><font style='background-color: #699b69'> </font><font style='background-color: #379b69'>(remove-element </font><font style='background-color: #059b69'>(x)</font><font style='background-color: #379b69'> </font><font style='background-color: #969696'>(get! </font><font style='background-color: #966496'>(contents)</font><font style='background-color: #969696'>)</font><font style='background-color: #379b69'>)</font><font style='background-color: #699b69'>)</font><font style='background-color: #699b9b'>)</font><font style='background-color: #69cd9b'>)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #9b9b9b'>(</font><font style='background-color: #9b699b'>(= </font><font style='background-color: #9b379b'>(msg)</font><font style='background-color: #9b699b'> =)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #9b9b69'>(lambda </font><font style='background-color: #9b9b37'>(</font><font style='background-color: #9b9b05'>(c container)</font><font style='background-color: #9b9b37'>)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #699b69'>(set= </font><font style='background-color: #379b69'>(self inventory)</font><font style='background-color: #699b69'> </font><font style='background-color: #969696'>(c inventory)</font><font style='background-color: #699b69'>)</font><font style='background-color: #9b9b69'>)</font><font style='background-color: #9b9b9b'>)</font></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font style='background-color: #9bcd9b'>0)</font><font style='background-color: #cdcd9b'>)</font><font style='background-color: #cdcdcd'>)</font><font style='background-color: #cdcdff'>)</font><font style='background-color: #cdffff'>)</font>);</TT><BR>
+<BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;Can pass anything to container function to create an object</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;Should eventually use a consistent protocol for all objects,</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;but all this stuff is still in flux</TT><BR>
+<TT>[<A HREF='sound.cgi?s=211013211000111322110000113211001000332233'>hear</A>] </TT><TT>(define pocket <font style='background-color: #cdffff'>(container new)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21100011132110010032100110132233'>hear</A>] </TT><TT>(pocket add 77);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21100011132110010032101100032233'>hear</A>] </TT><TT>(pocket add 88);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21100011132110010032110001132233'>hear</A>] </TT><TT>(pocket add 99);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21110010322110001113211000101332210000321001101321011000321100011332233'>hear</A>] </TT><TT>(set= <font style='background-color: #cdffff'>(pocket inventory)</font> <font style='background-color: #ffcdff'>(vector 77 88 99)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=211000111321100011032101100032233'>hear</A>] </TT><TT>(pocket remove 88);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21110010322110001113211000101332210000321001101321100011332233'>hear</A>] </TT><TT>(set= <font style='background-color: #cdffff'>(pocket inventory)</font> <font style='background-color: #ffcdff'>(vector 77 99)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=211013211001001322110000113211001000332233'>hear</A>] </TT><TT>(define pocket2 <font style='background-color: #cdffff'>(container new)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21100100132110010032100110132233'>hear</A>] </TT><TT>(pocket2 add 77);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21100100132110010032110001132233'>hear</A>] </TT><TT>(pocket2 add 99);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=211001001321032211000111332233'>hear</A>] </TT><TT>(pocket2 = <font style='background-color: #cdffff'>(pocket)</font>);</TT><BR>
+<BR>
+
+</BODY>
+</HTML>

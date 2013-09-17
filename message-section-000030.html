@@ -1,0 +1,38 @@
+
+<HTML><HEAD><TITLE>CosmicOS message</TITLE></HEAD>
+<BODY BGCOLOR='#ffffff'>
+<HR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT><A NAME='30'><FONT COLOR=red>#&nbsp;MATH introduce environment/hashmap structure</FONT></A></TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;this section needs a LOT more examples :-</TT><BR>
+<TT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</TT><TT>#&nbsp;note that at the time of writing (h 1 2) is same as (<font style='background-color: #cdffff'>(h)</font> 1 2)</TT><BR>
+<TT>[<A HREF='sound.cgi?s=21101321000001030232110103221000001132100101321001003210011033221111322100032210011033221001013332210010033221000001132210011033332233'>hear</A>] </TT><TT>(define hash-add / lambda <font style='background-color: #cdffff'>(h x y z)</font> <font style='background-color: #ffcdff'>(if </font><font style='background-color: #ff9bff'>(equal </font><font style='background-color: #ff69ff'>(z)</font><font style='background-color: #ff9bff'> </font><font style='background-color: #ff9bcd'>(x)</font><font style='background-color: #ff9bff'>)</font><font style='background-color: #ffcdff'> </font><font style='background-color: #ffcdcd'>(y)</font><font style='background-color: #ffcdff'> </font><font style='background-color: #cdcdff'>(h </font><font style='background-color: #9bcdff'>(z)</font><font style='background-color: #cdcdff'>)</font><font style='background-color: #ffcdff'>)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=211013210000100302321101032210000011321001013322100000113221001013332233'>hear</A>] </TT><TT>(define hash-ref / lambda <font style='background-color: #cdffff'>(h x)</font> <font style='background-color: #ffcdff'>(h </font><font style='background-color: #ff9bff'>(x)</font><font style='background-color: #ffcdff'>)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=211013210000101302321100321001013023210000032233'>hear</A>] </TT><TT>(define hash-null / ? x / undefined);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=211013210000110302321100321000011130232110032100101302321000011132233'>hear</A>] </TT><TT>(define hash-default / ? default / ? x / default);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132100010003023210000010322100000103221000010133211321033210032100132233'>hear</A>] </TT><TT>(define test-hash / hash-add <font style='background-color: #cdffff'>(hash-add </font><font style='background-color: #9bffff'>(hash-null)</font><font style='background-color: #cdffff'> 3 2)</font> 4 9);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2103221000010032210001000332100332100132233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(hash-ref </font><font style='background-color: #9bffff'>(test-hash)</font><font style='background-color: #cdffff'> 4)</font> 9);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2103221000010032210001000332113321032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(hash-ref </font><font style='background-color: #9bffff'>(test-hash)</font><font style='background-color: #cdffff'> 3)</font> 2);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=210322100001003221000100033210003322100000332233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(hash-ref </font><font style='background-color: #9bffff'>(test-hash)</font><font style='background-color: #cdffff'> 8)</font> <font style='background-color: #ffcdff'>(undefined)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=210322100001003221000100033211113322100000332233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(hash-ref </font><font style='background-color: #9bffff'>(test-hash)</font><font style='background-color: #cdffff'> 15)</font> <font style='background-color: #ffcdff'>(undefined)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=210322100001003221000001032210001000332111132100001332111133210000132233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(hash-ref </font><font style='background-color: #9bffff'>(hash-add </font><font style='background-color: #69ffff'>(test-hash)</font><font style='background-color: #9bffff'> 15 33)</font><font style='background-color: #cdffff'> 15)</font> 33);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=210322100001003221000100033211113322100000332233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(hash-ref </font><font style='background-color: #9bffff'>(test-hash)</font><font style='background-color: #cdffff'> 15)</font> <font style='background-color: #ffcdff'>(undefined)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=2110132100010013023211003210010130232111132210000003221001013322100003332210000101332210000010322100010013221111003023210010133322100000130232111010302321001013322100001030232111010302321001013332233'>hear</A>] </TT><TT>(define make-hash / ? x / if <font style='background-color: #cdffff'>(list= </font><font style='background-color: #9bffff'>(x)</font><font style='background-color: #cdffff'> </font><font style='background-color: #cdcdff'>(vector)</font><font style='background-color: #cdffff'>)</font> <font style='background-color: #ffcdff'>(hash-null)</font> <font style='background-color: #ffffcd'>(hash-add </font><font style='background-color: #ffff9b'>(make-hash </font><font style='background-color: #ffff69'>(tail / x)</font><font style='background-color: #ffff9b'>)</font><font style='background-color: #ffffcd'> </font><font style='background-color: #cdffcd'>(first / head / x)</font><font style='background-color: #ffffcd'> </font><font style='background-color: #ffcdcd'>(second / head / x)</font><font style='background-color: #ffffcd'>)</font>);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21032210000100322100010013023210000322110100321132101033221101003210321010033221101003213211110333211332101032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(hash-ref </font><font style='background-color: #9bffff'>(make-hash / vector </font><font style='background-color: #69ffff'>(pair 3 10)</font><font style='background-color: #9bffff'> </font><font style='background-color: #9bcdff'>(pair 2 20)</font><font style='background-color: #9bffff'> </font><font style='background-color: #9bffcd'>(pair 1 30)</font><font style='background-color: #9bffff'>)</font><font style='background-color: #cdffff'> 3)</font> 10);</TT><BR>
+<BR>
+<TT>[<A HREF='sound.cgi?s=21032210000100322100010013023210000322110100321132101033221101003210321010033221101003213211110333213321111032233'>hear</A>] </TT><TT>(= <font style='background-color: #cdffff'>(hash-ref </font><font style='background-color: #9bffff'>(make-hash / vector </font><font style='background-color: #69ffff'>(pair 3 10)</font><font style='background-color: #9bffff'> </font><font style='background-color: #9bcdff'>(pair 2 20)</font><font style='background-color: #9bffff'> </font><font style='background-color: #9bffcd'>(pair 1 30)</font><font style='background-color: #9bffff'>)</font><font style='background-color: #cdffff'> 1)</font> 30);</TT><BR>
+<BR>
+
+</BODY>
+</HTML>
