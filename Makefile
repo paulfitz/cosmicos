@@ -209,6 +209,18 @@ configure:
 Makefile.plan: $(DEPFILE) bin/planner.pl
 	$(BINDIR)/planner.pl $(DEPFILE) | tee Makefile.plan
 
+# Migrating slowly to jekyll-based website
+# Expect gh-pages branch to be checked out at $PWD/site/cosmicos
+site: index.html
+	cp msg/block_*.txt site/cosmicos/_includes
+	cp msg/wrapped.txt site/cosmicos/
+	cp www/message-verbose.html site/cosmicos/
+	cp www/message-section-*.html site/cosmicos/
+	cp www/COS_*.gif site/cosmicos/
+	cp www/iconic-*.png site/cosmicos/
+	cp www/iconic-*.html site/cosmicos/
+	cp www/view.png site/cosmicos/
+
 clean:
 	rm -f $(OBJDIR)/*.*
 	rm -f $(MSGDIR)/*.*

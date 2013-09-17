@@ -69,6 +69,14 @@ sub Value {
 }
 
 
+sub SaveBlock {
+    my $code = shift;
+    my $txt = shift;
+    open(BLK,">msg/block_" . $code . ".txt");
+    print BLK $txt;
+    close(BLK);
+}
+
 my $showed_embedding = 0;
 my $showed_string_embedding = 0;
 
@@ -252,9 +260,17 @@ my $version = $BASEDIR;
 $version =~ s/cosmic\.//g;
 $entropy = $entropy/1024;
 $entropy = int(0.5+$entropy*10)/10;
-#$sym_ct = $sym_ct/1024;
-#$sym_ct = int(0.5+$sym_ct*10)/10;
 
+SaveBlock("XXX",$txt0);
+SaveBlock("MMM",$txt1);
+SaveBlock("DDD",$BASEDIR);
+SaveBlock("FFF",$BASEFILE);
+SaveBlock("III",$imsg);
+SaveBlock("EEE",$entropy);
+SaveBlock("SSS",$imgsize);
+SaveBlock("RRR",$teaser);
+SaveBlock("VVV",$version);
+SaveBlock("CCC",$sym_ct);
 
 $plate =~ s/\[XXX\]/$txt0/g;
 $plate =~ s/\[MMM\]/$txt1/g;
@@ -268,3 +284,4 @@ $plate =~ s/\[VVV\]/$version/g;
 $plate =~ s/\[CCC\]/$sym_ct/g;
 
 print $plate;
+
