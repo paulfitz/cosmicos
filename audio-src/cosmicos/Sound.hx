@@ -1,5 +1,8 @@
 // -*- mode:java; tab-width:4; c-basic-offset:4; indent-tabs-mode:nil -*-
 
+package cosmicos;
+
+@:expose
 class Sound {
     public var txt : StringBuf;
 
@@ -95,9 +98,22 @@ class Sound {
         }
     }
 
+    public function textToWav(text: String, content_mode: Bool) {
+        txt = new StringBuf();
+        if (content_mode) {
+            txt.addSub("Content-Type: audio/x-wav",0);
+            txt.addChar(10);
+            txt.addChar(10);
+        }
+        render(text);
+        var result : String = txt.toString();
+        return result;
+    }
 
 
     public static function main() : Void {
+#if js
+#else
         var content_mode : Bool = true;
         var default_text : String = "01234543210";
         var text : String = default_text;
@@ -112,30 +128,10 @@ class Sound {
             }
         }
         var self : Sound = new Sound();
-        if (content_mode) {
-            /*
-            text = default_text;
-            char *data;
-            data = getenv("QUERY_STRING");
-            if(data != NULL) {
-                if (data[0]=='s') {
-                    if (data[1]=='=') {
-                        text = data+2;
-                    }
-                }
-            }
-            */
-
-            self.txt.addSub("Content-Type: audio/x-wav",0);
-            self.txt.addChar(10);
-            self.txt.addChar(10);
-            //printf("%c%c",10,10);
-        }
-        self.render(text);
-        Sys.stdout().writeString(self.txt.toString());
+        Sys.stdout().writeString(self.textToWav(text,content_mode));
+#end
     }
 
     public function new() {
-        txt = new StringBuf();
     }
 }
