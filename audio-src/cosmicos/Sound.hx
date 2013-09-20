@@ -2,6 +2,9 @@
 
 package cosmicos;
 
+import haxe.crypto.BaseCode;
+import haxe.io.Bytes;
+
 @:expose
 class Sound {
     public var txt : StringBuf;
@@ -108,6 +111,18 @@ class Sound {
         render(text);
         var result : String = txt.toString();
         return result;
+    }
+
+    public function textToWavUrl(text: String) {
+        txt = new StringBuf();
+        render(text);
+        var enc = new BaseCode(Bytes.ofString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"));
+        var str = txt.toString();
+        var b = haxe.io.Bytes.alloc(str.length);
+        for( i in 0...str.length) {
+            b.set(i,StringTools.fastCodeAt(str,i)); 
+        }
+        return 'data:audio/wav;base64,'+enc.encodeBytes(b).toString();
     }
 
 

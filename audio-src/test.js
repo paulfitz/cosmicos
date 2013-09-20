@@ -6,8 +6,11 @@
 
 var cos = require("cosmicos").cosmicos;
 var snd = new cos.Sound();
-var txt = snd.textToWav("01234543210",true);
+var txt = snd.textToWav("01234543210",false);
 
 var fs = require('fs');
 fs.writeFileSync("node.wav",txt,"binary");
 console.log("Wrote to node.wav");
+fs.writeFileSync("node.txt",snd.textToWavUrl("01234543210"),"binary");
+console.log("Wrote to node.txt");
+

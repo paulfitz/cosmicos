@@ -3,13 +3,13 @@
 use strict;
 
 
-my $prefix = "
-<HTML><HEAD><TITLE>CosmicOS message</TITLE></HEAD>
-<BODY BGCOLOR='#ffffff'>
+my $prefix = "---
+layout: default
+title: CosmicOS message
+---
+
 ";
 my $postfix = "
-</BODY>
-</HTML>
 ";
 
 my $ct = 0;

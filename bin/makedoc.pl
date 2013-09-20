@@ -139,8 +139,10 @@ while(<MSG>)
 open(AMSG,">www/message-verbose.html");
 my $imsg = "";
 
-print AMSG "<HTML><HEAD><TITLE>CosmicOS message</TITLE></HEAD>\n";
-print AMSG "<BODY BGCOLOR='#ffffff'>\n";
+print AMSG "---\n";
+print AMSG "layout: default\n";
+print AMSG "title: CosmicOS message\n";
+print AMSG "---\n";
 my $name = 0;
 my $ref_index = 0;
 my $intro = 0;
@@ -202,7 +204,7 @@ for my $m (split(/\n/,$msg))
     my $basic_index = -1;
     if ($novel) {
 	$intro = 0;
-	print AMSG "<TT>[<A HREF='sound.cgi?s=$ref[$ref_index]'>hear</A>] </TT>";
+	print AMSG "<TT>[<a href='#' class='hear' data-code='$ref[$ref_index]' title='$ref[$ref_index]'>hear</A>] </TT>";
 	$basic_index = $ref_index;
 	if (!defined($ref[$ref_index])) {
 	    print "PROBLEM at index $ref_index ($prefix$s2$postfix)\n";
@@ -240,9 +242,6 @@ for my $m (split(/\n/,$msg))
 
 $imsg = "<TABLE BORDER=0><TR><TD><B>Sect.</B></TD><TD></TD><TD><B>Comment</B></TD><TD><B>Type</B></TD></TR>\n$imsg</TABLE>\n";
 
-print AMSG "<HR>\n";
-print AMSG "</BODY>\n";
-print AMSG "</HTML>\n";
 close(AMSG);
 
 open(TEMPLATE,"<www-src/template.html");
