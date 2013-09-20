@@ -6,9 +6,26 @@
         <title>{{ page.title }}</title>
         <meta name="viewport" content="width=device-width">
 
-        <!-- Custom CSS -->
         <link rel="stylesheet" href="{{site.baseurl}}/css/main.css">
-
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="{{site.baseurl}}/js/cosmicos.js"></script>
+        <script type="text/javascript">
+           var current_audio = null;
+           $(document).ready(function() {
+              $(".hear").click(function(e) {
+                var snd = new cosmicos.Sound();
+                var txt = $(e.target).data("code");
+                current_audio = new Audio(snd.textToWavUrl(txt));
+                if (!current_audio.paused) {
+                  current_audio.pause();
+                  current_audio.currentTime = 0;
+                }
+                current_audio.play();
+                //alert(txt);
+                return false;
+              });
+           });
+        </script>
     </head>
     <body>
 
@@ -62,10 +79,7 @@
 <a name="content"></a>
 <div class="content">
 
-
 {{content}}
-
-  
 
 </div>
 
