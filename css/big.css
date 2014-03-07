@@ -4,3 +4,16 @@ div.content {
   width: 760px;
   margin: 0 auto;
 }
+
+.logo img {
+  height: 120px;
+}
+
+.top ul {
+  font-size: 130%;
+}
+
+.top ul a {
+  padding: 8px;
+  border-radius: 8px;
+}

@@ -36,6 +36,10 @@ a:visited {
   border-radius: 5px;
 }
 
+.logo img {
+  height: 60px;
+}
+
 .top .menu-holder {
   display: inline-block;
 }
