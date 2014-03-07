@@ -80,8 +80,9 @@ p {
 }
 
 h2 {
-  border-bottom: 1px #000000 solid;
-  clear: right;
+  font-size: 200%;
+  color: #300;
+  text-shadow: 0px 0px 5px #ff4;
 }
 
 pre {
