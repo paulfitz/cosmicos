@@ -644,9 +644,45 @@ var network_default = "12 1 1 0 \n" +
      return false;
    });
 
-   $("#step-sim").click(function() {
+   var ticker = null;
+   var ticking = false;
+
+   function stopSim() {
+     if (ticker!=null) {
+       window.clearTimeout(ticker);
+       ticker = null;
+     }
+     if (ticking) {
+       $("#stop-sim").hide();
+       $("#run-sim").show();
+       ticking = false;
+     }
+   }
+
+   function tickSim() {
+     ticking = true;
      stepSim();
      redrawCanvas();
+     ticker = window.setTimeout(tickSim,250);
+   }
+
+   $("#step-sim").click(function() {
+     stopSim();
+     stepSim();
+     redrawCanvas();
+     return false;
+   });
+
+   $("#run-sim").click(function() {
+     stopSim();
+     tickSim();
+     $("#run-sim").hide();
+     $("#stop-sim").show();
+     return false;
+   });
+
+   $("#stop-sim").click(function() {
+     stopSim();
      return false;
    });
 
@@ -676,8 +712,8 @@ var network_default = "12 1 1 0 \n" +
      return false;
    });
 
-   $("#update").hide();
    $("#no-edit-sim").hide();
+   $("#stop-sim").hide();
 
  });
 
@@ -701,7 +737,11 @@ forces that wire to FALSE if its one value is TRUE.
 <div class="simulator-panels">
 
   <div class="simulator-panel">
-    <div><a href="#" id="step-sim" class="sim-button">Step simulation</a></div>
+    <div>
+      <a href="#" id="run-sim" class="sim-button">Run simulation</a>
+      <a href="#" id="stop-sim" class="sim-button">Stop simulation</a>
+      <a href="#" id="step-sim" class="sim-button">Step simulation</a>
+    </div>
     <canvas id="gates" width="350" height="300" style="border: 1px solid black;"></canvas>
   </div>
 
