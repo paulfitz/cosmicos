@@ -17,3 +17,7 @@ div.content {
   padding: 8px;
   border-radius: 8px;
 }
+
+#github-ribbon { 
+  display: initial;
+}
