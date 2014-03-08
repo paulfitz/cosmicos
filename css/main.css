@@ -196,3 +196,33 @@ div.alert
 #github-ribbon { 
   display: none;
 }
+
+a.sim-button { 
+  display: inline-block;
+  padding: 5px;
+  margin-top: 5px;
+  margin-bottom: 3px;
+  border-radius: 5px;
+  background: #8f8;
+  color: black;
+}
+
+a.sim-button:hover { 
+  background: #4f4;
+  text-decoration: none;
+}
+
+
+#readout pre { 
+  margin-top: 0;
+}
+
+.simulator-panel { 
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 20px;
+}
+
+#gates {
+  cursor: pointer;
+}
