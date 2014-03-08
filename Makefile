@@ -97,9 +97,9 @@ include Makefile.plan
 	cat $<.tmp | ./bin/drawgate-txt.pl | sed "s/IMAGE_SRC/IMAGE_SRC=$*.gif/" | sed "s/CIRCUIT_NAME/`echo $* | tr '[:upper:]' '[:lower:]'`/g" > $(OBJDIR)/$@
 	cat $<.tmp | ./bin/drawgate-ppm.pl > $<.ppm
 	convert $<.ppm $(OBJDIR)/$*.gif
+	( echo "---"; echo "layout: gate"; echo "title: `echo $* | tr '[:upper:]' '[:lower:]'` - CosmicOS"; echo "---"; echo " "; echo -n "var network = "; cat $< | grep "." | sed "s/^/\"/" | sed "s/$$/\\\\n\" +/"; echo "\"\";" ) > $(OBJDIR)/$*.html
 	rm -f $<.ppm
 	rm -f $<.tmp
-
 
 # pretty-printing the code
 %.pp: %.ftz
@@ -158,6 +158,7 @@ index.html: color.txt template.html COMMENTS.TXT $(BINDIR)/makedoc.pl sound.cgi 
 	cp $(WWWSRCDIR)/images/*.* $(WWWDIR)
 	cp $(MSGDIR)/*.png  $(WWWDIR) || echo -n
 	cp $(OBJDIR)/*.gif $(WWWDIR) || echo -n
+	cp $(OBJDIR)/*.html $(WWWDIR) || echo -n
 	cp $(BINDIR)/fritz.scm $(WWWDIR)/fritz.scm.txt
 	cp $(TESTDIR)/test_all.txt $(WWWDIR)
 	cp $(MSGDIR)/numeric.txt $(WWWDIR)
@@ -217,9 +218,10 @@ site: index.html
 	cp www/message-verbose.html site/cosmicos/
 	cp www/message-section-*.html site/cosmicos/
 	cp www/COS_*.gif site/cosmicos/
+	cp www/COS_*.html site/cosmicos/
 	cp www/iconic-*.png site/cosmicos/
 	cp www/iconic-*.html site/cosmicos/
-	cp www/view.png site/cosmicos/
+#	cp www/view.png site/cosmicos/
 
 clean:
 	rm -f $(OBJDIR)/*.*

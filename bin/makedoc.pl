@@ -215,7 +215,7 @@ for my $m (split(/\n/,$msg))
       print AMSG "<TT>\&nbsp;\&nbsp;\&nbsp;\&nbsp;\&nbsp;\&nbsp;\&nbsp;</TT>";
     }
     my $outer = "$prefix$s2$postfix";
-    $outer =~ s/IMAGE_SRC=([^ \<\n\r]+)/<A HREF=$1><IMG SRC=$1><\/A>/;
+    $outer =~ s/IMAGE_SRC=([^ \<\n\r]+).gif/<A HREF=$1.html><IMG SRC=$1.gif><\/A>/;
     print AMSG "<TT>$outer</TT><BR>\n";
     if ($m =~ /^\(demo /) {
 	my $val = Value($demo[$basic_index]);
