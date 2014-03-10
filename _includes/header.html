@@ -11,6 +11,12 @@
         <link rel="stylesheet" type="text/css" href="{{site.baseurl}}/css/big.css" media="screen and (min-width: 800px)" />
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="{{site.baseurl}}/js/cosmicos.js"></script>
+{% for js in page.extra_js %}
+        <script src="{{site.baseurl}}/{{ js }}"></script>
+{% endfor %}
+{% for css in page.extra_css %}
+        <link rel="stylesheet" type="text/css" href="{{site.baseurl}}/{{css}}" />
+{% endfor %}
         <script type="text/javascript">
            var current_audio = null;
            $(document).ready(function() {
