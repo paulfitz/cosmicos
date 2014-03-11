@@ -12,170 +12,54 @@ extra_css: css/jqconsole.css
 
 <script>
 
-// ISSUES:
-//   Scope rules are a bit inconsistent.
-//   Perhaps best to just avoid such issues in message?  Is that possible?
-
-
-
-function show(x) {
-   if (isList(x)) {
-     var s = "[";
-     for (var i=0; i<x.length; i++) {
-       if (i>0) s += ",";
-       s += show(x[i]);
-     }
-     s += "]";
-     return s;
-   }
-   return "" + x;
-}
-
-
  function CosCon() {
    this.state = null;
-   this.map = new Object();
-   this.code = new Object();
-   this.numeric = new Object();
-   this.numericRev = new Object();
+   this.mem = {};
+   this.numeric = {};
+   this.numericRev = {};
    this.numericAt = 0;
    this.explain = {};
+   this.example = {};
+   this.contxt = "";
  }
  
- CosCon.prototype.isList = function(x) {
-   return x && typeof x=='object' && x.constructor==Array;
- }
- 
- CosCon.prototype.isNull = function(x) {
-   return typeof x=='undefined' || (typeof x=='object'&&!x);
- }
- 
- CosCon.prototype.isUnit = function(x) {
-   return typeof x == 'number' || typeof x == 'string' || typeof x == 'boolean';
- }
-
-
- CosCon.prototype.nexp = function(x) {
-   if (this.isList(x)) {
-     var i;
-     var txt = "";
-     for (var i=0; i<x.length; i++) {
-       var part = x[i];
-       if (this.isList(part)) {
-	 part = "(" + this.nexp(part) + ")";
-       }
-       if (i>0) {
-         txt = txt + " ";
-       }
-       txt = txt + part;
-     }
-     return txt;
-   }
-   return x;
- }
-
-
- CosCon.prototype.expandSlash = function(x) {
-   var out = "";
-   var plus = 0;
-   for (var i=0; i<x.length; i++) {
-     var ch = x.charAt(i);
-     if (ch=='/') {
-       ch = '(';
-       plus++;
-     } else if (ch==')') {
-       for (var j=0; j<plus; j++) {
-	 out += ')';
-       }
-     }
-     out += ch;
-   }
-   return out;
- }
-
- CosCon.prototype.exp = function(x) {
-   var result = [];
-   var i;
-   x = " " + x + " )";
-   var cache = "";
-   var level = 0;
-   for (var i=0; i<x.length; i++) {
-     var ch = x.charAt(i);
-     if (ch=='\n'||ch=='\r'||ch==';') {
-       ch = ' ';
-     }
-     if (ch=='(') {
-       level++;
-       if (level==1) {
-	 continue;
-       }
-     }
-     if (ch=='/') {
-       if (level==0) {
-	 level = 1;
-         continue;
-       }
-     }
-     if (ch==')') {
-       level--;
-       if (level==0) {
-	 result.push(this.exp(cache));
-	 cache = "";
-	 continue;
-       }
-     }
-     if (ch!=' '||level>0) {
-       cache += ch;
-     }
-     if (level==0&&ch==' '&&cache.length>0) {
-       if (cache.charAt(0)=='$') {
-	 result.push([cache.substr(1,cache.length-1)]);
-       } else {
-	 result.push(cache);
-       }
-       cache = "";
-     }
-   }
-   return result;
- }
-
  CosCon.prototype.builtins = [
-   { name: "?", value: null, tip: "create a function", example: "? x / - $x 1" },
-   { name: "@", value: null, tip: "allocate a name for something", example: "@ dec / ? x / - $x 1" },
-   { name: "if", value: null, tip: "conditional evaluation", example: "if (> $x 1) (- $x 1) $x" },
+   { name: "?", value: null, tip: "create an anonymous function", example: "? x / - $x 1" },
+   { name: "@", value: null, tip: "store an expression in memory", example: "@ dec / ? x / - $x 1" },
+   { name: "if", value: null, tip: "conditional evaluation", example: "if (> $x 0) (dec $x) $x" },
    {
      name: "+",
-     value: function() { return function (x) { return function (y) { return x+y; } } },
+     value: function (x) { return function (y) { return x+y; } },
      tip: "add two integers",
      example: "+ 22 20"
    },
    {
      name: "-",
-     value: function() { return function (x) { return function (y) { return x-y; } } },
+     value: function (x) { return function (y) { return x-y; } },
      tip: "subtract one integer from other",
      example: "- 44 2"
    },
    {
      name: "=",
-     value: function() { return function (x) { return function (y) { return (x==y)?1:0; } } },
+     value: function (x) { return function (y) { return (x==y)?1:0; } },
      tip: "test for integer equality",
      example: "= 42 41"
    },
    {
      name: "*",
-     value: function() { return function (x) { return function (y) { return x*y; } } },
+     value: function (x) { return function (y) { return x*y; } },
      tip: "multiply two integers",
      example: "* 2 21"
    },
    {
      name: "<",
-     value: function() { return function (x) { return function (y) { return (x<y)?1:0; } } },
+     value: function (x) { return function (y) { return (x<y)?1:0; } },
      tip: "is one integer less than other",
      example: "< 41 42"
    },
    {
      name: ">",
-     value: function() { return function (x) { return function (y) { return (x>y)?1:0; } } }
+     value: function (x) { return function (y) { return (x>y)?1:0; } },
      tip: "is one greater than other",
      example: "> 42 41"
    }
@@ -185,7 +69,6 @@ function show(x) {
    "+ 3 (* 10 2);",
    "+ 3 / * 10 2;",
    "+ 3 18;",
-   "@ x 3 / + $x 18;",
    "@ square / ? x / * $x $x;",
    "square 10;",
    "@ factorial / ? n / if (= $n 0) 1 / * $n / factorial (- $n 1);",
@@ -205,58 +88,79 @@ function show(x) {
   "@ or / ? x / ? y / if $x 1 $y;"
  ];
 
- CosCon.prototype.setup = function() {
-   for (var i=0; i<this.builtins.length; i++) {
-     var b = this.builtins[i];
-     this.map[i] = b.value;
-     this.map[b.name] = b.value;
-     this.code[i] = "builtin";
-     this.code[b.name] = b.name;
-     this.explain[b.name] = b.tip + "  " + b.example;
-   }
- }
-
- CosCon.prototype.lookup = function(x) {
-   var v = this.map[x];
-   if (typeof v != "undefined") return v;
-   var c = this.numericRev[x];
-   if (typeof c == "undefined") {
-     return c;
-   }
-   return this.map[c];
- }
-
-
  CosCon.prototype.addNumeric = function(name) {
    if (this.numeric[name]==null) {
      this.numeric[name] = this.numericAt;
      this.numericRev[this.numericAt] = name;
-     if (!this.explain[name]) {
-       this.explain[name] = "(used in an expression)";
-     }
+     this.explain[this.numericAt] = "(used in an expression, no meaning assigned)";
      this.numericAt++;
-     updateVocab(name,numeric[name]);
-     this.addItem("vocab",name,numeric[name] + ": " + name);
    }
    return this.numeric[name];
  }
 
-/*
-function addMap(k,v) {
-	map[k] = v;
-	updateMap(k,v);
-} 
-*/
+ CosCon.prototype.isList = function(x) {
+   return x && typeof x=='object' && x.constructor==Array;
+ }
+ 
+ CosCon.prototype.stringToList = function(x) {
+   var result = [];
+   x = " " + x + " )";
+   var cache = "";
+   var level = 0;
+   for (var i=0; i<x.length; i++) {
+     var ch = x.charAt(i);
+     if (ch=='\n'||ch=='\r'||ch==';') ch = ' ';
+     if (ch=='(') {
+       level++;
+       if (level==1) continue;
+     }
+     if (ch=='/' && level==0) {
+       level = 1;
+       continue;
+     }
+     if (ch==')') {
+       level--;
+       if (level==0) {
+	 result.push(this.stringToList(cache));
+	 cache = "";
+	 continue;
+       }
+     }
+     if (ch!=' '||level>0) cache += ch;
+     if (level==0&&ch==' '&&cache.length>0) {
+       if (cache.charAt(0)=='$') {
+	 cache = cache.substr(1,cache.length-1);
+	 result.push([cache]);
+       } else {
+	 result.push(cache);
+       }
+       if (isNaN(parseInt(cache))) this.addNumeric(cache);
+       cache = "";
+     }
+   }
+   return result;
+ }
 
+ CosCon.prototype.setup = function() {
+   for (var i=0; i<this.builtins.length; i++) {
+     var b = this.builtins[i];
+     var code = this.addNumeric(b.name);
+     this.mem[code] = b.value;
+     this.explain[code] = b.tip;
+     this.example[code] = b.example;
+   }
+   for (var i=0; i<this.additions.length; i++) {
+     this.process(this.additions[i]);
+   }
+ }
 
- ConsCon.prototype.evaluate = function(e,c) {
-   //Debug.write("Evaluating <" + e + ">");
+ CosCon.prototype.evaluate = function(e,c) {
    var self = this;
    if (self.isList(e)) {
      var x = e[0];
      x = self.evaluate(x,c);
-     if (x==0||x=="?") {
-       var k2 = e[1];
+     if (x==0) { // ?
+       var k2 = self.evaluate(e[1],c);
        var e2 = e[2];
        x = function(v) {
 	 var c2 = function(k) {
@@ -265,340 +169,119 @@ function addMap(k,v) {
          }
 	 return self.evaluate(e2,c2);
        };
-     } else if (x==1||x=="@"||x=="define"||x=="assign") {
+     } else if (x==1) { // @
        var k2 = e[1];
        var v2 = self.evaluate(e[2],c);
-       if (e.length>=4) {
-         var e2 = e[3];
-	 var c2 = function(k) {
-	   if (k==k2) return v2;
-	   else return c(k);
-         }
-	 return self.evaluate(e2,c2);
-       } else {
-	 self.addMap(k2,v2);
-	 return 1;
-       }
-     } else if (x==2||x=="if") {
+       var code = self.evaluate(k2,c);
+       self.mem[code] = v2;
+       self.explain[code] = self.contxt;
+       return null;
+     } else if (x==2) { // if
        var choice = self.evaluate(e[1],c);
-       if (choice>0) {
+       if (choice!=0) {
  	 return self.evaluate(e[2],c);
        } else {
   	 return self.evaluate(e[3],c);
        }
      } else {
-       if (isUnit(x)) {
+       if (typeof x == 'number') {
          x = c(x);
        }
-         for (var i=1; i<e.length; i++) {
-            var arg = e[i];
-	    //Debug.write("arg is  <" + arg + ">");
-	   //Debug.write("x is  <" + x + ">");
-            x = x(evalc(arg,c));
-	    //Debug.write("Evaluated <" + arg + " to <" + x + ">");
-         }
+       for (var i=1; i<e.length; i++) {
+         x = x(self.evaluate(e[i],c));
        }
-       return x;
-   } else {
-     if (typeof e == "string") {
-       var v = parseInt(e);
-       if (isNaN(v)) {
-	 v = c(e);
-	 if (typeof v == "undefined") {
-	   v = addNumeric(e);
-	 }
-       }
-       return v;
      }
-     return e;
+     return x;
+   } else if (typeof e == "string") {
+     var v = parseInt(e);
+     if (isNaN(v)) {
+       v = self.addNumeric(e);
+     }
+     return v;
    }
-}
+   return e;
+ }
 
-function evalr(e) {
-    return evalc(e,lookup);
-}
+ CosCon.prototype.evaluateMain = function(e) {
+   var self = this;
+   return this.evaluate(e,function(k) { return self.mem[k]; });
+ }
 
-// e should be a string
-function numerify(e) {
-   //Debug.write("Working on " + e);
+ CosCon.prototype.process = function(str) {
+   var lines = str.split(";");
    var txt = "";
-   var part = "";
-   e  = e + " ";
-   for (var i=0; i<e.length; i++) {
-     var ch = e.charAt(i);
-     if (ch==' '||ch==';'||ch=='('||ch==')'||ch=='/'||ch=='$') {
-       if (part!="") {
-	 //Debug.write("interpreting " + part);
-	 if (numeric[part]!=null) {
-	   part = numeric[part];
-         } else {
-	   if (part.charAt(0)<'0'||part.charAt(0)>'9') {
-	     //Debug.write("new variable " + part);
-	     part = addNumeric(part);
-	   }
-	 }
-	 //Debug.write("interpreting as " + part);
-	 txt += part;
-	 part = "";
-       }
-       txt += ch;
-     } else {
-       part = part + ch;
+   for (var i=0; i<lines.length; i++) {
+     this.contxt = lines[i];
+     if (this.contxt=="") continue;
+     if (i>0) txt += "\n";
+     var v = this.evaluateMain(this.stringToList(this.contxt));
+     if (!(typeof v == "number")) {
+       v = "mu";
      }
+     txt += v;
    }
    return txt;
  }
 
-
-function binaryString(x) {
-	x = parseInt(x);
-	var txt = "";
-	while (x!=0) {
-		//Debug.write("x is " + x);
-		txt = ((x%2)?"1":"0")+txt;
-		x = Math.floor(x/2);
-	}
-	if (txt=="") {
-		txt = "0";
-	}
-	return txt;
-}
-
-function unaryString(x) {
-	x = parseInt(x);
-	var txt = "0";
-	for (var i=0; i<x; i++) {
-		txt += "1";
-	}
-	return txt;
-}
-
-// e should be a string with only numerical elements
-function atomify(e) {
-  var txt = "";
-  var part = "";
-  e  = e + " ";
-  var num = 0;
-  for (var i=0; i<e.length; i++) {
-    var ch = e.charAt(i);
-    if (ch==' '||ch==';'||ch=='('||ch==')'||ch=='/'||ch=='$') {
-	if (part!="") {
-	   var binary = 1;
-	   if (part.indexOf("u")>=0) {
-		part = part.substr(0,part.indexOf("u"));
-		binary = 0;
-	   }
-	   if (num) {
-		txt += ".";
-           }
-	   if (binary) {
-		txt += binaryString(part);
-	   } else {
-		txt += unaryString(part);
-	   }
-	   num = 1;
-	   part = "";
-        }
-	if (ch=='('||ch==')') {
-		txt = txt + ch;
-		num = 0;
-	} else if (ch=='/') {
-		txt = txt + "/";
-		num = 0;
-	} else if (ch==';') {
-		txt = txt + ";";
-		num = 0;
-	} else if (ch=='$') {
-		txt = txt + "$";
-		num = 0;
-	}
-    } else {
-	part += ch;
-    }
-  }
-  return txt;
-}
-
-
-// e should be a string with only atomic elements
-function quarkify(e) {
-	var txt = "";
-	var keys = "01()/;$.";
-	var vals = [ "010", "0110", "011010", "010110", "011110", "0000",
-			"01110", "0" ];
-	for (var i=0; i<e.length; i++) {
-	    var ch = e.charAt(i);
-	    var at = keys.indexOf(ch);
-	    if (at>=0) {
-		txt += vals[at];
-	    }
-	}
-	return txt;
-}
-
-
-
-
-
-
- function replacer(text,c1,c2) {
-   var lastIndex = 0;
-   while (text.indexOf(c1,lastIndex) >= 0) {
-     var index = text.indexOf(c1,lastIndex);
-     text = text.substr(0,index) + c2 + text.substr((index+1),text.length);
-     lastIndex = index;
-   }
-   
-   return text;
- }
-
- var active = 0;
- 
- 
- function addItem(role,val,txt) {
-   var owner_name = "cos-list-" + role; 
-   var owner = $("#" + owner_name);
-   if ($("#" + owner_name + " option[value='" + val + "']").length == 0) {
-     $('<option>').val(val).text(txt).appendTo(owner);
-   }
- }
- 
- var contxt = "";
- 
- function baseUpdateMap(k,v,c) {
-   code[k] = c;
-   //	if (canvas.base2.combo.getItem(k)!=null) {
-   //      canvas.base2.combo.removeItem(k);
-   //}
-   if (c!="/builtin/") {
-     var name = k;
-     //name = replacer(name,'&',"&amp");
-     //name = replacer(name,'<',"&lt;");
-     //name = replacer(name,'>',"&gt;");
-     addItem("def",name,k);
-     var vv = addNumeric(k);
-     //canvas.base2.combo.selectItem(k);
-     explain[k] = c;
-   }
- } 
-
- updateMap = function(k,v) {
-   var c = contxt; //canvas.base.foo.text;
-   baseUpdateMap(k,v,c);
- } 
- 
-
- updateVocab = function(k,id) {
-   var name = k;
-   //name = replacer(name,'&',"&amp");
-   //name = replacer(name,'<',"&lt;");
-   //name = replacer(name,'>',"&gt;");
- }
-
- function process() {
-   contxt = $("#cos_foo").val();
-   var n = numerify(contxt);
-   $("#cos_num").val(n);
-   var a = atomify(n);
-   $("#cos_min").val(a);
-   var q = quarkify(a);
-   $("#cos_bin").val(q);
-   var ex = exp(contxt);
-   var s = nexp(ex);
-   $("#cos_struct").val("("+s+")");
-
-   console.log("incoming " + show(ex));
-   var r = evalr(ex);
-   console.log("result " + r);
-   var v = nexp(r);
-   //Debug.write(v);
-   if (typeof v != "number") {
-     v = "mu";
-   }
-   $("#cos_out").val(v);
- }
-
- function cos_eval(str) {
-   console.log("cos_eval " + str);
-   return nexp(evalr(exp(str)));
- }
-
- function baseprocess() {
-   numerify(contxt);
-   var v = nexp(evalr(exp(contxt)));
-   //Debug.write(v);
- }
-
-  function setupList() {
-   for (var i=0; i<memtext.length; i++) {
-     addNumeric(memtext[i]);
-     baseUpdateMap(memtext[i],memtext[i],"/builtin/");
-   }
-   for (var i=0; i<initeval.length; i++) {
-     contxt = initeval[i];
-     baseprocess();
-   }
-   for (var i=0; i<examples.length; i++) {
-     addItem("expr",examples[i],examples[i]);
-   }
-   active = 1;
- }
-
-
-
  var jqconsole = null;
  var startPrompt = null;
+ var cc = null;
 
  $(function () {
-   jqconsole = $('#console').jqconsole('Welcome to a CosmicOS test console\n', '>>> ');
+   cc = new CosCon();
+   cc.setup();
+ 
+   jqconsole = $('#console').jqconsole('Welcome to a CosmicOS test console, "help" and "examples" available\n', '>>> ');
    startPrompt = function () {
-     // Start the prompt with history enabled.
      jqconsole.Prompt(true, function (input) {
-       //console.log("input is " + input);
        $("#cos_foo").val(input);
        var out = "";
        try {
 	 if (input=="help") {
 	   out+= "Syntax:\n";
-	   out+= "  integers separated by spaces, with nested parentheses, e.g. 1 2 3 (4 5) (6 7 (8 9))\n";
-	   out+= "  shorthand: use \"/\" to mean paren-until-end, e.g. 1 2 / 3 4 is equiv. to 1 2 (3 4)\n";
-	   out+= "  shorthand: any non-number will be replaced by an integer, e.g. x may be equiv. to 10\n";
-	   out+= "  shorthand: $x is equivalent to (x), which 'means' evaluate x\n";
-	   out+= "Available vocabulary:\n";
-	   for (var i=0; i<numericAt; i++) {
+	   out+= "  Space-separated lists of integers with nesting e.g.: 1 2 3 (4 5) (6 7 (8 9))\n";
+	   out+= "  Shorthand: symbols (listed below) can be used to stand for integers.\n";
+	   out+= "  Shorthand: \"$x\" is equivalent to \"(x)\"\n";
+	   out+= "  Shorthand: \"/\" nests to end of expression: (1 2 / 3 4) is equiv. to (1 2 (3 4))\n";
+	   out+= "  Lists are evaluated by calling the first element with each of the others in turn.\n";
+	   out+= "  If the first element of the list is a number, it is treated as a variable lookup.\n";
+	   out+= "Index Symbol  Meaning                           Example\n";
+	   for (var i=0; i<cc.numericAt; i++) {
 	     var idx = "" + i;
-	     for (var j=idx.length; j<4; j++) {
+	     for (var j=idx.length; j<5; j++) {
 	       out += " ";
 	     }
 	     out += idx;
 	     out += " ";
-	     var name = "" + numericRev[i];
+	     var name = "" + cc.numericRev[i];
 	     out += name;
-	     for (var j=name.length; j<6; j++) {
+	     for (var j=name.length; j<7; j++) {
 	       out += " ";
 	     }
-	     var e = explain[name];
+	     var e = cc.explain[idx];
 	     if (e) {
 	       out += " " + e;
+	       for (var j=e.length; j<33; j++) {
+		 out += " ";
+	       }
+	       var ex = cc.example[idx];
+	       if (ex) {
+		 out += " " + ex;
+	       }
+	       out += "\n";
 	     }
-	     out += "\n";
 	   }
-	   out += "along with \"help\" and \"examples\"\n";
 	 } else if (input=="examples") {
-	   for (var i=0; i<examples.length; i++) {
-	     out += "  " + examples[i] + "\n";
+	   for (var i=0; i<cc.examples.length; i++) {
+	     out += "  " + cc.examples[i] + "\n";
 	   }
 	 } else {
-	   process();
-	   var r = $("#cos_out").val();
-	   out = r + "\n";
+	   out = cc.process(input) + "\n";
 	 }
        } catch (e) {
-	 out = e;
+	 out = e + "\n";
        }
-       // Output input with the class jqconsole-output.
        jqconsole.Write(out, 'jqconsole-output');
-       // Restart the prompt.
        startPrompt();
      });
    };
@@ -608,56 +291,9 @@ function quarkify(e) {
 
 
  $(function() {
-   setupList();
- 
-   $("#cos-list-expr").change(function(e) {
-     //console.log(">>> " + this.value);
-     //$("#cos_foo").val(this.value);
-     //jqconsole.AbortPrompt();
-     jqconsole.SetPromptText(this.value);
-     jqconsole.Focus();
-     //startPrompt();
-     process();
-     return false;
-   });
-   
    $("#console").click(function() {  
      jqconsole.Focus();  
    })
  });
 
 </script>
-
-
-<form id="base">
-  <div><label>input</label> <input type="text" id="cos_foo" value=""/></div>
-
-  <div><label>structure</label> <input type="text" id="cos_struct" disabled /></div>
-
-  <div><label>numeric</label> <input type="text" id="cos_num" disabled /></div>
-   
-  <div><label>coded</label> <input type="text" id="cos_min" disabled /></div>
-
-  <div><label>binary</label> <input type="text" id="cos_bin" disabled /></div>
-
-  <div><label>output</label> <input type="text" id="cos_out" /></div>
-
-  <input type="button" height="22" onclick="process(); return false;" value="Evaluate the input" />
-</form>
-
-
-
-
-
-<select id="cos-list-def" size="8">
-</select>
-
-<select id="cos-list-vocab" size="8">
-</select>
-
-<select id="cos-list-expr" size="8">
-</select>
-
-
-
-
