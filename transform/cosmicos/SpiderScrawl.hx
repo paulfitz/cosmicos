@@ -6,9 +6,9 @@ package cosmicos;
 class SpiderScrawl {
     private static var mid_color : Array<Int> = [0,0,255];
     private static var blue : Array<Int> = [0,0,255];
-    private static var w = 16;
-    private static var h = 16;
     private static var bits = 4;
+    private var w : Int;
+    private var h : Int;
     private var ww : Int;
     private var hh : Int;
     private var im_x : Int;
@@ -20,10 +20,13 @@ class SpiderScrawl {
     private var q : String;
     private var last4 : String;
 
-    public function new(im : SpiderImage, ww: Int, hh: Int) {
+    public function new(im : SpiderImage, ww: Int, hh: Int,
+                        w: Int = 32, h: Int = 32) {
         this.im = im;
         this.ww = ww;
         this.hh = hh;
+        this.w = w;
+        this.h = h;
         im_x = 0;
         im_y = 0;
         im_dirty = false;
@@ -39,7 +42,7 @@ class SpiderScrawl {
             im.moveTo(x0,y0);
             im.lineTo(x1,y1);
         } else {
-            trace(x0 + "," + y0 + " " + x1 + "," + y1);
+            //trace(x0 + "," + y0 + " " + x1 + "," + y1);
         }
     }
 
@@ -173,11 +176,17 @@ class SpiderScrawl {
         }
     }
 
-    public function showChar(has_num: Bool, n: Int, open: Bool, close: Bool) {
+    public function showChar(has_num: Bool, n: Int, open: Bool, close: Bool) : String {
         showCharGlyph(im,im_x,im_y,has_num,n,open,close);
         im_dirty = true;
         incPos();
-        //return "<IMG SRC='chars/char$o$c$h$n.png' WIDTH=16 HEIGHT=16> ";
+        var idx : Int = (open?1:0);
+        idx *= 2;
+        idx += (close?1:0);
+        idx *= 17;
+        idx += has_num?n:16;
+        idx += 0xf100;
+        return "&#x" + StringTools.hex(idx) + ";";
     }
 
     public function addChar(ch: String) {
@@ -235,10 +244,16 @@ class SpiderScrawl {
     }
 
     private function addString(txt: String) {
+        var s = "";
         for (i in 0...txt.length) {
             var ch = txt.substr(i,1);
-            if (ch<"0"||ch>"3") continue;
-            addChar(ch);
+            if (ch<"0"||ch>"3") {
+                if (ch=="\n") {
+                    s += "<br />\n";
+                }
+                continue;
+            }
+            s += addChar(ch);
             if (last4.length>=4) {
                 last4 = last4.substr(1,3) + ch;
             } else {
@@ -248,6 +263,7 @@ class SpiderScrawl {
                 incLine();
             }
         }
+        return s;
     }
 
     public static function main() {
