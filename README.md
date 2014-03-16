@@ -1,7 +1,7 @@
 CosmicOS
 ========
 
-Sending the lambda calculus into deep space.
+Sending the lambda calculus into deep space.  http://paulfitz.github.io/cosmicos/
 
 Long-distance relationships
 ----------------------------
