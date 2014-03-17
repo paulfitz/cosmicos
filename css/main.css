@@ -96,12 +96,34 @@ h2 {
   text-shadow: 0px 0px 5px #999;
 }
 
-pre {
+.happy-block {
   display: table;
-  background: #BEA;
+  background: #dfc;
   padding: 7px;
-  border-radius: 4px;
+  border-radius: 4px;               
+  margin-top: 4px;
+  margin-bottom: 4px;
+  margin-left: 0px;
+  margin-right: 0px;
   overflow:auto;
+}
+
+.happy-block-top { 
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: 0;
+}
+
+.happy-block-bottom { 
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  margin-top: 0;
+  background: #ceb;
+}
+
+a.happy-block-bottom:hover { 
+  background: #ac9;
+  text-decoration: none;
 }
 
 
