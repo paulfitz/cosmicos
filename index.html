@@ -90,11 +90,57 @@ Estimate of message entropy in <A HREF=wrapped.txt>compiled form</A>:
 
 <P>
 There are bugs and rough edges in the message.  Please be forgiving.
-It'll all get fixed in an instant of galactic time...
+It'll all get fixed in an instant of galactic time.  The structure
+is as follows:
 </P>
 
 
-{% include block_MMM.txt %}
+<ul>
+  <li>The message consists of a sequence of statements that can be
+evaluated, and each statement evaluates to true.</li>
+  <li>The message can refer to itself and change its own syntax as it goes.</li>
+  <li>A core set of operators are introduced by showing examples of their use.</li>
+  <li>Once a sufficient set of operators is available, most new concepts
+are introduced both by examples and a definition in terms of what is
+already known.</li>
+  <li>The message is more like a programming language than a human language, and is related to Brian McConnell's notion of <A HREF=http://www.oreilly.com/news/seti_0201.html>ACETI</A>.  The goal is to
+transmit simulations whose behavior can be examined and discussed, and
+to introduce higher-level notions in terms of those simulations.</li>
+</ul>
+
+<p>The generated message currently consists of a sequence of 4 symbols.</p>
+
+<pre class="happy-block">
+  number   symbol   meaning
+    0         .     binary digit zero
+    1         :     binary digit one
+    2         (     marks beginning of an expression
+    3         )     marks end of an expression
+</pre>
+
+<P>And two pseudo-symbols coded using the above:</P>
+
+<PRE class="happy-block">
+  sequence  symbol   meaning
+    .()        /     opens an implicit paren, which will close at next paren
+                     (A B / C / D) is another way to write (A B (C (D)))
+                     This greatly simplifies complex expressions.
+    (())       ;     marks end of sentence
+</PRE>
+
+<p>Numbers are encoded as binary digits between parentheses, e.g.  (:::.)
+is 1110 base 2 which is 14 in decimal.  A set of numbers between
+parentheses constitutes an expression.  Expressions can be nested.
+Expressions followed by a semicolon should evaluate to be true, once
+the rules for evaluation have been introduced.
+</p>
+
+<P>In the human-readable form of the message, decimal numbers can be
+used.  There are converted to binary.  Identifiers can also be
+used.  Identifiers are mapped onto arbitrarily assigned numbers.
+In the message, there is nothing to distinguish identifiers from 
+numbers.  The actual language is carefully constructed so that
+this distinction is never necessary.</P>
 
 
 <h2>License</h2>
