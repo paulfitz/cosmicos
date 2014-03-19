@@ -5,11 +5,12 @@ package cosmicos;
 @:expose
 class Parse {
     public static function stringToList(x: String,
-                                        vocab: Vocab) : Dynamic {
+                                        vocab: Vocab) : Array<Dynamic> {
         var result : Array<Dynamic> = [];
-        x = " " + x + " )";
+        x = " " + x + " );";
         var cache = "";
         var level = 0;
+        var slashed = false;
         for (i in 0...x.length) {
             var ch = x.charAt(i);
             if (ch=='\n'||ch=='\r'||ch==';') ch = ' ';
@@ -19,12 +20,18 @@ class Parse {
             }
             if (ch=='/' && level==0) {
                 level = 1;
+                slashed = true;
                 continue;
             }
             if (ch==')') {
                 level--;
                 if (level==0) {
-                    result.push(stringToList(cache,vocab));
+                    var r = stringToList(cache,vocab);
+                    result.push(r);
+                    if (slashed) {
+                        result[result.length-1].unshift(-1);
+                        slashed = false;
+                    }
                     cache = "";
                     continue;
                 }
@@ -52,16 +59,92 @@ class Parse {
             if (Std.is(v,Array)) {
                 var ei : Array<Dynamic> = cast v;
                 encodeSymbols(ei,vocab);
+            } else if (v==-1) {
+                continue; // slash marker
             } else {
                 var str : String = cast v;
                 var ch0 = str.charAt(0);
                 if (ch0<'0'||ch0>'9') {
-                    v = vocab.get(str);
+                    if (ch0 == ":" || ch0 == ".") {
+                        v = str;
+                    } else if (ch0 == "U" && ~/^U1*U$/.match(str)) {
+                        // unary number e.g. U111U represent as string
+                        v = str.substr(1,str.length-2);
+                    } else if (~/^.*-in-unary$/.match(str)) {
+                        var v0 : Int = vocab.get(str.substr(0,str.length-9));
+                        var u : String = "";
+                        for (j in 0...v0) u += '1';
+                        v = u;
+                    } else {
+                        v = vocab.get(str);
+                    }
                 } else {
                     v = Std.parseInt(str);
                 }
                 e[i] = v;
             }
         }
+    }
+
+    public static function removeSlashMarker(e: Array<Dynamic>) {
+        for (i in 0...e.length) {
+            var v : Dynamic = e[i];
+            if (Std.is(v,Array)) {
+                var ei : Array<Dynamic> = cast v;
+                removeSlashMarker(ei);
+            }
+        }
+        if (e.length>0) {
+            if (e[0] == -1) {
+                e.shift();
+            }
+        }
+    }
+
+    public static function codifyInner(e: Array<Dynamic>, level: Int) : String {
+        var txt : String = "";
+        var need_paren : Bool = (level>0);
+        var first : Int = 0;
+        if (e.length>0) {
+            if (e[0] == -1) {
+                txt += "023";
+                need_paren = false;
+                first++;
+            }
+        }
+        if (need_paren) txt += "2";
+        for (i in first...e.length) {
+            var v : Dynamic = e[i];
+            if (Std.is(v,Array)) {
+                var ei : Array<Dynamic> = cast v;
+                txt += codifyInner(ei,level+1);
+            } else if (Std.is(v,String)) {
+                var str : String = cast v;
+                var len : Int = str.length;
+                if (str.length == 0 || str.charAt(0) == '1') {
+                    txt += "0";
+                    for (j in 0...len) txt += "1";
+                    txt += "0";
+                } else {
+                    for (j in 0...len) txt += (str.charAt(j)==':')?"1":"0";
+                }
+            } else {
+                var b = "";
+                var rem : Int = cast v;
+                do {
+                    b = ((rem%2!=0)?"1":"0") + b;
+                    rem = Std.int(rem/2);
+                } while (rem!=0);
+                txt += "2" + b + "3";
+            }
+        }
+        if (need_paren) txt += "3";
+        return txt;
+    }
+
+    public static function codify(e: Array<Dynamic>) : String {
+        var txt : String = codifyInner(e,0);
+        txt += "2233";
+        return txt;
     }
 }
