@@ -35,4 +35,8 @@ class Vocab {
         }
         return nid;
     }
+
+    public function reverse(id: Int) : String {
+        return codeToName.get(id);
+    }
 }

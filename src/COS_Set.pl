@@ -25,11 +25,15 @@ sub ShowSetLesson {
   for (my $i=0; $i<5; $i++)
     {
       my %hset;
+      my @set;
       for (my $j=0; $j<6; $j++)
 	{
-	  $hset{irand(10)} = 1;
+	    my $x = irand(10);
+	    if (!exists($hset{$x})) {
+		$hset{$x} = 1;
+		push(@set,$x);
+	    }
 	}
-      my @set = keys %hset;
       for (my $j=0; $j<3; $j++)
 	{
 	  my $mem = $set[irand($#set+1)];
@@ -41,11 +45,15 @@ sub ShowSetLesson {
   for (my $i=0; $i<5; $i++)
     {
       my %hset;
+      my @set;
       for (my $j=0; $j<6; $j++)
 	{
-	  $hset{irand(10)} = 1;
+	    my $x = irand(10);
+	    if (!exists($hset{$x})) {
+		$hset{$x} = 1;
+		push(@set,$x);
+	    }
 	}
-      my @set = keys %hset;
       (my $mem, @set) = @set;
       $txt .= ShowLine(Op1("not",
 			   Op("element",

@@ -9,43 +9,61 @@ class Evaluate {
     private var id_lambda : Int;
     private var id_define : Int;
     private var id_if : Int;
+    private var id_assign : Int;
+    private var id_translate : Int;
 
     public function evaluateInContext(e0: Dynamic, c: Memory) : Dynamic {
-        if (!Std.is(e0,Array)) {
-            if (Std.is(e0,String)) {
-                var str : String = cast e0;
-                if (str.length==0 || str.charAt(0) == '1') {
-                    return str.length;
-                }
-                return str;
+        if (Std.is(e0,String)) {
+            var str : String = cast e0;
+            if (str.length==0 || str.charAt(0) == '1') {
+                return str.length;
             }
+            return str;
+        }
+        if (Std.is(e0,Int)) {
             return e0;
         }
-        var e : Array<Dynamic> = cast e0;
-        var x : Dynamic = evaluateInContext(e[0],c);
+        //trace("working on " + Parse.deconsify(e0));
+        var cursor = new Cursor(e0);
+        var x : Dynamic = evaluateInContext(cursor.next(),c);
         if (x==id_lambda) { // ?
-            var k2 : Int = evaluateInContext(e[1],c);
-            var e2 : Dynamic = e[2];
+            var k2 : Int = evaluateInContext(cursor.next(),c);
+            var e2 : Dynamic = cursor.next();
             return function(v) {
                 var c2 = new Memory(c,k2,v);
                 return evaluateInContext(e2,c2);
             };
+        } else if (x==id_assign) { // not super needs
+            var k2 : Int = evaluateInContext(cursor.next(),c);
+            var v2 : Int = evaluateInContext(cursor.next(),c);
+            var c2 = new Memory(c,k2,v2);
+            return evaluateInContext(cursor.next(),c2);
         } else if (x==id_define) { // @
-            var k2 = e[1];
-            var v2 = evaluateInContext(e[2],c);
+            var k2 = cursor.next();
+            var v2 = evaluateInContext(cursor.next(),c);
             var code = evaluateInContext(k2,c);
             c.add(code,v2);
-            return null;
+            return 1;
         } else if (x==id_if) { // if
-            var choice = evaluateInContext(e[1],c);
+            var choice = evaluateInContext(cursor.next(),c);
             if (choice!=0) {
-                return evaluateInContext(e[2],c);
+                return evaluateInContext(cursor.next(),c);
             } else {
-                return evaluateInContext(e[3],c);
+                cursor.next();
+                return evaluateInContext(cursor.next(),c);
             }
         } else {
+            var x0 : Dynamic = x;
+            var len = cursor.length();
+            //trace("== " + len + " ==");
             if (Std.is(x,Int)) {
-                x = c.get(x);
+                var j : Int = cast x;
+                x = c.get(j);
+                if (len>0) {
+                    if (x == null) {
+                        trace("Problem with " + j + " (" + vocab.reverse(j) + ")");
+                    }
+                }
             } else if (Std.is(x,String)) {
                 // binary string
                 var str : String = cast x;
@@ -56,8 +74,14 @@ class Evaluate {
                 }
                 x = u;
             }
-            for (i in 1...e.length) {
-                x = x(evaluateInContext(e[i],c));
+            for (i in 1...len) {
+                var v = cursor.next();
+                try {
+                    x = x(evaluateInContext(v,c));
+                } catch(e : Dynamic) {
+                    trace("Problem evaluating " + x + " with " + v + " in " + x0 + " (" + vocab.reverse(x0) + ") from " + Parse.deconsify(e0));
+                    throw(e);
+                }
             }
             return x;
         }
@@ -71,6 +95,14 @@ class Evaluate {
         var lst = Parse.stringToList(str,vocab);
         Parse.encodeSymbols(lst,vocab);
         Parse.removeSlashMarker(lst);
+        lst = Parse.consify(lst);
+        if (id_translate>=0) {
+            var translate = mem.get(id_translate);
+            if (translate!=null) {
+                lst = translate(lst);
+            }
+        }
+        var lst2 = Parse.deconsify(lst);
         var v = evaluateExpression(lst);
         if (!Std.is(v,Int)) {
             //v = "mu";
@@ -96,6 +128,8 @@ class Evaluate {
         id_lambda = vocab.get("?");
         id_define = vocab.get("@");
         id_if = vocab.get("if");
+        id_assign = vocab.get("assign");
+        id_translate = -1;
     }
 
     public function applyOldOrder() {
@@ -117,7 +151,7 @@ class Evaluate {
 
         id_lambda = vocab.check("?",12);
         id_define = vocab.check("define",13);
-        vocab.check("assign",14);
+        id_assign = vocab.check("assign",14);
         id_if = vocab.check("if",15);
         vocab.check("vector",16);
         vocab.check("unused1",17);
@@ -128,7 +162,7 @@ class Evaluate {
         vocab.check("car",22);
         vocab.check("cdr",23);
         vocab.check("number?",24);
-        vocab.check("translate",25);
+        id_translate = vocab.check("translate",25);
         vocab.check("lambda",26);
         vocab.check("make-cell",27);
         vocab.check("set!",28);
@@ -141,10 +175,59 @@ class Evaluate {
         vocab.check("primer",35);
 
         mem.add(vocab.get("intro"), function(x){ return 1; });
-        addStd();
+        addStdMin();
         evaluateLine("@ not / ? 0 / if $0 0 1");
         evaluateLine("@ and / ? 0 / ? 1 / if $0 $1 0");
         evaluateLine("@ or / ? 0 / ? 1 / if $0 1 $1");
+        mem.add(vocab.get("make-cell"), function(x){ return { data: x }; } );
+        mem.add(vocab.get("get!"), function(x){ 
+                return x.data; 
+            } );
+        mem.add(vocab.get("set!"), function(x){ return function(y) { 
+                    x.data = y; 
+                    return 1; 
+                }; } );
+        mem.add(vocab.get("number?"), function(x){ return Std.is(x,Int)||Std.is(x,String); } );
+        mem.add(vocab.get("translate"), function(x){ 
+                if (Std.is(x,Int)||Std.is(x,String)) return x;
+                var rep = function(x) {
+                }
+                var len = Parse.car(x);
+                if (len==0) return x;
+                var current : Dynamic = mem.get(id_translate);
+                if (len==1) return Parse.cons(1,current(Parse.cdr(x)));
+                var rep = function(r : Dynamic, len : Int, rec : Dynamic) : Dynamic {
+                    if (len==2) return Parse.cons(current(Parse.car(r)),
+                                                  current(Parse.cdr(r)));
+                    return Parse.cons(current(Parse.car(r)),
+                                      rec(Parse.cdr(r),len-1,rec));
+                }
+                return Parse.cons(len,rep(Parse.cdr(x),len,rep));
+            });
+        mem.add(vocab.get("forall"), function(f) {
+                // try a few samples - not real code, just adequate for message
+                return (f(-5)!=0 &&
+                        f(10)!=0 &&
+                        f(15)!=0 &&
+                        f(18)!=0) ? 1 : 0;
+            });
+        mem.add(vocab.get("exists"), function(f) {
+                for (i in -10...20) {
+                    if (f(i)!=0) return 1;
+                }
+                return 0;
+            });
+        mem.add(vocab.get("all"), function(f) {
+                var lst : Array<Int> = [];
+                for (i in -50...50) {
+                    if (f(i)!=0) {
+                        lst.push(i);
+                    }
+                }
+                return Parse.consify(lst);
+            });
+        mem.add(vocab.get("natural-set"), 
+                mem.get(vocab.get("all"))(function (x) { return x>=0; }));
     }
 
     public function addStdMin() {

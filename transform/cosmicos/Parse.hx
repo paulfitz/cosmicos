@@ -101,6 +101,46 @@ class Parse {
         }
     }
 
+    public static function cons(x:Dynamic,y:Dynamic) {
+        return function(f) { return f(x)(y); };
+    }
+
+    public static function car(x:Dynamic) {
+        return x(function(a) { return function(b) { return a; }});
+    }
+
+    public static function cdr(x:Dynamic) {
+        return x(function(a) { return function(b) { return b; }});
+    }
+
+    public static function deconsify(e: Dynamic) : Array<Dynamic> {
+        var c = new Cursor(e);
+        var lst = new Array<Dynamic>();
+        var len = c.length();
+        for (i in 0...len) {
+            var ei = c.next();
+            if (Std.is(ei,Int)||Std.is(ei,String)) {
+                lst.push(ei);
+                continue;
+            }
+            lst.push(deconsify(ei));
+        }
+        return lst;
+    }
+
+    public static function consify(e: Dynamic) : Dynamic {
+        if (!Std.is(e,Array)) return e;
+        var lst : Array<Dynamic> = cast e;
+        var len : Int = lst.length;
+        if (len==0) return cons(0,0);
+        if (len==1) return cons(1,consify(lst[0]));
+        var r = cons(consify(lst[len-2]),consify(lst[len-1]));
+        for (i in 0...(len-2)) {
+            r = cons(consify(lst[len-3-i]),r);
+        }
+        return cons(len,r);
+    }
+
     public static function codifyInner(e: Array<Dynamic>, level: Int) : String {
         var txt : String = "";
         var need_paren : Bool = (level>0);
