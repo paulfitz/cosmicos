@@ -20,7 +20,7 @@ class Evaluate {
             }
             return str;
         }
-        if (Std.is(e0,Int)) {
+        if (Std.is(e0,Int)||Std.is(e0,BigInteger)) {
             return e0;
         }
         //trace("working on " + Parse.deconsify(e0));
@@ -56,7 +56,7 @@ class Evaluate {
             var x0 : Dynamic = x;
             var len = cursor.length();
             //trace("== " + len + " ==");
-            if (Std.is(x,Int)) {
+            if (Std.is(x,Int)||Std.is(x,BigInteger)) {
                 var j : Int = cast x;
                 x = c.get(j);
                 if (len>0) {
@@ -67,10 +67,11 @@ class Evaluate {
             } else if (Std.is(x,String)) {
                 // binary string
                 var str : String = cast x;
-                var u : Int = 0;
+                var u : BigInteger = BigInteger.ofInt(0);
+                var two : BigInteger = BigInteger.ofInt(2);
                 for (j in 0...str.length) {
-                    u *= 2;
-                    if (str.charAt(j) == ':') u++;
+                    u = u.mul(two);
+                    if (str.charAt(j) == ':') u = u.add(BigInteger.ONE);
                 }
                 x = u;
             }
@@ -132,6 +133,19 @@ class Evaluate {
         id_translate = -1;
     }
 
+    static private function isBi(x:Dynamic) : Bool {
+        return Std.is(x,BigInteger);
+    }
+
+    static private function isBi2(x:Dynamic,y:Dynamic) : Bool {
+        return Std.is(x,BigInteger)||Std.is(y,BigInteger);
+    }
+
+    static private function bi(x:Dynamic) : BigInteger {
+        if (Std.is(x,BigInteger)) return x;
+        return BigInteger.ofInt(x);
+    }
+
     public function applyOldOrder() {
         mem = new Memory(null);
         vocab.clear();
@@ -187,9 +201,9 @@ class Evaluate {
                     x.data = y; 
                     return 1; 
                 }; } );
-        mem.add(vocab.get("number?"), function(x){ return Std.is(x,Int)||Std.is(x,String); } );
+        mem.add(vocab.get("number?"), function(x){ return Std.is(x,Int)||Std.is(x,BigInteger)||Std.is(x,String); } );
         mem.add(vocab.get("translate"), function(x){ 
-                if (Std.is(x,Int)||Std.is(x,String)) return x;
+                if (Std.is(x,Int)||Std.is(x,BigInteger)||Std.is(x,String)) return x;
                 var rep = function(x) {
                 }
                 var len = Parse.car(x);
@@ -228,15 +242,43 @@ class Evaluate {
             });
         mem.add(vocab.get("natural-set"), 
                 mem.get(vocab.get("all"))(function (x) { return x>=0; }));
+        mem.add(vocab.get("div"), function(x:Dynamic){ 
+                return function(y:Dynamic) : Dynamic { 
+                    if (isBi2(x,y)) return bi(x).div(bi(y));
+                    return Std.int(x/y); 
+                }}
+            );
     }
 
     public function addStdMin() {
-        mem.add(vocab.get("+"), function(x){ return function(y){ return x+y; }});
-        mem.add(vocab.get("-"), function(x){ return function(y){ return x-y; }});
-        mem.add(vocab.get("="), function(x){ return function(y){ return (x==y)?1:0; }});
-        mem.add(vocab.get("*"), function(x){ return function(y){ return x*y; }});
-        mem.add(vocab.get("<"), function(x){ return function(y){ return (x<y)?1:0; }});
-        mem.add(vocab.get(">"), function(x){ return function(y){ return (x>y)?1:0; }});
+        mem.add(vocab.get("+"), 
+                function(x:Dynamic){ return function(y:Dynamic):Dynamic{ 
+                        if (isBi2(x,y)) return bi(x).add(bi(y));
+                        return x+y; 
+                    }});
+        mem.add(vocab.get("-"), 
+                function(x:Dynamic){ return function(y:Dynamic):Dynamic{ 
+                        if (isBi2(x,y)) return bi(x).sub(bi(y));
+                        return x-y; 
+                    }});
+        mem.add(vocab.get("="), 
+                function(x:Dynamic){ return function(y:Dynamic):Dynamic{ 
+                        if (isBi2(x,y)) return (bi(x).compare(bi(y))==0)?1:0;
+                        return (x==y)?1:0; 
+                    }});
+        mem.add(vocab.get("*"), 
+                function(x:Dynamic){ return function(y:Dynamic):Dynamic{ 
+                        if (isBi2(x,y)) return bi(x).mul(bi(y));
+                        return x*y; 
+                    }});
+        mem.add(vocab.get("<"), function(x){ return function(y){ 
+                    if (isBi2(x,y)) return (bi(x).compare(bi(y))<0)?1:0;
+                    return (x<y)?1:0; 
+                }});
+        mem.add(vocab.get(">"), function(x){ return function(y){ 
+                    if (isBi2(x,y)) return (bi(x).compare(bi(y))>0)?1:0;
+                    return (x>y)?1:0; 
+                }});
     }
     
     public function addStd() {

@@ -38,9 +38,14 @@ glyph-install:
 	cp -v ../msg/glyph*.txt $(COSMIC_SITE)/_includes
 
 msg:
-	# ./assemble/assemble.sh | tee assem.txt
-	# node ./assemble/assemble2json.js assem.txt
+	./assemble/assemble.sh | tee assem.txt
+	node ./assemble/assemble2json.js assem.txt
 	NODE_PATH=$(PWD) node ./assemble/evaluate.js assem.json
+
+console:
+	echo "Do: cos = require('cos')"
+	NODE_PATH=$(PWD):$(PWD)/assemble node
+
 
 test-eval:
 	NODE_PATH=$(PWD) node ./tests/test_eval.js

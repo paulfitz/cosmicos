@@ -113,13 +113,34 @@ class Parse {
         return x(function(a) { return function(b) { return b; }});
     }
 
+    public static function textify(e: Dynamic, vocab: Vocab) : String {
+        var txt = "";
+        if (Std.is(e,Array)) {
+            var lst : Array<Dynamic> = cast e;
+            var len : Int = lst.length;
+            txt += "(";
+            for (i in 0...len) {
+                if (i>0) txt += " ";
+                txt += textify(lst[i],vocab);
+            }
+            txt += ")";
+            return txt;
+        }
+        var v = vocab.reverse(e);
+        if (v==null) return "" + e;
+        return e + "-" + v;
+    }
+
     public static function deconsify(e: Dynamic) : Array<Dynamic> {
+        if (Std.is(e,Int)) return e;
+        if (Std.is(e,BigInteger)) return e;
+        if (Std.is(e,String)) return e;
         var c = new Cursor(e);
         var lst = new Array<Dynamic>();
         var len = c.length();
         for (i in 0...len) {
             var ei = c.next();
-            if (Std.is(ei,Int)||Std.is(ei,String)) {
+            if (Std.is(ei,Int)||Std.is(ei,BigInteger)||Std.is(ei,String)) {
                 lst.push(ei);
                 continue;
             }

@@ -337,57 +337,56 @@
 			    (vector
 			     lambda
 			     (vector method)
-			     (vector
-			      (list-append
-			       (prepend
-				cond
-				(list-append
-				 (map
-				  (? x 
-				     (vector
-				      (vector = (vector method) (first (x)))
-				      (second (x))))
-				  (map (tail)
-				       (select-match 
-					(? x (= (first (x)) method)) 
-					(fields))))
-				 (map
-				  (? x 
-				     (vector
-				      (vector = (vector method) (x))
-				      (vector (x))))
-				  (map (second)
-				       (select-match 
-					(? x (= (first (x)) field)) 
-					(fields))))))
+			     (list-append
+			      (prepend
+			       cond
+			       (list-append
+				(map
+				 (? x 
+				    (vector
+				     (vector = (vector method) (first (x)))
+				     (second (x))))
+				 (map (tail)
+				      (select-match 
+				       (? x (= (first (x)) method)) 
+				       (fields))))
+				(map
+				 (? x 
+				    (vector
+				     (vector = (vector method) (x))
+				     (vector (x))))
+				 (map (second)
+				      (select-match 
+				       (? x (= (first (x)) field)) 
+				       (fields))))))
+			      (vector
 			       (vector
+				(vector = (vector method) self)
+				(vector self))
+			       (vector
+				(vector = (vector method) (name))
+				(vector self self))
+			       (vector
+				(vector = (vector method) classname)
+				(name))
+			       (vector
+				(vector = (vector method) unknown)
+				(vector lambda (vector x) 0))
+			       (vector
+				(vector = (vector method) new)
+				0)
+			       (vector
+				(vector = (vector method) unique-id)
+				(vector unique-id))
+			       (vector
+				(vector = (vector method) ==)
 				(vector
-				 (vector = (vector method) self)
-				 (vector self))
-				(vector
-				 (vector = (vector method) (name))
-				 (vector self self))
-				(vector
-				 (vector = (vector method) classname)
-				 (name))
-				(vector
-				 (vector = (vector method) unknown)
-				 (vector lambda (vector x) 0))
-				(vector
-				 (vector = (vector method) new)
-				 0)
-				(vector
-				 (vector = (vector method) unique-id)
-				 (vector unique-id))
-				(vector
-				 (vector = (vector method) ==)
-				 (vector
-				  lambda
-				  (vector x)
-				  (vector = 
-					  (vector unique-id)
-					  (vector x unique-id))))
-				(vector self unknown (vector method))))))))))))
+				 lambda
+				 (vector x)
+				 (vector = 
+					 (vector unique-id)
+					 (vector x unique-id))))
+			       (vector self unknown (vector method)))))))))))
 		      (vector 
 		       begin
 		       (vector self new)
