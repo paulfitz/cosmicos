@@ -208,4 +208,23 @@ class Parse {
         txt += "2233";
         return txt;
     }
+
+    public static function integrate(e0: Dynamic) : Dynamic {
+        if (Std.is(e0,Int)||Std.is(e0,BigInteger)) {
+            return e0;
+        }
+        if (Std.is(e0,String)) {
+            var str : String = cast e0;
+            if (str.length==0 || str.charAt(0) == '1') {
+                return str.length;
+            }
+            return e0;
+        }
+        var lst : Array<Dynamic> = cast e0;
+        var len : Int = lst.length;
+        for (i in 0...len) {
+            lst[i] = integrate(lst[i]);
+        }
+        return e0;
+    }
 }

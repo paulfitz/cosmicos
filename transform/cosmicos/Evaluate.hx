@@ -287,6 +287,10 @@ class Evaluate {
         evaluateLine("@ and / ? x / ? y / if $x $y 0");
         evaluateLine("@ or / ? x / ? y / if $x 1 $y");
     }
+
+    public function addPrimer(primer: Dynamic) {
+        mem.add(vocab.get("primer"), Parse.consify(Parse.integrate(primer)));
+    }
     
     static function main() {
 #if js

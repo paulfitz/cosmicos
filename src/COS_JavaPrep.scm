@@ -81,7 +81,7 @@
 # will need to install class hierarchy, just hardcode a few things for now
 
 (define java
-  (? x / ? y / 
+  (? x / ? y 
      (cond ((= (y) String) (String))
 	   ((= (y) Object) (java-object))
 	   ((= (y) Integer) (Integer))
@@ -459,7 +459,7 @@
   lambda (vars stack machine) /
   let ((pc (cell new (at)))
        (ret (cell new (true)))) /
-  let ((jvm (jvm-maker (vars) (stack) (pc) (ret)))) /
+  let ((jvm (jvm-maker (vars) (stack) (pc) (ret))))
   (begin
     (machine (jvm) (pc get))
     (if (= (pc get) -1)
@@ -473,7 +473,7 @@
 
 (stack-push (stack-test1) 33);
 
-(= (state-machine (vars-test1) (stack-test1) / ? jvm / ? x /
+(= (state-machine (vars-test1) (stack-test1) / ? jvm / ? x
 		  (cond ((= (x) 0) (jvm istore 4))
 			((= (x) 1) (jvm iload 4))
 			(jvm ireturn)))

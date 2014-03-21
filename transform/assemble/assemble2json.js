@@ -8,7 +8,8 @@ var role_flush = "";
 
 function emit(txt) {
     var need_flush = false;
-    if (txt=="") {
+    var blank = (!(/[^ \t]/.test(txt)));
+    if (blank) {
 	need_flush = true;
 	role_flush = role;
 	role = "code";
@@ -42,7 +43,7 @@ function emit(txt) {
 	}
 	cache = [];
     }
-    if (txt!="") {
+    if (!blank) {
 	cache.push(txt.replace(/\t/g,"    "));
     }
 }

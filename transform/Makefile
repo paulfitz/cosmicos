@@ -40,7 +40,10 @@ glyph-install:
 msg:
 	./assemble/assemble.sh | tee assem.txt
 	node ./assemble/assemble2json.js assem.txt
-	NODE_PATH=$(PWD) node ./assemble/evaluate.js assem.json
+	NODE_PATH=$(PWD) node ./assemble/evaluate.js
+
+primer:
+	NODE_PATH=$(PWD) node ./assemble/primer.js assem.json
 
 console:
 	echo "Do: cos = require('cos')"
