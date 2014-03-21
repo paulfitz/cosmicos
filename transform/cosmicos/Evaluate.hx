@@ -248,6 +248,9 @@ class Evaluate {
                     return Std.int(x/y); 
                 }}
             );
+        mem.add(vocab.get("demo"), function(x:Dynamic) {
+                return x;
+            });
     }
 
     public function addStdMin() {

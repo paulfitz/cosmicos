@@ -70,6 +70,17 @@ class Parse {
                     } else if (ch0 == "U" && ~/^U1*U$/.match(str)) {
                         // unary number e.g. U111U represent as string
                         v = str.substr(1,str.length-2);
+                    } else if (ch0 == "\"") {
+                        // will need to tweak this for utf8, for
+                        // now ASCII ok
+                        var len : Int = str.length;
+                        var u : BigInteger = BigInteger.ofInt(0);
+                        var times : BigInteger = BigInteger.ofInt(256);
+                        for (j in 1...(len-1)) {
+                            u = u.mul(times);
+                            u = u.add(BigInteger.ofInt(str.charCodeAt(j)));
+                        }
+                        v = u;
                     } else if (~/^.*-in-unary$/.match(str)) {
                         var v0 : Int = vocab.get(str.substr(0,str.length-9));
                         var u : String = "";
@@ -131,7 +142,7 @@ class Parse {
         return e + "-" + v;
     }
 
-    public static function deconsify(e: Dynamic) : Array<Dynamic> {
+    public static function deconsify(e: Dynamic) : Dynamic {
         if (Std.is(e,Int)) return e;
         if (Std.is(e,BigInteger)) return e;
         if (Std.is(e,String)) return e;
@@ -226,5 +237,34 @@ class Parse {
             lst[i] = integrate(lst[i]);
         }
         return e0;
+    }
+
+    public static function recover(x: Dynamic) : Dynamic {
+        if (Std.is(x,Int)) {
+            return x;
+        }
+        if (Std.is(x,BigInteger)) {
+            var txt = "";
+            var mod = BigInteger.ofInt(256);
+            while (x.compare(BigInteger.ZERO)>0) {
+                var rem = x.mod(mod);
+                txt = String.fromCharCode(rem.toInt()) + txt;
+                x = x.div(mod);
+            }
+            return "\"" + txt + "\"";
+        }
+        var txt = "";
+        if (Std.is(x,Array)) {
+            var lst : Array<Dynamic> = cast x;
+            var len : Int = lst.length;
+            txt += "(vector ";
+            for (i in 0...len) {
+                if (i>0) txt += " ";
+                txt += recover(lst[i]);
+            }
+            txt += ")";
+            return txt;
+        }
+        return "???";
     }
 }

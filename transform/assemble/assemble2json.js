@@ -5,17 +5,22 @@ var cache = [];
 var expecting = /:/;
 var role = "";
 var role_flush = "";
+var coding = false;
 
 function emit(txt) {
     var need_flush = false;
     var blank = (!(/[^ \t]/.test(txt)));
+    if (coding) blank = false;
     if (blank) {
 	need_flush = true;
 	role_flush = role;
 	role = "code";
 	expecting = /:/;
     } else {
-	var ch = txt.charAt(0);
+	var ch = (txt.length>0)?txt.charAt(0):' ';
+	if (role=="code") {
+	    coding = !(/;/.test(txt));
+	}
 	if (ch!=' '&&ch!='\t'&&!expecting.test(ch)) {
 	    need_flush = true;
 	    role_flush = role;
@@ -42,6 +47,7 @@ function emit(txt) {
 	    });
 	}
 	cache = [];
+	coding = false;
     }
     if (!blank) {
 	cache.push(txt.replace(/\t/g,"    "));
