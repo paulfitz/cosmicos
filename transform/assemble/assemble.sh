@@ -23,10 +23,11 @@ for f in `cat ../depend.txt | grep ":" | sed "s/:.*//"`; do
     elif [ -e "$SRC/$f.gate" ]; then
 	# this is messy, need to redo
 	cd $SRC
-	java -cp $BIN:$SRC UnlessDriver $f.gate | tee /tmp/gate.$f.tmp
+	java -cp $BIN:$SRC UnlessDriver $f.gate > /tmp/gate.$f.tmp
 	cd $ORG
 	cat /tmp/gate.$f.tmp | $PWD/../bin/drawgate-txt.pl | sed "s/IMAGE_SRC/IMAGE_SRC=$f.gif/" | sed "s/CIRCUIT_NAME/`echo $f | tr '[:upper:]' '[:lower:]'`/g"
 	cat /tmp/gate.$f.tmp | $PWD/../bin/drawgate-ppm.pl > $f.ppm
+	cat /tmp/gate.$f.tmp
     elif [ -e "$SRC/$f.java" ]; then
 	# need BCEL library (http://jakarta.apache.org/bcel/)
 	if grep -q "STUB:" $SRC/$f.java ; then

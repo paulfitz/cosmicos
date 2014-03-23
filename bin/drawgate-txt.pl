@@ -87,9 +87,7 @@ for (my $x=0; $x<$d2; $x++) {
 
 print "# GATE testing alternate primer based on gates: CIRCUIT_NAME circuit\n";
 print "# This section contains one or more representations of a circuit\n";
-print "# constructed using UNLESS gates.  Needs elaboration...\n";
-print "# graphic representation : IMAGE_SRC\n";
-print "#\n";
+print "# constructed using UNLESS gates.\n";
 
 print "(define CIRCUIT_NAME_gate / vector ";
 
@@ -115,14 +113,14 @@ foreach my $l (@line) {
 	my $x2 = $xmid+$dx;
 	my $y2 = $ymid+$dy;
 	my $v2 = $v?"(true)":"(false)";
-	print "(vector $x1 $y1 $x2 $y2 $v2)  ";
+	print "\n  (vector $x1 $y1 $x2 $y2 $v2)";
     }
 }
 print ");\n";
 
 print "(define CIRCUIT_NAME_image / make-image $d1 $d2 / vector ";
 for (my $y=0; $y<$d1; $y++) {
-    print "(";
+    print "\n  (";
     for (my $x=0; $x<$d2; $x++) {
 	my $v = 0;
 	if (defined($arr{"$x $y"})) {
@@ -135,7 +133,7 @@ for (my $y=0; $y<$d1; $y++) {
 	}
 	print $txt;
     }
-    print ") ";
+    print ")";
 }
 print ");\n";
 

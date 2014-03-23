@@ -34,7 +34,7 @@ function emit(txt) {
 	    role = "gate";
 	} else {
 	    if (ch=='=' && txt.length>=3 && txt.charAt(1)=='=' && txt.charAt(2)==' ') {
-		role = "section";
+		role = "file";
 	    }
 	    if (need_flush) expecting = /:/;
 	}

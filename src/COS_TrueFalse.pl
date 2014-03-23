@@ -30,8 +30,8 @@ sub ShowTrueFalseLesson {
     }
 #  $txt .= ShowLine(Op("intro","true"));
 #  $txt .= ShowLine(Op("intro","false"));
-  print "# This could all be simplified or removed\n";
-  print "# once the handling of true/false stabilizes\n";
+  $txt .= "# This could all be simplified or removed\n";
+  $txt .= "# once the handling of true/false stabilizes\n";
   $txt .= ShowLine(Op("define","true",Num(1)));
   $txt .= ShowLine(Op("define","false",Num(0)));
   for (my $i=0; $i<5; $i++)

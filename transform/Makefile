@@ -38,9 +38,15 @@ glyph-install:
 	cp -v ../msg/glyph*.txt $(COSMIC_SITE)/_includes
 
 msg:
-	#	./assemble/assemble.sh | tee assem.txt
-	# 	node ./assemble/assemble2json.js assem.txt
+	./assemble/assemble.sh | tee assem.txt
+	node ./assemble/assemble2json.js assem.txt
 	NODE_PATH=$(PWD) node ./assemble/evaluate.js
+
+yaml:
+	# npm install -g json2yaml
+	json2yaml assem2.json > assem2.yaml
+	test -e $(COSMIC_SITE)/_config.yml
+	cat $(COSMIC_SITE)/_config_base.yml assem2.yaml | sed "s/^---/msg:/" > $(COSMIC_SITE)/_config.yml
 
 primer:
 	NODE_PATH=$(PWD) node ./assemble/primer.js assem.json
