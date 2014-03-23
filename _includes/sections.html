@@ -1,0 +1,7 @@
+<table class="msg-index">
+  {% for c in site.msg %}
+  {% if c.section_category %}
+  <tr><td class="sectnum" id="toc_section{{c.section_index}}">{{c.section_index}}</td><td><a href="message.html#section{{c.section_index}}">{{c.section_description}}</a></td><td class="sectcat">{{c.section_category}}</td></tr>
+  {% endif %}
+  {% endfor %}
+</table>

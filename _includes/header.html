@@ -22,7 +22,7 @@
            $(document).ready(function() {
               $(".hear").click(function(e) {
                 var snd = new cosmicos.Sound();
-                var txt = "" + $(e.target).data("code");
+                var txt = "" + $(e.target).parent().data("code");
                 current_audio = new Audio(snd.textToWavUrl(txt));
                 if (!current_audio.paused) {
                   current_audio.pause();

@@ -8,8 +8,6 @@ body {
 }
 
 a:link, a:visited, a:hover {
-  font-weight: bold;
-  color: #0081ac;
   text-decoration: none;
 }
 
@@ -63,6 +61,7 @@ a:visited {
   margin: 5px;
   border-radius: 5px;
   background: #111;
+  font-weight: bold;
 }
 
 .top li.menu-source a {
@@ -106,6 +105,7 @@ h2 {
   margin-left: 0px;
   margin-right: 0px;
   overflow:auto;
+  font-family: "inconsolataregular", "Courier New", Courier, monospace;
 }
 
 .happy-block-top { 
@@ -119,6 +119,10 @@ h2 {
   border-top-right-radius: 0;
   margin-top: 0;
   background: #ceb;
+}
+
+a.happy-block-bottom {
+  font-weight: bold;
 }
 
 a.happy-block-bottom:hover { 
@@ -146,36 +150,6 @@ a.happy-block-bottom:hover {
 #footer a {
   color: white;
 }
-
-table {
-  margin-left:            auto;
-  margin-right:           auto;
-  width:                  100%;
-  clear:                  none;
-  border-collapse:        collapse;
-  background:             none;
-  font-size: 13px;
-}
-
-td {
-  padding:                8px;
-  vertical-align:         top;
-}
-
-
-tr.header {
-  font-weight:            bold;
-  background:             #ddd;
-}
-
-td.title {
-  text-align:             center;
-  font-size:              16px;
-  font-weight:            bold;
-  background:             #ddd;
-}
-
-
 
 img.float {
   float:                  right;
@@ -269,6 +243,32 @@ a.sim-button:hover {
   }
 }
 
+
+@font-face {
+    font-family: 'inconsolataregular';
+    src: url('../fonts/inconsolata-regular-webfont.eot');
+    src: url('../fonts/inconsolata-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/inconsolata-regular-webfont.woff') format('woff'),
+         url('../fonts/inconsolata-regular-webfont.ttf') format('truetype'),
+         url('../fonts/inconsolata-regular-webfont.svg#inconsolataregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'inconsolatabold';
+    src: url('../fonts/inconsolata-bold-webfont.eot');
+    src: url('../fonts/inconsolata-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('../fonts/inconsolata-bold-webfont.woff') format('woff'),
+         url('../fonts/inconsolata-bold-webfont.ttf') format('truetype'),
+         url('../fonts/inconsolata-bold-webfont.svg#inconsolatabold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+
 .scrawl {
   font-family: "fontcustom";
   font-style: normal;
@@ -283,4 +283,109 @@ a.sim-button:hover {
   font-smoothing: antialiased;
   word-break: break-all;
   color: black;
+}
+
+table.msg-index {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  clear: none;
+  border-collapse: collapse;
+  background: none;
+}
+
+.msg-index th,td {  
+  text-align: left;                
+  vertical-align: top;
+  padding: 0;
+}
+
+.msg-index td.sectnum {
+  text-align: right;
+  padding-right: 4px;
+  color: #888;
+  padding: 10px;
+}
+
+.msg-index td.sectcat {
+  padding-left: 4px;
+  color: #888;
+  padding: 10px;
+}
+
+.msg-index a {
+  display: block;
+  color: black;
+  padding: 9px;
+  border-radius: 8px;
+  margin: 1px;
+  background: #eee;
+}
+
+.msg-index a:hover {
+  display: block;
+  background: #ccc;
+  text-decoration: none;
+}
+
+.msg-line {
+  font-family: "inconsolataregular", "Courier New", Courier, monospace;
+}
+
+.msg-code {
+  font-family: "inconsolataregular", "Courier New", Courier, monospace;
+  font-size: 80%;
+  color: #aaa;
+  padding-bottom: 6px;
+  margin-bottom: 0;
+  word-break:break-all;
+}
+
+.msg-code a.show:before {
+  content: '\25B6\00a0';
+}
+
+.msg-code a.hear {
+  border-left: 1px solid #aaa;
+  border-right: 1px solid #aaa;
+  padding-left: 3px;
+  padding-right: 3px;
+  border-radius: 5px;
+  margin-left: 10px;
+  display: none;
+}
+
+.msg-code a {
+  text-decoration: none;
+  color: #aaa;
+}
+
+.msg-code a:focus {
+  outline: 0;
+}
+
+.msg-expand {
+  border: 1px solid #aaa;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 100% !important;
+}
+
+.msg-expand a {
+  color: black;
+}
+
+.msg-expand a.hear {
+  display: initial !important;
+}
+
+pre.msg-line {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  padding-top: 0;
+  margin-top: 0;
+}
+
+h3 a {
+  color: initial !important;
 }

@@ -1,0 +1,57 @@
+---
+layout: default
+title: "CosmicOS: full message in human-readable form"
+---
+
+<h2>CosmicOS full message</h2>
+
+{% include sections.html %}
+
+<br />
+
+{% for stanza in site.msg %}
+  {% if stanza.section_description %}
+  <h3><a name="section{{stanza.section_index}}" href="#">{{stanza.section_index}}. {{stanza.section_description}}</a></h3>
+  {% endif %}
+  {% if stanza.role == "file" %}
+  {% elsif stanza.role == "gate" %}
+  <a href="{{stanza.page}}"><img src="{{stanza.thumbnail}}" /></a><br />
+  <a href="{{stanza.page}}">Run simulator</a>
+  {% elsif stanza.role == "comment" %}
+    {% assign nominal_size = stanza.lines.size %}
+    {% if stanza.section_description %}{% assign nominal_size = nominal_size | minus: 1 %}{% endif %}
+    {% if nominal_size >= 1  %}
+<pre class="happy-block">
+{% for line in stanza.lines %}{% unless forloop.first and stanza.section_description %}{{line | escape}}
+{% endunless %}{% endfor %}</pre>
+    {% endif %}
+  {% else %}
+<pre class="msg-line">{% for line in stanza.lines %}{{line | escape}}
+{% endfor %}</pre>
+<div class="msg-code" data-code="{{stanza.code}}"><a class="show" href="#">{{stanza.code | truncate: 40}}</a><a class="hear" href="#">hear</a></div>
+  {% endif %}
+{% endfor %}
+
+<script>
+ $(function() {
+   $("h3 a").each(function(index,e) {
+     var target = "#toc_" + $(this).attr('name');
+     $(this).click(function() { 
+       window.scrollTo(0, $(target).offset().top);
+       return false;
+     });
+   });
+   $(".msg-code a.show").each(function(index,e) {
+     $(this).click(function() { 
+       var p = $(this).parent();
+       if (!p.hasClass("msg-expand")) {
+	 p.addClass("msg-expand");
+	 $(this).text(p.data('code'));
+       } else {
+	 $(this).parent().removeClass("msg-expand");
+       }
+       return false;
+     });
+   })
+ });
+</script>
