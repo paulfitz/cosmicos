@@ -65,11 +65,11 @@ a:visited {
 }
 
 .top li.menu-source a {
-  background: #333;
+  background: #33a;
 }
 
 .top li.menu-source a:hover {
-  background: #444;
+  background: #00f;
 }
 
 
@@ -392,4 +392,11 @@ pre.msg-line {
 
 h3 a {
   color: initial !important;
+}
+
+.bottom div { 
+  vertical-align: top;
+}
+.bottom img { 
+  vertical-align: top;
 }
