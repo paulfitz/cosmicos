@@ -289,6 +289,10 @@ a.sim-button:hover {
   color: black;
 }
 
+.breakable { 
+  word-break: break-all;
+}
+
 table.msg-index {
   margin-left: auto;
   margin-right: auto;
