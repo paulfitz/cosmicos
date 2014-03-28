@@ -7,40 +7,6 @@ title: CosmicOS in random icons
 
 {% include glyph_caveat.html %}
 
-<div id="render" class="scrawl">
-</div>
-
-<div id="original" class="scrawl" style="display: none;">
+<div id="original" class="scrawl">
 {% include glyph.txt %}
 </div>
-
-<script>
-$(function() {
-   var out = $("#render");
-   var spans = $("#original span");
-   var at = 0;
-   var top = spans.length;
-   console.log(top);
-
-   $(document).on('click',"#view-all",function() {
-     out.hide();
-     out.html("");
-     $("#original").show();
-   });
-
-   function update() {
-     if ($(spans[at]).text().length>100) {
-       out.append("(Some browsers start choking around here. To try your luck, click <a id='view-all' href='#'>view all</a>.<br />For me in 2014, firefox works fine, while chrome hangs.)");
-       return;
-     }
-     out.append($(spans[at]).clone());
-     out.append('<br />');
-     at++;
-     if (at<top) {
-       setTimeout(update,10);
-     }
-   }
-
-   update();
- });
-</script>
