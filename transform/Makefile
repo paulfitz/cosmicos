@@ -16,6 +16,9 @@ eval:
 scrawl:
 	haxe -$(HAXELANG) SpiderScrawl.$(HAXELANG) -main cosmicos.SpiderScrawl
 
+ogham:
+	haxe -$(HAXELANG) OghamStyle.$(HAXELANG) -main cosmicos.OghamStyle
+
 font: scrawl
 	mkdir -p vectors
 	NODE_PATH=$(PWD) node ./font/generate_glyphs.js
@@ -36,6 +39,11 @@ glyph:
 glyph-install:
 	test -e $(COSMIC_SITE)/_config.yml
 	cp -v ../msg/glyph*.txt $(COSMIC_SITE)/_includes
+
+oghams:
+	NODE_PATH=$(PWD) node ./font/msg2ogham.js ../msg/unwrapped.txt | grep "<br" | sed "s|^|<span>|" | sed "s|<br|</span><br|" | tee ../msg/glyph.txt
+	head -n 25 ../msg/glyph.txt > ../msg/glyph_head.txt
+
 
 msg:
 	./assemble/assemble.sh | tee assem.txt
