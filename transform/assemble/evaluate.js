@@ -20,13 +20,14 @@ try {
 
 var txt = "";
 
-function run(op,part) {
+function run(op,part,skippy) {
     console.log("====================================================");
     var code = ev.codifyLine(op);
     if (part!=null) part["code"] = code;
     console.log(cline + ": " + op + "  -->  " + code);
     txt += code;
     txt += "\n";
+    if (skippy) return 1;
     var v = ev.evaluateLine(op);
     //console.log(JSON.stringify(cos.Parse.deconsify(v),ev.vocab));
     //console.log(v);
@@ -43,18 +44,20 @@ try {
 	var op = part.lines.join("\n");
 	// now using one layer less of nesting
 
-	if (false) {
+	var skippy = false;
+	// skip the most time consuming parts of message
+	if (true) {
 	    if (op.indexOf("distill-circuit")>=0) {
 		console.log("Skipping distill-circuit");
-		continue;
+		skippy = true;
 	    }
 	    if (op.indexOf("_harness")>=0) {
 		console.log("Skipping _harness");
-		continue;
+		skippy = true;
 	    }
 	    if (op.indexOf("even-natural")>=0) {
 		console.log("Skipping even-natural");
-		continue;
+		skippy = true;
 	    }
 	}
 
@@ -66,7 +69,7 @@ try {
 		part.lines[part.lines.length-1] = part.lines[part.lines.length-1].replace(/\);/,";");
 	    }
 	}
-	var v = run(op,part);
+	var v = run(op,part,skippy);
 
 	if (op.indexOf("demo ")==0) {
 	    var r = cos.Parse.recover(cos.Parse.deconsify(v));

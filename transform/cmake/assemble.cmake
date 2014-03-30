@@ -1,0 +1,7 @@
+separate_arguments(in)
+file(WRITE ${out} "")
+foreach(f ${in})
+  file(APPEND ${out} "== ${f} ==\n")
+  file(READ ${f}.ftz CONTENTS)
+  file(APPEND ${out} "${CONTENTS}")
+endforeach()

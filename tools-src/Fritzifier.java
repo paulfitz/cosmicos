@@ -253,7 +253,7 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 
     public void visitJavaClass(JavaClass clazz) {
 	out.println("# JAVA class translation '" + clazz.getClassName() + "'");
-	out.println("# " + new Date());
+	//out.println("# " + new Date());
 	out.println("# Produced by Fritzifier, based on JasminVisitor");
 	out.println("# Using BCEL library to read Java bytecode");
 	out.println("# Here is the original code:");
@@ -564,7 +564,7 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 		System.err.println("disassemble: No input files specified");
 	    }
 	    else {
-		for(int i=0; i < argv.length; i++) {
+		for(int i=0; i<=0; i++) {
 		    if((java_class = Repository.lookupClass(argv[i])) == null)
 			java_class = new ClassParser(argv[i]).parse();
 	  
@@ -578,7 +578,12 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 			f.mkdirs();
 		    }
 
-		    FileOutputStream out = new FileOutputStream(path + class_name + ".ftz");
+		    FileOutputStream out;
+		    if (argv.length>1) {
+			out = new FileOutputStream(argv[1]);
+		    } else {
+			out = new FileOutputStream(path + class_name + ".ftz");
+		    }
 		    new Fritzifier(java_class, out).disassemble();
 		}
 	    }	  
