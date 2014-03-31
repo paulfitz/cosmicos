@@ -51,6 +51,11 @@ add_custom_target(jshelpers ALL DEPENDS
 file(READ "${CMAKE_SOURCE_DIR}/depend.txt" COSMIC_DEPENDS)
 string(REGEX REPLACE ":[^\n]*\n+" ";" COSMIC_DEPENDS "${COSMIC_DEPENDS}")
 
+find_program(NODE NAMES nodejs node)
+if(NOT NODE)
+  MESSAGE(FATAL_ERROR "Could not find node, please install it")
+endif()
+
 get_target_property(UnlessDriverLoc UnlessDriver JAR_FILE)
 get_target_property(FritzifierLoc Fritzifier JAR_FILE)
 FILE(WRITE ${WORK}/setup.cmake "
@@ -94,11 +99,6 @@ add_custom_command(OUTPUT ${WORK}/assem.txt
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${ACTIVE_DEPENDS} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/assemble.cmake)
 
-find_program(NODE NAMES nodejs node)
-if(NOT NODE)
-  MESSAGE(FATAL_ERROR "Could not find node, please install it")
-endif()
-
 add_custom_command(OUTPUT ${WORK}/assem.json
   COMMAND ${NODE} ${CMAKE_SOURCE_DIR}/transform/assemble/assemble2json.js ${WORK}/assem.txt
   WORKING_DIRECTORY ${WORK}
@@ -107,7 +107,8 @@ add_custom_command(OUTPUT ${WORK}/assem.json
 add_custom_command(OUTPUT ${WORK}/primer.json
   COMMAND ${CMAKE_COMMAND} 
   "-Din:STRING=${CMAKE_SOURCE_DIR}/transform/assemble/primer.js" 
-  "-Dargs:STRING=assem.json"
+  "-Dnargs:STRING=${WORK}/assem.json"
+  "-Dlog:STRING=make-primer"
   -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/node.cmake
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${WORK}/assem.json
@@ -117,7 +118,8 @@ add_custom_command(OUTPUT ${WORK}/primer.json
 add_custom_command(OUTPUT ${WORK}/assem2.json
   COMMAND ${CMAKE_COMMAND} 
   "-Din:STRING=${CMAKE_SOURCE_DIR}/transform/assemble/evaluate.js" 
-  "-Dargs:STRING="
+  "-Dnargs:STRING="
+  "-Dlog:STRING=make-assem2"
   -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/node.cmake
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${WORK}/assem.json
