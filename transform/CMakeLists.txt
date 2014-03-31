@@ -48,7 +48,7 @@ add_custom_target(jshelpers ALL DEPENDS
 ## Add targets for message parts
 ##
 
-file(READ "${CMAKE_SOURCE_DIR}/depend.txt" COSMIC_DEPENDS)
+file(READ "${CMAKE_SOURCE_DIR}/src/index.txt" COSMIC_DEPENDS)
 string(REGEX REPLACE ":[^\n]*\n+" ";" COSMIC_DEPENDS "${COSMIC_DEPENDS}")
 
 find_program(NODE NAMES nodejs node)
