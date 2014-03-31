@@ -1,7 +1,7 @@
 CosmicOS
 ========
 
-Sending the lambda calculus into deep space.  http://paulfitz.github.io/cosmicos/
+Sending the lambda calculus into deep space.  http://cosmicos.github.io/
 
 Long-distance relationships
 ----------------------------
@@ -55,15 +55,16 @@ CosmicOS is a message that is put together from "chapters"
 written as programs.  To compile those chapters, you currently
 need:
 
- * MIT/GNU Scheme
- * BCEL
  * A java compiler and runtime
- * GD module for perl
- * ImageMagick's convert tool
+ * perl, plus GD module for perl
+ * BCEL
+ * nodejs
+ * haxe
+ * CMake
 
 Here are appropriate packages for Debian:
 
-    apt-get install mit-scheme libbcel-java openjdk-6-jdk libgd-gd2-perl imagemagick
+    apt-get install libbcel-java openjdk-6-jdk libgd-gd2-perl nodejs haxe cmake
 
 
 Source code
@@ -93,60 +94,22 @@ are treated are:
             into the message.
 
 If you wish to add a source file or reorder existing material,
-edit depend.txt and then type:
-
-    make depend
+edit index.txt in that directory.
 
 Compilation
 -----------
 
 To build the message, type:
 
-    make
-
-The output appears in the msg directory.  The full compilation 
-procedure now performs message EXECUTION (next section) to 
-perform evaluations whose results are embedded in the message.
-Some parts of the message are quite slow to execute, so be patient.
-
-Execution
----------
-
-To test the message by executing it, type:
-
-    make test
-
-Some parts of the message are quite slow to execute, so be patient.
-
-
-Viewing
--------
-
-To build web-pages and material related to viewing the message, type:
-
-    make web
-
-The output appears in the www directory.  You can view it by opening:
-> www/index.html
-
-You may need to run `make test` before this step, 
-since the latest results of testing are made available for viewing.
-
-To render the message in the form of glyphs, type:
-
-    make icon
-
-Until you do this, there will be a broken link on www/index.html
-going to a page of the form "iconic-000000.html"
-
+    mkdir build && cd build && cmake .. && make
 
 License
 -------
 
-Copyright (C) 2013 Paul Fitzpatrick
+Copyright (C) 2014 Paul Fitzpatrick
 
 CosmicOS is released under the GNU General Public Licence --
 See COPYING.txt for license information.
 
-CosmicOS was written back in 2005/2006 and is currently in a 
-state of neglect.
+CosmicOS was started back in 2005/2006, neglected for a long time,
+and is being hacked on again since early 2014.
