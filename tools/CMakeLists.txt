@@ -8,6 +8,6 @@ if(NOT BCEL_JAR)
 endif()
 set(CMAKE_JAVA_INCLUDE_PATH ${BCEL_JAR} ${CMAKE_JAVA_INCLUDE_PATH})
 
-add_jar(Fritzifier ${CMAKE_SOURCE_DIR}/tools-src/Fritzifier.java ENTRY_POINT Fritzifier)
+add_jar(Fritzifier ${CMAKE_CURRENT_SOURCE_DIR}/Fritzifier.java ENTRY_POINT Fritzifier)
 
-add_jar(UnlessDriver ${CMAKE_SOURCE_DIR}/tools-src/UnlessDriver.java ENTRY_POINT UnlessDriver)
+add_jar(UnlessDriver ${CMAKE_CURRENT_SOURCE_DIR}/UnlessDriver.java ENTRY_POINT UnlessDriver)
