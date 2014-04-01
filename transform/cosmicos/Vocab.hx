@@ -39,4 +39,8 @@ class Vocab {
     public function reverse(id: Int) : String {
         return codeToName.get(id);
     }
+
+    public function getNames() : Array<String> {
+        return [for (i in nameToCode.keys()) i];
+    }
 }

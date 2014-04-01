@@ -146,6 +146,11 @@ class Evaluate {
         return BigInteger.ofInt(x);
     }
 
+
+    public function getVocab() : Vocab {
+        return vocab;
+    }
+
     public function applyOldOrder() {
         mem = new Memory(null);
         vocab.clear();

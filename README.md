@@ -103,6 +103,9 @@ To build the message, type:
 
     mkdir build && cd build && cmake .. && make
 
+You should find the message saved in your build directory 
+as `index.json` and `index.txt`.
+
 License
 -------
 

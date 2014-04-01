@@ -22,7 +22,10 @@ add_custom_command(OUTPUT ${WORK}/CosmicAudio.js
 add_custom_command(OUTPUT ${WORK}/CosmicEval.js
   COMMAND ${HAXE} -js CosmicEval.js -main cosmicos.Evaluate -cp ${SRC}
   WORKING_DIRECTORY ${WORK}
-  DEPENDS ${SRC}/cosmicos/Evaluate.hx)
+  DEPENDS ${SRC}/cosmicos/Evaluate.hx
+  ${SRC}/cosmicos/Parse.hx
+  ${SRC}/cosmicos/Vocab.hx
+  ${SRC}/cosmicos/Memory.hx)
 
 add_custom_command(OUTPUT ${WORK}/SpiderScrawl.js
   COMMAND ${HAXE} -js SpiderScrawl.js -main cosmicos.SpiderScrawl -cp ${SRC}
@@ -72,8 +75,6 @@ FILE(WRITE ${WORK}/setup.cmake "
 set(ACTIVE_DEPENDS)
 set(ACTIVE_DEPENDS_SHORT "")
 foreach(depend ${COSMIC_DEPENDS})
-  # message(STATUS "<${MSG}/${depend}.pl>")
-  
   foreach(ext pl scm gate java)
     if(EXISTS ${MSG}/${depend}.${ext})
       add_custom_command(OUTPUT ${WORK}/${depend}.ftz
@@ -91,6 +92,8 @@ foreach(depend ${COSMIC_DEPENDS})
   endforeach()
 endforeach()
 
+# assem.txt contains a concatenation of all message parts, in
+# original textual form
 add_custom_command(OUTPUT ${WORK}/assem.txt
   COMMAND ${CMAKE_COMMAND}
   "-Din:STRING=${ACTIVE_DEPENDS_SHORT}" 
@@ -99,11 +102,16 @@ add_custom_command(OUTPUT ${WORK}/assem.txt
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${ACTIVE_DEPENDS} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/assemble.cmake)
 
+# assem.json is a structured version of assem.txt, but still in original form
 add_custom_command(OUTPUT ${WORK}/assem.json
   COMMAND ${NODE} ${CMAKE_SOURCE_DIR}/transform/assemble/assemble2json.js ${WORK}/assem.txt
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${WORK}/assem.txt)
 
+# primer.json is a numeric version of the message, for self-references.
+# Note that any lines relying on self-evaluation are inaccurate.
+# It is important to not refer to such lines, in order to avoid
+# circularity.  Ssh.
 add_custom_command(OUTPUT ${WORK}/primer.json
   COMMAND ${CMAKE_COMMAND} 
   "-Din:STRING=${CMAKE_SOURCE_DIR}/transform/assemble/primer.js" 
@@ -115,12 +123,16 @@ add_custom_command(OUTPUT ${WORK}/primer.json
   ${WORK}/CosmicEval.js
   ${CMAKE_SOURCE_DIR}/transform/assemble/primer.js)
 
+# assem2.json is assem.json but marked up also with message fragments
+# in final form
 add_custom_command(OUTPUT ${WORK}/assem2.json
   COMMAND ${CMAKE_COMMAND} 
   "-Din:STRING=${CMAKE_SOURCE_DIR}/transform/assemble/evaluate.js" 
   "-Dnargs:STRING="
   "-Dlog:STRING=make-assem2"
   -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/node.cmake
+  COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/assem2.json ${CMAKE_BINARY_DIR}/index.json
+  COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/q.txt ${CMAKE_BINARY_DIR}/index.txt
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${WORK}/assem.json
   ${WORK}/primer.json
@@ -129,3 +141,22 @@ add_custom_command(OUTPUT ${WORK}/assem2.json
 
 add_custom_target(assem ALL DEPENDS ${WORK}/assem2.json)
 
+
+##############################################################################
+##
+## Add optional targets (not in default build) for stats
+##
+
+# scan the active vocabulary
+add_custom_command(OUTPUT ${WORK}/vocab.json
+  COMMAND ${CMAKE_COMMAND} 
+  "-Din:STRING=${CMAKE_SOURCE_DIR}/transform/assemble/vocab.js" 
+  "-Dnargs:STRING=${WORK}/assem.json"
+  "-Dlog:STRING=make-vocab"
+  -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/node.cmake
+  WORKING_DIRECTORY ${WORK}
+  DEPENDS ${WORK}/assem.json
+  ${WORK}/CosmicEval.js
+  ${CMAKE_SOURCE_DIR}/transform/assemble/vocab.js)
+
+add_custom_target(vocab DEPENDS ${WORK}/vocab.json)
