@@ -160,3 +160,12 @@ add_custom_command(OUTPUT ${WORK}/vocab.json
   ${CMAKE_SOURCE_DIR}/transform/assemble/vocab.js)
 
 add_custom_target(vocab DEPENDS ${WORK}/vocab.json)
+
+
+##############################################################################
+##
+## Add a little utility in the build directory
+##
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assemble/cosmicos ${CMAKE_BINARY_DIR}/cosmicos @ONLY)
+
