@@ -66,6 +66,8 @@ Here are appropriate packages for Debian:
 
     apt-get install libbcel-java openjdk-6-jdk libgd-gd2-perl nodejs haxe cmake
 
+If you end up with a version of haxe lower than 3, please uninstall and 
+visit http://haxe.org/download/
 
 Source code
 -----------
