@@ -12,14 +12,14 @@ sub ShowUnaryLesson {
   my $txt = "";
 
   $txt .= "# MATH introduce numbers (in unary notation)\n";
-  $txt .= "# Here we count up, go through some primes, etc.\n";
+  $txt .= "# Here we count up from zero, go through some primes, etc.\n";
   $txt .= "# There is some syntax around the numbers, but that doesn't\n";
   $txt .= "# need to be understood at this point.\n";
   $txt .= "# Any 'words' written here are converted to arbitrary integers\n";
   $txt .= "# in the actual message.  Any word ending in -in-unary will be given\n";
   $txt .= "# in unary rather than the binary code used in the main body\n";
   $txt .= "# of the message.\n";
-  for (my $i=1; $i<=16; $i++)
+  for (my $i=0; $i<=16; $i++)
     {
 	$txt .= EarlyExample(ShowUnary($i));
     }
