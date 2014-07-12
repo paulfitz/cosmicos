@@ -164,6 +164,22 @@ add_custom_target(vocab DEPENDS ${WORK}/vocab.json)
 
 ##############################################################################
 ##
+## Make a toy command-line cosmicos repl
+##
+
+make_directory(${CMAKE_BINARY_DIR}/bin)
+make_directory(${CMAKE_BINARY_DIR}/lib)
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/bin/cosmicos.js
+  COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/CosmicEval.js ${CMAKE_BINARY_DIR}/lib/cosmicos.js
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/repl/repl.js ${CMAKE_BINARY_DIR}/bin/cosmicos.js
+  WORKING_DIRECTORY ${WORK}
+  DEPENDS ${WORK}/CosmicEval.js
+  ${CMAKE_SOURCE_DIR}/tools/repl/repl.js)
+add_custom_target(cli DEPENDS ${CMAKE_BINARY_DIR}/bin/cosmicos.js)
+
+
+##############################################################################
+##
 ## Add a little utility in the build directory
 ##
 

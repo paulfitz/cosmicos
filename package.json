@@ -1,0 +1,31 @@
+{
+  "name": "cosmicos",
+  "version": "1.0.0",
+  "description": "CosmicOS",
+  "url": "https://github.com/paulfitz/cosmicos",
+  "keywords": [
+    "space",
+    "the",
+    "final",
+    "frontier"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/paulfitz/cosmicos.git"
+  },
+  "bugs": {
+    "url": "https://github.com/paulfitz/cosmicos/issues"
+  },
+  "author": {
+    "name": "Paul Fitzpatrick",
+    "email": "paul@robotrebuilt.com",
+    "url": "http://paulfitz.github.io/"
+  },
+  "scripts": {
+    "prepublish": "mkdir -p build && cd build && cmake .. && make cli",
+    "test": "cd build && make"
+  },
+  "main": "build/lib/cosmicos.js",
+  "license": "GPL",
+  "bin": "build/bin/cosmicos.js"
+}
