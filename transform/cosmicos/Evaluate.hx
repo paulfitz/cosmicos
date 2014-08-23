@@ -127,6 +127,12 @@ class Evaluate {
         return Parse.codify(lst);
     }
 
+    public function nestedLine(str: String) : Dynamic {
+        var lst = Parse.stringToList(str,vocab);
+        Parse.encodeSymbols(lst,null);
+        return lst;
+    }
+
     public function new() {
         mem = new Memory(null);
         vocab = new Vocab();

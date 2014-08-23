@@ -81,12 +81,12 @@ class Parse {
                             u = u.add(BigInteger.ofInt(str.charCodeAt(j)));
                         }
                         v = u;
-                    } else if (~/^.*-in-unary$/.match(str)) {
+                    } else if (~/^.*-in-unary$/.match(str) && vocab!=null) {
                         var v0 : Int = vocab.get(str.substr(0,str.length-9));
                         var u : String = "";
                         for (j in 0...v0) u += '1';
                         v = u;
-                    } else {
+                    } else if (vocab!=null) {
                         v = vocab.get(str);
                     }
                 } else {
