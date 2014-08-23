@@ -22,14 +22,14 @@
 (intro primer);
 
 # this line is referred to later - change/move carefully
-(equal (list-ref (primer) 0) (vector intro 1));
-(equal (list-ref (primer) 1) (vector intro 2));
-(equal (list-ref (primer) 2) (vector intro 3));
+(equal (list-ref (primer) 0) (vector intro 0));
+(equal (list-ref (primer) 1) (vector intro 1));
+(equal (list-ref (primer) 2) (vector intro 2));
 (assign idx (list-find (primer) (vector intro primer) (? x 0)) 
 	(equal (list-ref (primer) (+ (idx) 1))
 	       (vector equal 
 		       (vector list-ref (vector primer) 0)
-		       (vector vector intro 1))));
+		       (vector vector intro 0))));
 
 		       
 # Now, we could return to the MUD, simulate an agent A
