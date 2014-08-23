@@ -56,15 +56,15 @@ try {
 	// skip the most time consuming parts of message
 	if (true) {
 	    if (op.indexOf("distill-circuit")>=0) {
-		console.log("Skipping distill-circuit");
+		process.stderr.write("Skipping distill-circuit\n");
 		skippy = true;
 	    }
 	    if (op.indexOf("_harness")>=0) {
-		console.log("Skipping _harness");
+		process.stderr.write("Skipping _harness\n");
 		skippy = true;
 	    }
 	    if (op.indexOf("even-natural")>=0) {
-		console.log("Skipping even-natural");
+		process.stderr.write("Skipping even-natural\n");
 		skippy = true;
 	    }
 	}
