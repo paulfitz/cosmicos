@@ -1,7 +1,7 @@
 
 ##############################################################################
 ##
-## Compile some basic tools for processing the message, using haxe
+## Check for haxe and node
 ##
 ##
 
@@ -9,6 +9,18 @@ find_program(HAXE haxe)
 if(NOT HAXE)
   MESSAGE(FATAL_ERROR "Could not find haxe, please install it")
 endif()
+
+find_program(NODE NAMES nodejs node)
+if(NOT NODE)
+  MESSAGE(FATAL_ERROR "Could not find node, please install it")
+endif()
+
+
+##############################################################################
+##
+## Compile some basic tools for processing the message
+##
+##
 
 set(WORK ${CMAKE_CURRENT_BINARY_DIR})
 set(SRC ${CMAKE_SOURCE_DIR}/transform)
@@ -51,13 +63,8 @@ add_custom_target(jshelpers ALL DEPENDS
 ## Add targets for message parts
 ##
 
-file(READ "${CMAKE_SOURCE_DIR}/src/index.txt" COSMIC_DEPENDS)
-string(REGEX REPLACE ":[^\n]*\n+" ";" COSMIC_DEPENDS "${COSMIC_DEPENDS}")
-
-find_program(NODE NAMES nodejs node)
-if(NOT NODE)
-  MESSAGE(FATAL_ERROR "Could not find node, please install it")
-endif()
+# we expect to get a variable COSMIC_DEPENDS that lists all parts
+include(${CMAKE_SOURCE_DIR}/src/README.cmake)
 
 get_target_property(UnlessDriverLoc UnlessDriver JAR_FILE)
 get_target_property(FritzifierLoc Fritzifier JAR_FILE)
