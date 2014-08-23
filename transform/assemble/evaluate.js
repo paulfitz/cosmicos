@@ -23,7 +23,11 @@ var txt = "";
 function run(op,part,skippy) {
     console.log("====================================================");
     var code = ev.codifyLine(op);
-    if (part!=null) part["code"] = code;
+    var nest = ev.nestedLine(op);
+    if (part!=null) {
+	part["code"] = code;
+	part["parse"] = nest;
+    }
     console.log(cline + ": " + op + "  -->  " + code);
     txt += code;
     txt += "\n";
