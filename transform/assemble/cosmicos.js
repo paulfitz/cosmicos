@@ -44,9 +44,9 @@ module.exports = function(root) {
 	console.log("Wrote to " + output);
 	return 0;
     }
-    console.log("Welcome to the CosmicOS helper command. Usage:");
-    console.log("  cosmicos show -p NNNN               # show info about message part NNNN");
-    console.log("  cosmicos hear -p NNNN -o audio.wav  # convert message part to audio");
+    console.log("Welcome to the CosmicOS message inspector command. Usage:");
+    console.log("  cosmsg show -p NNNN               # show info about message part NNNN");
+    console.log("  cosmsg hear -p NNNN -o audio.wav  # convert message part to audio");
 }
 
 
