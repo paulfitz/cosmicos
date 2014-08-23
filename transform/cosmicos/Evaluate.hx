@@ -266,6 +266,17 @@ class Evaluate {
         mem.add(vocab.get("demo"), function(x:Dynamic) {
                 return x;
             });
+
+        // Transition vocabulary
+        evaluateLine("@ is:int $number?");
+        evaluateLine("@ unary-v | ? v | ? x | if (= $x 0) $v (unary-v / + $v 1)");
+        evaluateLine("@ unary | unary-v 0");
+        // inefficient
+        evaluateLine("@ has-divisor-within | ? top | ? x | if (< $top 2) 0 | if (= $x | * $top | div $x $top) 1 / has-divisor-within (- $top 1) $x");
+        evaluateLine("@ is:prime | ? x | if (< $x 2) 0 | not | has-divisor-within (- $x 1) $x");
+        // very very inefficient!        
+        evaluateLine("@ has-square-divisor-within | ? top | ? x | if (< $top 0) 0 | if (= $x | * $top $top) 1 | has-square-divisor-within (- $top 1) $x");
+        evaluateLine("@ is:square | ? x | has-square-divisor-within $x $x");
     }
 
     public function addStdMin() {

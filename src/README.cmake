@@ -3,7 +3,7 @@
 
 set(COSMIC_DEPENDS
   COS_License
-  COS_Unary 
+  COS_Intro
   COS_NotLogic 
   COS_Unary
   COS_Addition
