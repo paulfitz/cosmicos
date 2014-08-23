@@ -1,9 +1,8 @@
 #!/usr/bin/env node
 
-console.log("[See http://cosmicos.github.io/evaluate.html for help]");
-
 var cosmicos = require('../lib/cosmicos').cosmicos;
 var cc = new cosmicos.Evaluate();
+cc.applyOldOrder();
 cc.addStd();
 
 function cosmicos_eval(input, context, filename, callback) {
@@ -60,11 +59,24 @@ function cosmicos_eval(input, context, filename, callback) {
     callback(null, out);
 }
 
-repl = require('repl');
-repl.start({
-    prompt: "cosmicos> ",
-    input: process.stdin,
-    output: process.stdout,
-    eval: cosmicos_eval
-});
+var args = process.argv.slice(2);
+
+if (args.length == 0) {
+    console.log("[See http://cosmicos.github.io/evaluate.html for help]");
+    repl = require('repl');
+    repl.start({
+	prompt: "cosmicos> ",
+	input: process.stdin,
+	output: process.stdout,
+	eval: cosmicos_eval
+    });
+} else {
+    if (args[0] == "-c") {
+	var out = cc.evaluateLine(args[1]);
+	var v = parseInt(out);
+	if (""+v == out) out = v;
+	console.log(out);
+    }
+}
+
 
