@@ -34,11 +34,15 @@ function run(op,part,skippy) {
     return v;
 }
 
+var err_part = null;
+var err_i = -1;
 try {
     //throw "skip it all";
     var cline = 0;
     for (var i=0; i<all.length && i<5000; i++) {
 	var part = all[i];
+	err_part = part;
+	err_i = i;
 	if (part.role != "code") continue;
 	cline++;
 	var op = part.lines.join("\n");
@@ -86,8 +90,9 @@ try {
 	assert(v==1);
     }
 } catch (e) {
-    console.log("Problem: " + e);
+    process.stderr.write("* evaluate.js failed on " + err_i + ": " + JSON.stringify(err_part) + "\n");
     // continue for now, to compare with old version
+    throw(e);
 }
 
 
