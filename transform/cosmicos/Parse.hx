@@ -18,7 +18,7 @@ class Parse {
                 level++;
                 if (level==1) continue;
             }
-            if (ch=='/' && level==0) {
+            if ((ch=='/'||ch=='|') && level==0) {
                 level = 1;
                 slashed = true;
                 continue;
