@@ -75,7 +75,7 @@ FILE(WRITE ${WORK}/setup.cmake "
 set(ACTIVE_DEPENDS)
 set(ACTIVE_DEPENDS_SHORT "")
 foreach(depend ${COSMIC_DEPENDS})
-  foreach(ext pl scm gate java)
+  foreach(ext pl scm gate java js)
     if(EXISTS ${MSG}/${depend}.${ext})
       add_custom_command(OUTPUT ${WORK}/${depend}.ftz
 	COMMAND ${CMAKE_COMMAND} 
