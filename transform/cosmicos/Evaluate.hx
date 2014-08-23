@@ -13,79 +13,83 @@ class Evaluate {
     private var id_translate : Int;
 
     public function evaluateInContext(e0: Dynamic, c: Memory) : Dynamic {
-        if (Std.is(e0,String)) {
-            var str : String = cast e0;
-            if (str.length==0 || str.charAt(0) == '1') {
-                return str.length;
+        var more = false;
+        do {
+            if (Std.is(e0,String)) {
+                var str : String = cast e0;
+                if (str.length==0 || str.charAt(0) == '1') {
+                    return str.length;
+                }
+                return str;
             }
-            return str;
-        }
-        if (Std.is(e0,Int)||Std.is(e0,BigInteger)) {
-            return e0;
-        }
-        //trace("working on " + Parse.deconsify(e0));
-        var cursor = new Cursor(e0);
-        var x : Dynamic = evaluateInContext(cursor.next(),c);
-        if (x==id_lambda) { // ?
-            var k2 : Int = evaluateInContext(cursor.next(),c);
-            var e2 : Dynamic = cursor.next();
-            return function(v) {
-                var c2 = new Memory(c,k2,v);
-                return evaluateInContext(e2,c2);
-            };
-        } else if (x==id_assign) { // not super needs
-            var k2 : Int = evaluateInContext(cursor.next(),c);
-            var v2 : Int = evaluateInContext(cursor.next(),c);
-            var c2 = new Memory(c,k2,v2);
-            return evaluateInContext(cursor.next(),c2);
-        } else if (x==id_define) { // @
-            var k2 = cursor.next();
-            var v2 = evaluateInContext(cursor.next(),c);
-            var code = evaluateInContext(k2,c);
-            c.add(code,v2);
-            return 1;
-        } else if (x==id_if) { // if
-            var choice = evaluateInContext(cursor.next(),c);
-            if (choice!=0) {
-                return evaluateInContext(cursor.next(),c);
+            if (Std.is(e0,Int)||Std.is(e0,BigInteger)) {
+                return e0;
+            }
+            //trace("working on " + Parse.deconsify(e0));
+            var cursor = new Cursor(e0);
+            var x : Dynamic = evaluateInContext(cursor.next(),c);
+            if (x==id_lambda) { // ?
+                var k2 : Int = evaluateInContext(cursor.next(),c);
+                var e2 : Dynamic = cursor.next();
+                return function(v) {
+                    var c2 = new Memory(c,k2,v);
+                    return evaluateInContext(e2,c2);
+                };
+            } else if (x==id_assign) { // not super needs
+                var k2 : Int = evaluateInContext(cursor.next(),c);
+                var v2 : Int = evaluateInContext(cursor.next(),c);
+                var c2 = new Memory(c,k2,v2);
+                e0 = cursor.next(); c = c2; more = true; continue;
+            } else if (x==id_define) { // @
+                var k2 = cursor.next();
+                var v2 = evaluateInContext(cursor.next(),c);
+                var code = evaluateInContext(k2,c);
+                c.add(code,v2);
+                return 1;
+            } else if (x==id_if) { // if
+                var choice = evaluateInContext(cursor.next(),c);
+                if (choice!=0) {
+                    e0 = cursor.next(); more = true; continue;
+                } else {
+                    cursor.next();
+                    e0 = cursor.next(); more = true; continue;
+                }
             } else {
-                cursor.next();
-                return evaluateInContext(cursor.next(),c);
-            }
-        } else {
-            var x0 : Dynamic = x;
-            var len = cursor.length();
-            //trace("== " + len + " ==");
-            if (Std.is(x,Int)||Std.is(x,BigInteger)) {
-                var j : Int = cast x;
-                x = c.get(j);
-                if (len>0) {
-                    if (x == null) {
-                        trace("Problem with " + j + " (" + vocab.reverse(j) + ")");
+                var x0 : Dynamic = x;
+                var len = cursor.length();
+                //trace("== " + len + " ==");
+                if (Std.is(x,Int)||Std.is(x,BigInteger)) {
+                    var j : Int = cast x;
+                    x = c.get(j);
+                    if (len>0) {
+                        if (x == null) {
+                            trace("Problem with " + j + " (" + vocab.reverse(j) + ")");
+                        }
+                    }
+                } else if (Std.is(x,String)) {
+                    // binary string
+                    var str : String = cast x;
+                    var u : BigInteger = BigInteger.ofInt(0);
+                    var two : BigInteger = BigInteger.ofInt(2);
+                    for (j in 0...str.length) {
+                        u = u.mul(two);
+                        if (str.charAt(j) == ':') u = u.add(BigInteger.ONE);
+                    }
+                    x = u;
+                }
+                for (i in 1...len) {
+                    var v = cursor.next();
+                    try {
+                        x = x(evaluateInContext(v,c));
+                    } catch(e : Dynamic) {
+                        trace("Problem evaluating " + x + " with " + v + " in " + x0 + " (" + vocab.reverse(x0) + ") from " + Parse.deconsify(e0));
+                        throw(e);
                     }
                 }
-            } else if (Std.is(x,String)) {
-                // binary string
-                var str : String = cast x;
-                var u : BigInteger = BigInteger.ofInt(0);
-                var two : BigInteger = BigInteger.ofInt(2);
-                for (j in 0...str.length) {
-                    u = u.mul(two);
-                    if (str.charAt(j) == ':') u = u.add(BigInteger.ONE);
-                }
-                x = u;
+                return x;
             }
-            for (i in 1...len) {
-                var v = cursor.next();
-                try {
-                    x = x(evaluateInContext(v,c));
-                } catch(e : Dynamic) {
-                    trace("Problem evaluating " + x + " with " + v + " in " + x0 + " (" + vocab.reverse(x0) + ") from " + Parse.deconsify(e0));
-                    throw(e);
-                }
-            }
-            return x;
-        }
+        } while (more);
+        return null;
     }
 
     public function evaluateExpression(e: Dynamic) : Dynamic {
