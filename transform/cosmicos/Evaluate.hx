@@ -335,4 +335,8 @@ class Evaluate {
         trace(e.evaluateLine("square 40"));
 #end
     }
+
+    static function dummy() {
+        var v = new ManuscriptStyle();
+    }
 }

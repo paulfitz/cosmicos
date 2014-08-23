@@ -37,7 +37,9 @@ add_custom_command(OUTPUT ${WORK}/CosmicEval.js
   DEPENDS ${SRC}/cosmicos/Evaluate.hx
   ${SRC}/cosmicos/Parse.hx
   ${SRC}/cosmicos/Vocab.hx
-  ${SRC}/cosmicos/Memory.hx)
+  ${SRC}/cosmicos/Memory.hx
+  ${SRC}/cosmicos/ManuscriptStyle.hx
+)
 
 add_custom_command(OUTPUT ${WORK}/SpiderScrawl.js
   COMMAND ${HAXE} -js SpiderScrawl.js -main cosmicos.SpiderScrawl -cp ${SRC}

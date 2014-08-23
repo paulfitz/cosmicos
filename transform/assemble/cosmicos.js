@@ -16,6 +16,13 @@ function needOutput() {
     }
 }
 
+function showText(root,parse) {
+    console.log(parse);
+    var ev = require(root + "/transform/CosmicEval.js").cosmicos;
+    var render = new ev.ManuscriptStyle();
+    render.render(parse);
+}
+
 module.exports = function(root) {
     msg = JSON.parse(fs.readFileSync(root + "/index.json", 'utf8'));
     var argv = process.argv;
@@ -27,12 +34,21 @@ module.exports = function(root) {
 	    output = argv[i];
 	}
     }
-    if (argv[2] == 'show') {
+    var cmd = argv[2];
+    if (cmd == 'show') {
 	needStanza();
 	console.log(msg[stanza]);
 	return 0;
     }
-    if (argv[2] == 'hear') {
+    if (cmd == 'text') {
+	needStanza();
+	var parse = msg[stanza].parse;
+	if (parse) {
+	    showText(root,parse);
+	}
+	return 0;
+    }
+    if (cmd == 'hear') {
 	var cos = require(root + "/transform/CosmicAudio.js").cosmicos;
 	var snd = new cos.Sound();
 	needStanza();
