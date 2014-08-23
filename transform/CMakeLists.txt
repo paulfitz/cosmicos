@@ -164,24 +164,29 @@ add_custom_target(vocab DEPENDS ${WORK}/vocab.json)
 
 ##############################################################################
 ##
-## Make a toy command-line cosmicos repl
+## Make a toy command-line cosmicos repl called cosh
 ##
 
 make_directory(${CMAKE_BINARY_DIR}/bin)
 make_directory(${CMAKE_BINARY_DIR}/lib)
-add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/bin/cosmicos.js
-  COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/CosmicEval.js ${CMAKE_BINARY_DIR}/lib/cosmicos.js
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/repl/repl.js ${CMAKE_BINARY_DIR}/bin/cosmicos.js
+set(PERM_CMD)
+if (UNIX)
+  set(PERM_CMD COMMAND chmod +x ${CMAKE_BINARY_DIR}/bin/cosh.js)
+endif()
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/bin/cosh.js
+  COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/CosmicEval.js ${CMAKE_BINARY_DIR}/lib/cosh.js
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/repl/repl.js ${CMAKE_BINARY_DIR}/bin/cosh.js
+  ${PERM_CMD}
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${WORK}/CosmicEval.js
   ${CMAKE_SOURCE_DIR}/tools/repl/repl.js)
-add_custom_target(cli DEPENDS ${CMAKE_BINARY_DIR}/bin/cosmicos.js)
+add_custom_target(cli ALL DEPENDS ${CMAKE_BINARY_DIR}/bin/cosh.js)
 
 
 ##############################################################################
 ##
-## Add a little utility in the build directory
+## Add a little utility for scanning message
 ##
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assemble/cosmicos ${CMAKE_BINARY_DIR}/cosmicos @ONLY)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assemble/cosmicos ${CMAKE_BINARY_DIR}/bin/cosmsg.js @ONLY)
 
