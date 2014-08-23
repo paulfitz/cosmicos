@@ -237,6 +237,18 @@ class Parse {
         return e0;
     }
 
+    public static function recoverList(e: Array<Dynamic>) {
+        for (i in 0...e.length) {
+            var v : Dynamic = e[i];
+            if (Std.is(v,Array)) {
+                var ei : Array<Dynamic> = cast v;
+                recoverList(ei);
+            } else {
+                e[i] = recover(v);
+            }
+        }
+    }
+
     public static function recover(x: Dynamic) : Dynamic {
         if (Std.is(x,Int)) {
             return x;
@@ -262,6 +274,9 @@ class Parse {
             }
             txt += ")";
             return txt;
+        }
+        if (Std.is(x,String)) {
+            return x;
         }
         return "???";
     }

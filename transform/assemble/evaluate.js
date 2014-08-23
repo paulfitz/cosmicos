@@ -87,6 +87,7 @@ try {
 	    part["lines_original"] = part["lines"];
 	    part["lines"] = [ "(" + op + ");" ];
 	    part["code"] = ev.codifyLine(op);
+	    part["parse"] = ev.nestedLine(op);
 	    console.log(">>> " + op);
 	    v = 1;
 	}

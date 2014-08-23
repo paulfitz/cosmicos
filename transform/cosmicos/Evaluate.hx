@@ -130,6 +130,7 @@ class Evaluate {
     public function nestedLine(str: String) : Dynamic {
         var lst = Parse.stringToList(str,vocab);
         Parse.encodeSymbols(lst,null);
+        Parse.recoverList(lst);
         return lst;
     }
 
