@@ -38,11 +38,9 @@ class Parse {
             }
             if (ch!=' '||level>0) cache += ch;
             if (level==0&&ch==' '&&cache.length>0) {
-                var nest = false;
                 if (cache.charAt(0)=='$') {
                     cache = cache.substr(1,cache.length-1);
-                    nest = true;
-                    result.push([cache]);
+                    result.push([-2, cache]);
                 } else {
                     result.push(cache);
                 }
@@ -59,8 +57,8 @@ class Parse {
             if (Std.is(v,Array)) {
                 var ei : Array<Dynamic> = cast v;
                 encodeSymbols(ei,vocab);
-            } else if (v==-1) {
-                continue; // slash marker
+            } else if (v==-1 || v==-2) {
+                continue; // marks source of nesting (/|$)
             } else {
                 var str : String = cast v;
                 var ch0 = str.charAt(0);
@@ -106,7 +104,7 @@ class Parse {
             }
         }
         if (e.length>0) {
-            if (e[0] == -1) {
+            if (e[0] == -1 || e[0] == -2) {
                 e.shift();
             }
         }
