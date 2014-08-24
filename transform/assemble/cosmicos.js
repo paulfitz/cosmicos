@@ -17,10 +17,10 @@ function needOutput() {
 }
 
 function showText(root,parse) {
-    console.log(parse);
     var ev = require(root + "/transform/CosmicEval.js").cosmicos;
     var render = new ev.ManuscriptStyle();
-    render.render(parse);
+    var txt = render.render(parse);
+    console.log(txt);
 }
 
 module.exports = function(root) {
@@ -63,6 +63,7 @@ module.exports = function(root) {
     console.log("Welcome to the CosmicOS message inspector command. Usage:");
     console.log("  cosmsg show -p NNNN               # show info about message part NNNN");
     console.log("  cosmsg hear -p NNNN -o audio.wav  # convert message part to audio");
+    console.log("  cosmsg text -p NNNN               # experimental text rendering of message part NNNN");
 }
 
 

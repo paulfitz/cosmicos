@@ -11,12 +11,11 @@ class ManuscriptStyle {
     public function new() {
     }
 
-    public function render(x: Array<Dynamic>) {
+    public function render(x: Array<Dynamic>) : Array<Dynamic> {
         out = new Array<Dynamic>();
         need_ws = false;
-        trace(x);
         renderNest(x,false);
-        trace(out);
+        return out;
     }
 
     public function ws() {
