@@ -2,7 +2,9 @@ var fs = require('fs');
 
 var msg = null;
 var stanza = -1;
+var last_stanza = -1;
 var output = "";
+var vocab = "";
 
 function needStanza() {
     if (stanza==-1) {
@@ -16,36 +18,101 @@ function needOutput() {
     }
 }
 
-function showText(root,parse) {
+function showText(root,src,parse) {
+    process.stdout.write("<!DOCTYPE html>\
+<html lang='en'>\
+  <head>\
+    <meta charset='utf-8'>\
+    <title>CosmicOS</title>\
+<style type='text/css'>\
+ html {\
+   font-size: 32px; \
+ }\
+ img {\
+   height: 32px; \
+   vertical-align:middle; \
+ }\
+</style>\
+  </head>\
+  <body>\
+");
     var ev = require(root + "/transform/CosmicEval.js").cosmicos;
     var render = new ev.ManuscriptStyle();
-    var txt = render.render(parse);
-    console.log(txt);
+    var letters_src = {};
+    if (vocab) {
+	    letters_src = require(vocab);
+    }
+    var letters = {};
+    if (letters_src["vocab"]) {
+	var lst = letters_src["vocab"];
+	for (var i=0; i<lst.length; i++) {
+	    var e = lst[i];
+	    letters[e.title] = e;
+	}
+    }
+
+    for (var s=stanza; s<=last_stanza; s++) {
+	var parse = msg[s]["parse"];
+	if (!parse) continue;
+	var txt = render.render(parse);
+	var nb = false;
+	for (var i=0; i<txt.length; i++) {
+	    var e = txt[i];
+	    var letter = letters[e];
+	    if (letter) {
+		process.stdout.write("<img src='" + letter.media + "'/>");
+	    } else {
+		var t = "" + e;
+		if (t.length>1) {
+		    if (nb) {
+			process.stdout.write(":");
+		    }
+		    nb = true;
+		} else {
+		    nb = false;
+		}
+		process.stdout.write(""+e);
+	    }
+	}
+	process.stdout.write("&nbsp;~<br />\n");
+    }
+    process.stdout.write("\
+  </body>\
+</html>\
+");
 }
 
-module.exports = function(root) {
+module.exports = function(root,src) {
     msg = JSON.parse(fs.readFileSync(root + "/index.json", 'utf8'));
     var argv = process.argv;
     for (var i=3; i<argv.length; i++) {
 	if (argv[i-1]=="-p") {
 	    stanza = parseInt(argv[i]);
 	}
+	if (argv[i-1]=="-P") {
+	    last_stanza = parseInt(argv[i]);
+	}
 	if (argv[i-1]=="-o") {
 	    output = argv[i];
 	}
+	if (argv[i-1]=="-v") {
+	    vocab = argv[i];
+	}
+    }
+    if (last_stanza == -1) {
+	last_stanza = stanza;
     }
     var cmd = argv[2];
     if (cmd == 'show') {
 	needStanza();
-	console.log(msg[stanza]);
+	for (var s=stanza; s<=last_stanza; s++) {
+	    console.log(msg[s]);
+	}
 	return 0;
     }
     if (cmd == 'text') {
 	needStanza();
-	var parse = msg[stanza].parse;
-	if (parse) {
-	    showText(root,parse);
-	}
+	showText(root,src);
 	return 0;
     }
     if (cmd == 'hear') {
@@ -53,6 +120,9 @@ module.exports = function(root) {
 	var snd = new cos.Sound();
 	needStanza();
 	needOutput();
+	if (last_stanza!=stanza) {
+	    throw("audio cannot do multiple parts yet");
+	}
 	var code = msg[stanza].code;
 	if (!code) throw "code not found for part " + stanza;
 	var txt = snd.textToWav(code,false);
@@ -63,7 +133,7 @@ module.exports = function(root) {
     console.log("Welcome to the CosmicOS message inspector command. Usage:");
     console.log("  cosmsg show -p NNNN               # show info about message part NNNN");
     console.log("  cosmsg hear -p NNNN -o audio.wav  # convert message part to audio");
-    console.log("  cosmsg text -p NNNN               # experimental text rendering of message part NNNN");
+    console.log("  cosmsg text -p NNNN -v vocab.json # experimental text rendering of message part NNNN");
 }
 
 
