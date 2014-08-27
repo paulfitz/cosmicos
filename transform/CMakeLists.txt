@@ -83,6 +83,8 @@ FILE(WRITE ${WORK}/setup.cmake "
 
 set(ACTIVE_DEPENDS)
 set(ACTIVE_DEPENDS_SHORT "")
+set(EXTRA_DEPEND_pl ${MSG}/cosmic.pm)
+set(EXTRA_DEPEND_js ${MSG}/cosmic.js)
 foreach(depend ${COSMIC_DEPENDS})
   foreach(ext pl scm gate java js)
     if(EXISTS ${MSG}/${depend}.${ext})
@@ -93,7 +95,7 @@ foreach(depend ${COSMIC_DEPENDS})
 	"-Dname:STRING=${depend}"
 	-P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/convert_${ext}.cmake
 	WORKING_DIRECTORY ${WORK}
-	DEPENDS ${MSG}/${depend}.${ext} UnlessDriver Fritzifier
+	DEPENDS ${MSG}/${depend}.${ext} UnlessDriver Fritzifier ${EXTRA_DEPEND_${ext}}
 	${CMAKE_CURRENT_SOURCE_DIR}/cmake/convert_${ext}.cmake)
       list(APPEND ACTIVE_DEPENDS ${WORK}/${depend}.ftz)
       set(ACTIVE_DEPENDS_SHORT "${ACTIVE_DEPENDS_SHORT} ${depend}")

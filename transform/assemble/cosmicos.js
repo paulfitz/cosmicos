@@ -54,6 +54,7 @@ function showText(root,src,parse) {
     for (var s=stanza; s<=last_stanza; s++) {
 	var parse = msg[s]["parse"];
 	if (!parse) continue;
+	process.stdout.write("<div data-id='" + s + "'>\n  ");
 	var txt = render.render(parse);
 	var nb = false;
 	for (var i=0; i<txt.length; i++) {
@@ -71,10 +72,13 @@ function showText(root,src,parse) {
 		} else {
 		    nb = false;
 		}
-		process.stdout.write(""+e);
+		if (t == " ") {
+		    t = "&#x2000;";
+		}
+		process.stdout.write(t);
 	    }
 	}
-	process.stdout.write("&nbsp;~<br />\n");
+	process.stdout.write("&nbsp;~\n</div>\n");
     }
     process.stdout.write("\
   </body>\

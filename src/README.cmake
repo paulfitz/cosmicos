@@ -4,6 +4,7 @@
 set(COSMIC_DEPENDS
   COS_License
   COS_Intro
+  COS_Compare
   COS_NotLogic 
   COS_Unary
   COS_Addition

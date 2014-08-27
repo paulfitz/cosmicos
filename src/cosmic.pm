@@ -289,7 +289,7 @@ sub ShowOldUnary {
 };
 
 
-sub ShowUnary {
+sub ShowOld2Unary {
   my $ct = shift;
   my $txt = "U";
   for (my $i=0; $i<$ct; $i++)
@@ -298,6 +298,17 @@ sub ShowUnary {
 #      $txt .= "(:)";
     }
   $txt .= "U";
+  return $txt;
+};
+
+sub ShowUnary {
+  my $ct = shift;
+  my $txt = "(unary ";
+  for (my $i=0; $i<$ct; $i++)
+    {
+      $txt .= " 1";
+    }
+  $txt .= " 0)";
   return $txt;
 };
 
