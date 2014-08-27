@@ -1,3 +1,10 @@
 include(setup.cmake)
 set(ENV{NODE_PATH} ${base})
-execute_process(COMMAND node ${base}/${in} OUTPUT_FILE ${out})
+execute_process(COMMAND node ${base}/${in} OUTPUT_FILE ${out} RESULT_VARIABLE result)
+
+if (NOT ${result} EQUAL 0)
+  if (EXISTS ${out})
+    file(REMOVE ${out})
+  endif()
+  message(FATAL_ERROR "node returned ${result}")
+endif()
