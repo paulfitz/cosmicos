@@ -2,6 +2,7 @@
 var cos = require("./cosmic");
 
 cos.language(2);
+cos.seed(42);
 
 cos.section("introduce equality for unary numbers","MATH");
 cos.comment("The intro operator does nothing essential, and could be omitted - it just tags the first use of a new operator. The = operator is introduced alongside a duplication of unary numbers.  The meaning will not quite by nailed down until we see other relational operators.");

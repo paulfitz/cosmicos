@@ -1,6 +1,5 @@
 
 function CosWrite() {
-    this.rz = 1;
     this.rw = 1;
 }
 
@@ -17,9 +16,22 @@ CosWrite.prototype.getPseudo = function() {
     return this.rw/T32;
 }
 
+CosWrite.prototype.seed = function(v) {
+    this.rw = v;
+}
+
 CosWrite.prototype.irand = function(top) {
     var v = Math.floor(this.getPseudo()*top);
     return v % top;
+}
+
+CosWrite.prototype.permute = function(lst) {
+    lst = lst.slice();
+    var out = [];
+    while (lst.length>0) {
+	out = out.concat(lst.splice(this.irand(lst.length),1));
+    }
+    return out;
 }
 
 CosWrite.prototype.add = function(s) {
