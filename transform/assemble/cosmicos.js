@@ -18,14 +18,14 @@ function needOutput() {
     }
 }
 
-function showText(root,src,parse) {
+function showText(root,src) {
     process.stdout.write("<!DOCTYPE html>\
 <html lang='en'>\
   <head>\
     <meta charset='utf-8'>\
     <title>CosmicOS</title>\
 <style type='text/css'>\
- html {\
+ .koan {\
    font-size: 32px; \
  }\
  img {\
@@ -52,9 +52,21 @@ function showText(root,src,parse) {
     }
 
     for (var s=stanza; s<=last_stanza; s++) {
-	var parse = msg[s]["parse"];
-	if (!parse) continue;
-	process.stdout.write("<div data-id='" + s + "'>\n  ");
+	var m = msg[s];
+	var parse = m["parse"];
+	if (!parse) {
+	    if (m["role"] == "comment") {
+		process.stdout.write("<pre>\n");
+		var lines = m["lines"];
+		for (var i=0; i<lines.length; i++) {
+		    process.stdout.write(lines[i]);
+		    process.stdout.write("\n");
+		}
+		process.stdout.write("</pre>\n");
+	    }
+	    continue;
+	}
+	process.stdout.write("<div class='koan' data-id='" + s + "'>\n  ");
 	var txt = render.render(parse);
 	var nb = false;
 	for (var i=0; i<txt.length; i++) {
