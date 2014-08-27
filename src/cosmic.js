@@ -34,6 +34,15 @@ CosWrite.prototype.permute = function(lst) {
     return out;
 }
 
+CosWrite.prototype.bag = function(first,last) {
+    var lst = [];
+    for (var i=first; i<=last; i++) {
+	lst.push(i);
+    }
+    return this.permute(lst);
+}
+
+
 CosWrite.prototype.add = function(s) {
     if (typeof s == 'object') {
 	s = this.stringify(s,false);
