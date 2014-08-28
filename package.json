@@ -22,10 +22,10 @@
     "url": "http://paulfitz.github.io/"
   },
   "scripts": {
-    "prepublish": "mkdir -p build && cd build && cmake .. && make cli",
+    "prepublish": "mkdir -p build && mkdir -p lib && mkdir -p bin && cd build && cmake .. && make cli && cp lib/cosmicos.js ../lib && cp bin/cosmicos.js ../bin",
     "test": "cd build && make"
   },
-  "main": "build/lib/cosmicos.js",
+  "main": "lib/cosmicos.js",
   "license": "GPL",
-  "bin": "build/bin/cosmicos.js"
+  "bin": "bin/cosmicos.js"
 }
