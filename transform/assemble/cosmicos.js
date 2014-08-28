@@ -53,6 +53,7 @@ function showText(root,src) {
 
     for (var s=stanza; s<=last_stanza; s++) {
 	var m = msg[s];
+	if (!m) continue;
 	var parse = m["parse"];
 	if (!parse) {
 	    if (m["role"] == "comment") {
@@ -82,6 +83,8 @@ function showText(root,src) {
 			var letterv = letters[v];
 			if (letterv && letterv.media) {
 			    process.stdout.write("<img src='" + letterv.media + "'/>");
+			} else {
+			    process.stdout.write("" + v);
 			}
 		    }
 		}
