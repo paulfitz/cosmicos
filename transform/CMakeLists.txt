@@ -140,7 +140,7 @@ add_custom_command(OUTPUT ${WORK}/primer.json
 
 # assem2.json is assem.json but marked up also with message fragments
 # in final form
-add_custom_command(OUTPUT ${WORK}/assem2.json
+add_custom_command(OUTPUT ${WORK}/assem2.json ${CMAKE_BINARY_DIR}/index.txt
   COMMAND ${CMAKE_COMMAND} 
   "-Din:STRING=${CMAKE_SOURCE_DIR}/transform/assemble/evaluate.js" 
   "-Dnargs:STRING="
@@ -154,7 +154,23 @@ add_custom_command(OUTPUT ${WORK}/assem2.json
   ${WORK}/CosmicEval.js
   ${CMAKE_SOURCE_DIR}/transform/assemble/evaluate.js)
 
-add_custom_target(assem ALL DEPENDS ${WORK}/assem2.json)
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/wrapped.txt ${CMAKE_BINARY_DIR}/entropy.txt
+  COMMAND ${CMAKE_COMMAND} 
+  "-Din:STRING=${CMAKE_BINARY_DIR}/index.txt" 
+  "-Dout:STRING=${CMAKE_BINARY_DIR}/wrapped.txt"
+  -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/wrap.cmake
+  COMMAND ${CMAKE_COMMAND} -E tar cj ${CMAKE_BINARY_DIR}/wrapped.tar.bz2 ${CMAKE_BINARY_DIR}/wrapped.txt
+  COMMAND ${CMAKE_COMMAND} 
+  "-Din:STRING=${CMAKE_BINARY_DIR}/wrapped.tar.bz2" 
+  "-Dout:STRING=${CMAKE_BINARY_DIR}/entropy.txt"
+  -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/wc.cmake
+  WORKING_DIRECTORY ${WORK}
+  DEPENDS ${CMAKE_BINARY_DIR}/index.txt
+  ${CMAKE_SOURCE_DIR}/bin/wrap.pl
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/wrap.cmake
+  ${CMAKE_CURRENT_SOURCE_DIR}/cmake/wc.cmake)
+
+add_custom_target(assem ALL DEPENDS ${CMAKE_BINARY_DIR}/wrapped.txt)
 
 
 ##############################################################################
