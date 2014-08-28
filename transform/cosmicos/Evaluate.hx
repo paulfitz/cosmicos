@@ -37,9 +37,11 @@ class Evaluate {
                     return evaluateInContext(e2,c2);
                 };
             } else if (x==id_lambda0) { // ??
+                var k2 : Int = evaluateInContext(cursor.next(),c);
                 var e2 : Dynamic = cursor.next();
-                return new CosFunction(function() {
-                    return evaluateInContext(e2,c);
+                return new CosFunction(function(v) {
+                        var c2 = new Memory(c,k2,v);
+                        return evaluateInContext(e2,c2);
                 }, true);
             } else if (x==id_assign) { // not super needs
                 var k2 : Int = evaluateInContext(cursor.next(),c);
@@ -53,7 +55,7 @@ class Evaluate {
                 c.add(code,v2);
                 return 1;
             } else if (x==id_if) { // if
-                // Not really needed now that we have skip-lambda "??"
+                // Not really needed now that we have meta-lambda "??"
                 var choice = evaluateInContext(cursor.next(),c);
                 if (choice!=0) {
                     e0 = cursor.next(); more = true; continue;
@@ -88,9 +90,9 @@ class Evaluate {
                     var v = cursor.next();
                     try {
                         if (Std.is(x,CosFunction)) {
-                            // Currently only used for SKIP functions.
+                            // Currently only used for META functions.
                             // So: we skip
-                            x = x.fn();
+                            x = x.fn(function(x) { return evaluateInContext(v,c); });
                         } else {
                             x = x(evaluateInContext(v,c));
                         }
@@ -293,7 +295,7 @@ class Evaluate {
         evaluateLine("@ has-square-divisor-within | ? top | ? x | if (< $top 0) 0 | if (= $x | * $top $top) 1 | has-square-divisor-within (- $top 1) $x");
         evaluateLine("@ is:square | ? x | has-square-divisor-within $x $x");
 
-        // skip-function
+        // meta-lambda-function
         id_lambda0 = vocab.get("??");
     }
 
@@ -333,7 +335,8 @@ class Evaluate {
                     return function(x:Dynamic) { return function(y:Dynamic) { return y; }};
                 }
             });
-        //evaluateLine("@ if | ? v | (pure $v) (? x | ?? $x) (?? | ? y $y)");
+        //evaluateLine("@ if | ? v | (pure $v) (? x | ?? y $x) (?? x | ? y $y)");
+        evaluateLine("@ eval | ? x | x 1");
     }
     
     public function addStd() {

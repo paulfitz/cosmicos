@@ -5,10 +5,10 @@ package cosmicos;
 @:expose
 class CosFunction {
     public var fn : Dynamic;
-    public var skip : Bool;
+    public var meta : Bool;
     
-    public function new(fn: Dynamic, skip: Bool) {
+    public function new(fn: Dynamic, meta: Bool) {
         this.fn = fn;
-        this.skip = skip;
+        this.meta = meta;
     }
 }
