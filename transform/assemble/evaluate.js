@@ -53,7 +53,7 @@ try {
 	// now using one layer less of nesting
 
 	var skippy = false;
-	// skip the most time consuming parts of message
+	// skip the most time consuming parts of message for now
 	if (true) {
 	    if (op.indexOf("distill-circuit")>=0) {
 		process.stderr.write("Skipping distill-circuit\n");
@@ -67,6 +67,8 @@ try {
 		process.stderr.write("Skipping even-natural\n");
 		skippy = true;
 	    }
+	} else {
+	    process.stderr.write("At " + i + "\n");
 	}
 
 	if (op[0] == '(') {

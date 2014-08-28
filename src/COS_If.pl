@@ -62,23 +62,22 @@ sub ShowIfLesson {
 				  Num($r3))));
     }
 
-  $txt .= "(define max / ? x / ? y / if (> (x) (y)) (x) (y));\n";
-  $txt .= "(define min / ? x / ? y / if (< (x) (y)) (x) (y));\n";
+  $txt .= "(define max | ? x | ? y | if (> \$x \$y) \$x \$y);\n";
+  $txt .= "(define min | ? x | ? y | if (< \$x \$y) \$x \$y);\n";
   for (my $r1=0; $r1<3; $r1++) {
       for (my $r2=0; $r2<3; $r2++) {
 	  my $rmax = ($r1>$r2)?$r1:$r2;
 	  my $rmin = ($r1<$r2)?$r1:$r2;
-	  $txt .= "(= $rmax / max $r1 $r2);\n";
-	  $txt .= "(= $rmin / min $r1 $r2);\n";
+	  $txt .= "(= $rmax | max $r1 $r2);\n";
+	  $txt .= "(= $rmin | min $r1 $r2);\n";
       }  
   }
-  $txt .= "# need to be careful about whether 'if' is eager or lazy\n";
-  $txt .= "# here we suggest that it is lazy\n";
-  $txt .= "(define factorial / ? n / if (< (n) 1) 1 / * (n) / factorial / - (n) 1);\n";
+  $txt .= "# if does not evaluate branch-not-taken, TODO show this.\n";
+  $txt .= "(define factorial | ? n | if (< \$n 1) 1 | * \$n | factorial | - \$n 1);\n";
   my $v = 1;
   for (my $i=1; $i<=5; $i++) {
       $v = $v*$i;
-      $txt .= "(= $v / factorial $i);\n";
+      $txt .= "(= $v | factorial $i);\n";
   }
 
   return $txt;

@@ -387,7 +387,7 @@ sub Mogrify {
     if ($str =~ /\(/) {
 	$str =~ s/^\(//;
 	$str =~ s/\)$//;
-	return "/ $str";
+	return "| $str";
     }
     return $str;
 }
