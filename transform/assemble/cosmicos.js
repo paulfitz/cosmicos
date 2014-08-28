@@ -40,7 +40,7 @@ function showText(root,src) {
     var render = new ev.ManuscriptStyle();
     var letters_src = {};
     if (vocab) {
-	    letters_src = require(vocab);
+	letters_src = require(vocab);
     }
     var letters = {};
     if (letters_src["vocab"]) {
@@ -73,7 +73,18 @@ function showText(root,src) {
 	    var e = txt[i];
 	    var letter = letters[e];
 	    if (letter) {
-		process.stdout.write("<img src='" + letter.media + "'/>");
+		if (letter.media) {
+		    process.stdout.write("<img src='" + letter.media + "'/>");
+		} else {
+		    var vs = letter.alias.split(":");
+		    for (var j=0; j<vs.length; j++) {
+			var v = vs[j];
+			var letterv = letters[v];
+			if (letterv && letterv.media) {
+			    process.stdout.write("<img src='" + letterv.media + "'/>");
+			}
+		    }
+		}
 	    } else {
 		var t = "" + e;
 		if (t.length>1) {
