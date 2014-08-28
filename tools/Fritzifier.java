@@ -270,9 +270,9 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 	//out.println("   (field super (" + fritzName(clazz.getSuperclassName()) + " new))");
 	//out.println("   (method unknown (lambda (x) (super (x))))");
 	out.println("   (field super-ref (make-cell 0))");
-	out.println("   (method new (set! (super-ref) (" + fritzName(clazz.getSuperclassName()) + " / this)))");
-	out.println("   (method super (? x / (get! / super-ref) / x))");
-	out.println("   (method unknown (? x / self super / x))");
+	out.println("   (method new (set! (super-ref) (" + fritzName(clazz.getSuperclassName()) + " | this)))");
+	out.println("   (method super (? x | (get! | super-ref) | x))");
+	out.println("   (method unknown (? x | self super | x))");
     }
 
     public void visitField(Field field) {
@@ -424,8 +424,8 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 	    //out.println("      (var " + l.getIndex() + " " + l.getName() + " " +
 			//fritzName(l.getType().toString()) +  ")");
 	}
-	out.println(") /");
-	out.println("      let ((vars / cell new / make-hash / vector");
+	out.println(") |");
+	out.println("      let ((vars | cell new | make-hash | vector");
 	out.print("                   ");
 	for(int i=0; i < lvs.length; i++) {
 	    LocalVariableGen l = lvs[i];
@@ -440,9 +440,9 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 			//fritzName(l.getType().toString()) +  ")");
 	}
 	out.println(")");
-	out.println("           (stack / cell new / vector)) /");
+	out.println("           (stack | cell new | vector)) |");
 
-	out.println("      state-machine (vars) (stack) / ? jvm / ? x / cond");
+	out.println("      state-machine (vars) (stack) | ? jvm | ? x | cond");
 
 	for(int i=0; i < ihs.length; i++) {
 	    InstructionHandle ih   = ihs[i];

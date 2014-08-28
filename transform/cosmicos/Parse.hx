@@ -18,6 +18,10 @@ class Parse {
                 level++;
                 if (level==1) continue;
             }
+            // add this in when getting strict about '|' instead of '/'
+            //if (ch=='/' && level==0) {
+            //  throw("'/' should be '|' now in " + x);
+            //}
             if ((ch=='/'||ch=='|') && level==0) {
                 level = 1;
                 slashed = true;

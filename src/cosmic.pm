@@ -701,6 +701,9 @@ sub ShowLesson {
     my $txt = "";
 
     $txt = $ltxt;
+    # replace old "/" separator with new "|"
+    # we assume .pl lessons will die out before "/" gets reused
+    $txt =~ s/ \/ / \| /g;
     
     print $txt;
 }

@@ -222,9 +222,9 @@ class Evaluate {
 
         mem.add(vocab.get("intro"), function(x){ return 1; });
         addStdMin();
-        evaluateLine("@ not / ? 0 / if $0 0 1");
-        evaluateLine("@ and / ? 0 / ? 1 / if $0 $1 0");
-        evaluateLine("@ or / ? 0 / ? 1 / if $0 1 $1");
+        evaluateLine("@ not | ? 0 | if $0 0 1");
+        evaluateLine("@ and | ? 0 | ? 1 | if $0 $1 0");
+        evaluateLine("@ or | ? 0 | ? 1 | if $0 1 $1");
         mem.add(vocab.get("make-cell"), function(x){ return { data: x }; } );
         mem.add(vocab.get("get!"), function(x){ 
                 return x.data; 
@@ -286,10 +286,10 @@ class Evaluate {
 
         // Transition vocabulary
         evaluateLine("@ is:int $number?");
-        evaluateLine("@ unary-v | ? v | ? x | if (= $x 0) $v (unary-v / + $v 1)");
+        evaluateLine("@ unary-v | ? v | ? x | if (= $x 0) $v (unary-v | + $v 1)");
         evaluateLine("@ unary | unary-v 0");
         // inefficient
-        evaluateLine("@ has-divisor-within | ? top | ? x | if (< $top 2) 0 | if (= $x | * $top | div $x $top) 1 / has-divisor-within (- $top 1) $x");
+        evaluateLine("@ has-divisor-within | ? top | ? x | if (< $top 2) 0 | if (= $x | * $top | div $x $top) 1 | has-divisor-within (- $top 1) $x");
         evaluateLine("@ is:prime | ? x | if (< $x 2) 0 | not | has-divisor-within (- $x 1) $x");
         // very very inefficient!        
         evaluateLine("@ has-square-divisor-within | ? top | ? x | if (< $top 0) 0 | if (= $x | * $top $top) 1 | has-square-divisor-within (- $top 1) $x");

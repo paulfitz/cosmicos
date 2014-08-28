@@ -89,7 +89,7 @@ print "# GATE testing alternate primer based on gates: CIRCUIT_NAME circuit\n";
 print "# This section contains one or more representations of a circuit\n";
 print "# constructed using UNLESS gates.\n";
 
-print "(define CIRCUIT_NAME_gate / vector ";
+print "(define CIRCUIT_NAME_gate | vector ";
 
 @line = sort {
     (my $a1, my $a2, my $a3, my $a4, my @rema) = split(/ /,$a);
@@ -118,7 +118,7 @@ foreach my $l (@line) {
 }
 print ");\n";
 
-print "(define CIRCUIT_NAME_image / make-image $d1 $d2 / vector ";
+print "(define CIRCUIT_NAME_image | make-image $d1 $d2 | vector ";
 for (my $y=0; $y<$d1; $y++) {
     print "\n  (";
     for (my $x=0; $x<$d2; $x++) {
