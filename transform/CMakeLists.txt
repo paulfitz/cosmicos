@@ -34,11 +34,13 @@ add_custom_command(OUTPUT ${WORK}/CosmicAudio.js
 add_custom_command(OUTPUT ${WORK}/CosmicEval.js
   COMMAND ${HAXE} -js CosmicEval.js -main cosmicos.Evaluate -cp ${SRC}
   WORKING_DIRECTORY ${WORK}
-  DEPENDS ${SRC}/cosmicos/Evaluate.hx
+  DEPENDS 
+  ${SRC}/cosmicos/Evaluate.hx
   ${SRC}/cosmicos/Parse.hx
   ${SRC}/cosmicos/Vocab.hx
   ${SRC}/cosmicos/Memory.hx
   ${SRC}/cosmicos/ManuscriptStyle.hx
+  ${SRC}/cosmicos/CosFunction.hx
 )
 
 add_custom_command(OUTPUT ${WORK}/SpiderScrawl.js
@@ -185,7 +187,7 @@ if (UNIX)
   set(PERM_CMD COMMAND chmod +x ${CMAKE_BINARY_DIR}/bin/cosh.js)
 endif()
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/bin/cosh.js
-  COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/CosmicEval.js ${CMAKE_BINARY_DIR}/lib/cosh.js
+  COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/CosmicEval.js ${CMAKE_BINARY_DIR}/lib/cosmicos.js
   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/repl/repl.js ${CMAKE_BINARY_DIR}/bin/cosh.js
   ${PERM_CMD}
   WORKING_DIRECTORY ${WORK}
