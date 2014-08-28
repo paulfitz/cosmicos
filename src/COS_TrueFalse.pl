@@ -6,54 +6,55 @@ use cosmic;
 sub ShowTrueFalseLesson {
   my $txt = "";
   $txt .= "# MATH use equality for truth values\n";
+
+  $txt .= "# Not quite committing to a *type* for truth values in the message, side-stepping that issue until we really need to decide it.\n";
+  $txt .= ShowLine(Op("define","true",Op2("=",0,0)));
+  $txt .= ShowLine(Op("define","false",Op2("=",0,1)));
   for (my $i=0; $i<5; $i++)
     {
-      $txt .= ShowLine(Op2("=",ShowTrueComparison(),ShowTrueComparison()));
+      $txt .= ShowLine(Op2("=",ShowTrue(),ShowTrueComparisonBin()));
     }
   for (my $i=0; $i<5; $i++)
     {
-      $txt .= ShowLine(Op2("=",ShowFalseComparison(),ShowFalseComparison()));
+      $txt .= ShowLine(Op2("=",ShowTrueComparisonBin(),ShowTrue()));
     }
   for (my $i=0; $i<5; $i++)
     {
-      $txt .= ShowLine(Op1("not",
-			   Op2("=",
-			       ShowFalseComparison(),
-			       ShowTrueComparison())));
+      $txt .= ShowLine(Op2("=",ShowFalse(),ShowFalseComparisonBin()));
     }
   for (my $i=0; $i<5; $i++)
     {
-      $txt .= ShowLine(Op1("not",
-			   Op2("=",
-			       ShowTrueComparison(),
-			       ShowFalseComparison())));
-    }
-#  $txt .= ShowLine(Op("intro","true"));
-#  $txt .= ShowLine(Op("intro","false"));
-  $txt .= "# This could all be simplified or removed\n";
-  $txt .= "# once the handling of true/false stabilizes\n";
-  $txt .= ShowLine(Op("define","true",Num(1)));
-  $txt .= ShowLine(Op("define","false",Num(0)));
-  for (my $i=0; $i<5; $i++)
-    {
-      $txt .= ShowLine(Op2("=",ShowTrue(),ShowTrueComparison()));
-    }
-  for (my $i=0; $i<5; $i++)
-    {
-      $txt .= ShowLine(Op2("=",ShowTrueComparison(),ShowTrue()));
-    }
-  for (my $i=0; $i<5; $i++)
-    {
-      $txt .= ShowLine(Op2("=",ShowFalse(),ShowFalseComparison()));
-    }
-  for (my $i=0; $i<5; $i++)
-    {
-      $txt .= ShowLine(Op2("=",ShowFalseComparison(),ShowFalse()));
+      $txt .= ShowLine(Op2("=",ShowFalseComparisonBin(),ShowFalse()));
     }
   $txt .= ShowLine(Op2("=",ShowTrue(),ShowTrue()));
   $txt .= ShowLine(Op2("=",ShowFalse(),ShowFalse()));
   $txt .= ShowLine(Op1("not",Op2("=",ShowTrue(),ShowFalse())));
   $txt .= ShowLine(Op1("not",Op2("=",ShowFalse(),ShowTrue())));
+
+  for (my $i=0; $i<5; $i++)
+    {
+      $txt .= ShowLine(Op2("=",ShowTrueComparisonBin(),ShowTrueComparisonBin()));
+    }
+  for (my $i=0; $i<5; $i++)
+    {
+      $txt .= ShowLine(Op2("=",ShowFalseComparisonBin(),ShowFalseComparisonBin()));
+    }
+  for (my $i=0; $i<5; $i++)
+    {
+      $txt .= ShowLine(Op1("not",
+			   Op2("=",
+			       ShowFalseComparisonBin(),
+			       ShowTrueComparisonBin())));
+    }
+  for (my $i=0; $i<5; $i++)
+    {
+      $txt .= ShowLine(Op1("not",
+			   Op2("=",
+			       ShowTrueComparisonBin(),
+			       ShowFalseComparisonBin())));
+    }
+#  $txt .= ShowLine(Op("intro","true"));
+#  $txt .= ShowLine(Op("intro","false"));
 
   return $txt;
 };

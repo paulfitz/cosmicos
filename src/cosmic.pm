@@ -492,14 +492,14 @@ sub Apply {
 
 
 sub ShowTrue {
-  return Op("true");
+  return "\$true";
 };
 
 sub ShowFalse {
-  return Op("false");
+  return "\$false";
 };
 
-sub ShowTrueComparison {
+sub ShowTrueComparisonOld {
   my $txt = "";
   my $c = irand(3);
   if ($c==0)
@@ -525,7 +525,7 @@ sub ShowTrueComparison {
 
 
 
-sub ShowFalseComparison {
+sub ShowFalseComparisonOld {
   my $txt = "";
   my $c = irand(3);
   if ($c==0)
@@ -589,6 +589,9 @@ sub ShowTrueComparisonBin {
   return $txt;
 }
 
+sub ShowTrueComparison {
+    return ShowTrueComparisonBin();
+}
 
 
 sub ShowFalseComparisonBin {
@@ -628,6 +631,10 @@ sub ShowFalseComparisonBin {
     }
 
   return $txt;
+}
+
+sub ShowFalseComparison {
+    return ShowFalseComparisonBin();
 }
 
 
