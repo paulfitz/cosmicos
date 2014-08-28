@@ -7,6 +7,7 @@ class Evaluate {
     private var vocab : Vocab;
     private var mem : Memory;
     private var id_lambda : Int;
+    private var id_lambda0 : Int;
     private var id_define : Int;
     private var id_if : Int;
     private var id_assign : Int;
@@ -35,6 +36,11 @@ class Evaluate {
                     var c2 = new Memory(c,k2,v);
                     return evaluateInContext(e2,c2);
                 };
+            } else if (x==id_lambda0) { // ??
+                var e2 : Dynamic = cursor.next();
+                return new CosFunction(function() {
+                    return evaluateInContext(e2,c);
+                }, true);
             } else if (x==id_assign) { // not super needs
                 var k2 : Int = evaluateInContext(cursor.next(),c);
                 var v2 : Int = evaluateInContext(cursor.next(),c);
@@ -47,6 +53,7 @@ class Evaluate {
                 c.add(code,v2);
                 return 1;
             } else if (x==id_if) { // if
+                // Not really needed now that we have skip-lambda "??"
                 var choice = evaluateInContext(cursor.next(),c);
                 if (choice!=0) {
                     e0 = cursor.next(); more = true; continue;
@@ -80,7 +87,13 @@ class Evaluate {
                 for (i in 1...len) {
                     var v = cursor.next();
                     try {
-                        x = x(evaluateInContext(v,c));
+                        if (Std.is(x,CosFunction)) {
+                            // Currently only used for SKIP functions.
+                            // So: we skip
+                            x = x.fn();
+                        } else {
+                            x = x(evaluateInContext(v,c));
+                        }
                     } catch(e : Dynamic) {
                         trace("Problem evaluating " + x + " with " + v + " in " + x0 + " (" + vocab.reverse(x0) + ") from " + Parse.deconsify(e0));
                         throw(e);
@@ -138,6 +151,7 @@ class Evaluate {
         mem = new Memory(null);
         vocab = new Vocab();
         id_lambda = vocab.get("?");
+        id_lambda0 = vocab.get("??");
         id_define = vocab.get("@");
         id_if = vocab.get("if");
         id_assign = vocab.get("assign");
@@ -278,6 +292,9 @@ class Evaluate {
         // very very inefficient!        
         evaluateLine("@ has-square-divisor-within | ? top | ? x | if (< $top 0) 0 | if (= $x | * $top $top) 1 | has-square-divisor-within (- $top 1) $x");
         evaluateLine("@ is:square | ? x | has-square-divisor-within $x $x");
+
+        // skip-function
+        id_lambda0 = vocab.get("??");
     }
 
     public function addStdMin() {
@@ -309,13 +326,21 @@ class Evaluate {
                     if (isBi2(x,y)) return (bi(x).compare(bi(y))>0)?1:0;
                     return (x>y)?1:0; 
                 }});
+        mem.add(vocab.get("pure"), function(v:Dynamic) {
+                if (v) {
+                    return function(x:Dynamic) { return function(y:Dynamic) { return x; }};
+                } else {
+                    return function(x:Dynamic) { return function(y:Dynamic) { return y; }};
+                }
+            });
+        //evaluateLine("@ if | ? v | (pure $v) (? x | ?? $x) (?? | ? y $y)");
     }
     
     public function addStd() {
         addStdMin();
-        evaluateLine("@ not / ? x / if $x 0 1");
-        evaluateLine("@ and / ? x / ? y / if $x $y 0");
-        evaluateLine("@ or / ? x / ? y / if $x 1 $y");
+        evaluateLine("@ not | ? x | if $x 0 1");
+        evaluateLine("@ and | ? x | ? y | if $x $y 0");
+        evaluateLine("@ or | ? x | ? y | if $x 1 $y");
     }
 
     public function addPrimer(primer: Dynamic) {
