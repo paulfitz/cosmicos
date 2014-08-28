@@ -72,7 +72,7 @@ sub ShowIfLesson {
 	  $txt .= "(= $rmin | min $r1 $r2);\n";
       }  
   }
-  $txt .= "# if does not evaluate branch-not-taken, TODO show this.\n";
+  $txt .= "# 'if' does not evaluate branch-not-taken, TODO show this.\n";
   $txt .= "(define factorial | ? n | if (< \$n 1) 1 | * \$n | factorial | - \$n 1);\n";
   my $v = 1;
   for (my $i=1; $i<=5; $i++) {
