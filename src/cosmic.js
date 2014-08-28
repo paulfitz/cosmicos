@@ -56,7 +56,7 @@ CosWrite.prototype.stringify = function(x,nested) {
     var offset = 0;
     var nws = false;
     if (x.length>1) {
-	if (typeof x[0] == 'integer') {
+	if (typeof x[0] == 'number') {
 	    mode = x[0];
 	    if (mode>=0) {
 		mode = 0;
@@ -66,10 +66,15 @@ CosWrite.prototype.stringify = function(x,nested) {
 	}
     }
     if (nested) {
+	if (nws) {
+	    txt += " ";
+	    nws = false;
+	}
 	if (mode==0) {
 	    txt += "(";
 	} else if (mode==-1) {
 	    txt += "|";
+	    nws = true;
 	} else if (mode==-2) {
 	    txt += "$";
 	}
