@@ -5,9 +5,9 @@
 
 (define make-table
   (lambda (lst)
-    (crunch (? x / ? h / 
-	       assign name (car / x) /
-	       assign obj (cdr / x) /
+    (crunch (? x | ? h | 
+	       assign name (car | x) |
+	       assign obj (cdr | x) |
 	       hash-add (h) (name) (obj))
 	    (append (hash-null) (lst)))));
 
@@ -21,9 +21,9 @@
 
 (define my-links
   (map 
-   (? entry (assign src (car / entry) /
-		    assign dest (cdr / entry) /
-		    door new (geo-map / src) (geo-map / dest)))
+   (? entry (assign src (car | entry) |
+		    assign dest (cdr | entry) |
+		    door new (geo-map | src) (geo-map | dest)))
    (vector
     (cons "boston" "dublin")
     (cons "dublin" "paris")
@@ -34,31 +34,31 @@
 
 (myrobo set-room (geo-map "dublin"));
 
-(demo / myrobo get-room name);
+(demo | myrobo get-room name);
 
 (myrobo update);
 
-(demo / myrobo get-room name);
+(demo | myrobo get-room name);
 
 (myrobo update);
 
-(demo / myrobo get-room name);
+(demo | myrobo get-room name);
 
 (myrobo update);
 
-(demo / myrobo get-room name);
+(demo | myrobo get-room name);
 
 (myrobo update);
 
-(demo / myrobo get-room name);
+(demo | myrobo get-room name);
 
 (myrobo update);
 
-(demo / myrobo get-room name);
+(demo | myrobo get-room name);
 
 (myrobo update);
 
-(demo / myrobo get-room name);
+(demo | myrobo get-room name);
 
 
 # all characters should update together
@@ -77,16 +77,16 @@
 			  (the-places))))
 		 (links set
 			(map 
-			 (? entry (assign src (car / entry) /
-					  assign dest (cdr / entry) /
+			 (? entry (assign src (car | entry) |
+					  assign dest (cdr | entry) |
 					  door new 
-					  (places get / src) 
-					  (places get / dest)))
+					  (places get | src) 
+					  (places get | dest)))
 			 (the-links)))))
        (method add (lambda (place name val) 
 		     (begin
-		       (val set-room (places get / place))
-		       (val set-name / name)
+		       (val set-room (places get | place))
+		       (val set-name | name)
 		       (names set (hash-add (names get)
 					    (name)
 					    (val)))
@@ -98,7 +98,7 @@
 						  (instanceof door (x)))
 						(places get (place) inventory))))
 			     (map (? door (door access-from 
-						(places get / place)
+						(places get | place)
 						name))
 				  (exits)))))
        (method update (begin 
@@ -119,17 +119,17 @@
 
 (geo-world add "genoa" "robo2" (robo new));
 
-(demo / geo-world find "robo1");
-(demo / geo-world find "robo2");
+(demo | geo-world find "robo1");
+(demo | geo-world find "robo2");
 
 (geo-world update);
 
-(demo / geo-world find "robo1");
-(demo / geo-world find "robo2");
+(demo | geo-world find "robo1");
+(demo | geo-world find "robo2");
 
-(demo / geo-world reachable "boston");
+(demo | geo-world reachable "boston");
 
-(demo / geo-world reachable "genoa");
+(demo | geo-world reachable "genoa");
 
 
 

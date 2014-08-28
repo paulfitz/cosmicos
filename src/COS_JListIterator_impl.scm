@@ -5,13 +5,13 @@
        (field pipe (cell new (ref contents get)))
        (method <init>-V (self))
        (method <init> (self <init>-V))
-       (method hasNext-Z (> (list-length / pipe get) 0))
+       (method hasNext-Z (> (list-length | pipe get) 0))
        (method hasNext (self hasNext-Z))
        (method next (self next-Object))
        (method next-Object 
-	       (let ((result (head / pipe get)))
+	       (let ((result (head | pipe get)))
 		 (begin 
-		   (pipe set / tail / pipe get)
+		   (pipe set | tail | pipe get)
 		   (result)))));
 
 (define test1 (COS_JList new));
@@ -25,10 +25,10 @@
 (define iter1 (test1 iterator));
 
 (iter1 hasNext);
-(demo / iter1 next);
+(demo | iter1 next);
 (iter1 hasNext);
-(demo / iter1 next);
+(demo | iter1 next);
 (iter1 hasNext);
-(demo / iter1 next);
-(not / iter1 hasNext);
+(demo | iter1 next);
+(not | iter1 hasNext);
 

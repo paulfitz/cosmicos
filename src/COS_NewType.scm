@@ -280,7 +280,7 @@
 
 (define setup-this
   (lambda (this self)
-    (if (number? / this)
+    (if (number? | this)
 	(self)
 	(this))));
 
@@ -435,14 +435,14 @@
 
 (class c2 ()
        (field super-ref (make-cell 0))
-       (method new (set! (super-ref) (c1 / this)))
-       (method super (? x ((get! / super-ref) (x))))
-       (method unknown (? x (self super / x)))
+       (method new (set! (super-ref) (c1 | this)))
+       (method super (? x ((get! | super-ref) (x))))
+       (method unknown (? x (self super | x)))
        (method getid 200));
 
-(= 100 / c1 new altid);
+(= 100 | c1 new altid);
 
-(= 200 / c2 new altid);
+(= 200 | c2 new altid);
 
 # OBJECT wrapper class for cells
 
@@ -529,13 +529,13 @@
        (field name (cell new 0))
        (method set-room (lambda ((r room)) 
 			  (begin
-			    (if (not (number? / location get))
+			    (if (not (number? | location get))
 				(location get remove (self))
 				0)
 			    (r add (self))
 			    (location set (r)))))
        (method get-room (location get))
-       (method set-name (lambda (n) (name set / n)))
+       (method set-name (lambda (n) (name set | n)))
        (method get-name (name get))
        (method update 0));
 

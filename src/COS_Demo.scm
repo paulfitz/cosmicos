@@ -4,7 +4,7 @@
 # tmp
 
 (+ 2 3);
-(demo / + 2 / + (+ 1 3) 4);
+(demo | + 2 | + (+ 1 3) 4);
 
-(demo / primer);
+(demo | primer);
 

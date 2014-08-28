@@ -12,9 +12,9 @@
        (method act (true))
        (method isobj (true)));
 
-(define java-object / Object);
+(define java-object | Object);
 
-(define act / ? x / true);
+(define act | ? x | true);
 
 #(class java-string ()
 #       (field super (java-object new))
@@ -41,7 +41,7 @@
        (method get (value get))
        (method set (lambda(x)
 		     (value set
-			    (if (number? / x)
+			    (if (number? | x)
 				(x)
 				(x intValue)))))
        (method classname Integer)
@@ -67,7 +67,7 @@
        (method get (value get))
        (method set (lambda(x)
 		     (value set
-			    (if (number? / x)
+			    (if (number? | x)
 				(x)
 				(x intValue)))))
        (method equals-Object-Z (lambda (o) (if (= (o classname) String)
@@ -81,7 +81,7 @@
 # will need to install class hierarchy, just hardcode a few things for now
 
 (define java
-  (? x / ? y 
+  (? x | ? y 
      (cond ((= (y) String) (String))
 	   ((= (y) Object) (java-object))
 	   ((= (y) Integer) (Integer))
@@ -149,15 +149,15 @@
 
 (define compare-object-reference
   (lambda (o1 o2)
-    (if (number? / o1)
-	(number? / o2)
+    (if (number? | o1)
+	(number? | o2)
 	(= (o1 unique-id) (o2 unique-id)))));
 
 (define jvm-maker
   (lambda (vars stack pc ret)
     (? op
      (begin
-       (pc set (+ (pc get) 1)) /
+       (pc set (+ (pc get) 1)) |
      cond ((= (op) new)
 	    (lambda (type)
 	      (stack-push (stack) ((type) new))))
@@ -181,7 +181,7 @@
 	    (lambda (t)
 	      (stack-push 
 	       (stack)
-	       (not / number? / (stack-pop / stack) (t new classname)))))
+	       (not | number? | (stack-pop | stack) (t new classname)))))
 	   ((= (op) getfield)
 	    (lambda (key ignore)
 	      (stack-push (stack) ((stack-pop (stack)) (key) get))))
@@ -295,12 +295,12 @@
 		      0)))))
 	   ((= (op) ifnull)
 	    (lambda (x)
-	      (if (number? / stack-pop (stack))
+	      (if (number? | stack-pop (stack))
 		  (pc set (x))
 		  0)))
 	   ((= (op) ifnonnull)
 	    (lambda (x)
-	      (if (not (number? / stack-pop (stack)))
+	      (if (not (number? | stack-pop (stack)))
 		  (pc set (x))
 		  0)))
 	   ((= (op) return)
@@ -349,7 +349,7 @@
 (define stack-call-special
   (lambda (stack self target ct)
     (if (= (ct) 0)
-	(let ((act (stack-pop / stack)))
+	(let ((act (stack-pop | stack)))
 	  (if (act == (self))
 	      (act super (target))
 	      (act (target))))
@@ -454,11 +454,11 @@
 
 (= (ret-test1 get) 70);
 
-(define state-machine-helper /
-  ? at /
-  lambda (vars stack machine) /
+(define state-machine-helper |
+  ? at |
+  lambda (vars stack machine) |
   let ((pc (cell new (at)))
-       (ret (cell new (true)))) /
+       (ret (cell new (true)))) |
   let ((jvm (jvm-maker (vars) (stack) (pc) (ret))))
   (begin
     (machine (jvm) (pc get))
@@ -473,7 +473,7 @@
 
 (stack-push (stack-test1) 33);
 
-(= (state-machine (vars-test1) (stack-test1) / ? jvm / ? x
+(= (state-machine (vars-test1) (stack-test1) | ? jvm | ? x
 		  (cond ((= (x) 0) (jvm istore 4))
 			((= (x) 1) (jvm iload 4))
 			(jvm ireturn)))
@@ -482,10 +482,10 @@
 (stack-push (stack-test1) 10);
 
 (define bytecode-test-mul
-  (lambda (arg0 arg1) /
-	  let ((vars / cell new / make-hash / vector (pair 0 0) (pair 1 (arg0)) (pair 2 (arg1)))
-	       (stack / cell new / vector)) /
-	       state-machine (vars) (stack) / ? jvm / ? x / cond
+  (lambda (arg0 arg1) |
+	  let ((vars | cell new | make-hash | vector (pair 0 0) (pair 1 (arg0)) (pair 2 (arg1)))
+	       (stack | cell new | vector)) |
+	       state-machine (vars) (stack) | ? jvm | ? x | cond
 	       ((= (x) 0) (jvm iload 1))
 	       ((= (x) 1) (jvm iload 2))
 	       ((= (x) 2) (jvm imul))

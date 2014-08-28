@@ -2,11 +2,11 @@
 
 (define flex-equals
   (lambda (x y) 
-    (if (number? / x)
-	(if (number? / y)
+    (if (number? | x)
+	(if (number? | y)
 	    (= (x) (y))
 	    (false))
-	(if (number? / y)
+	(if (number? | y)
 	    (false)
 	    (x equals (y))))));
 
@@ -17,10 +17,10 @@
 
 (define contains-object
   (lambda (x lst)
-    (if (> (list-length / lst) 0)
-	(if (flex-equals (head / lst) (x))
+    (if (> (list-length | lst) 0)
+	(if (flex-equals (head | lst) (x))
 	    (true)
-	    (contains-object (x) (tail / lst)))
+	    (contains-object (x) (tail | lst)))
 	(false))));
 
 (class COS_JList ()
@@ -51,7 +51,7 @@
 (define test1 (COS_JList new));
 
 (begin (test1 add-Object-V (test1))
-       (= 1 / test1 size-V-I));
+       (= 1 | test1 size-V-I));
 
 (test1 == (test1 get-I-Object 0));
 
@@ -62,7 +62,7 @@
        (method <init>-V (self))
        (method <init> (self <init>-V))
        (method put-Object-Object-V (lambda (x y)
-				     (let ((prev / contents get))
+				     (let ((prev | contents get))
 				       (contents set 
 						 (? z 
 						    (if (flex-equals (z) (x))
@@ -76,5 +76,5 @@
 (define test2 (COS_JHashMap new));
 
 (begin (test2 put-Object-Object-V 5 10)
-       (= 10 / test2 get 5));
+       (= 10 | test2 get 5));
 
