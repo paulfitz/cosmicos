@@ -9,6 +9,16 @@ sub ShowOrLogicLesson {
   
   $txt .= ShowLine(Op("intro","or"));
   $txt .= 'define or | ? x | ? y | if $x $true $y' . "\n";
+
+  $txt .= 'not | or $false $false;' . "\n";
+  $txt .= 'or $false $true;' . "\n";
+  $txt .= 'or $true $false;' . "\n";
+  $txt .= 'or $true $true;' . "\n";
+  $txt .= '= $false | or $false $false;' . "\n";
+  $txt .= '= $true | or $false $true;' . "\n";
+  $txt .= '= $true | or $true $false;' . "\n";
+  $txt .= '= $true | or $true $true;' . "\n";
+
   for (my $i=0; $i<10; $i++)
     {
       $txt .= ShowLine(Op2("or",ShowTrueComparison(),ShowTrueComparison()));

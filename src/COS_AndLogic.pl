@@ -11,6 +11,15 @@ sub ShowAndLogicLesson {
 
   $txt .= 'define and | ? x | ? y | if $x $y $false;' . "\n";
 
+  $txt .= 'not | and $false $false;' . "\n";
+  $txt .= 'not | and $false $true;' . "\n";
+  $txt .= 'not | and $true $false;' . "\n";
+  $txt .= 'and $true $true;' . "\n";
+  $txt .= '= $false | and $false $false;' . "\n";
+  $txt .= '= $false | and $false $true;' . "\n";
+  $txt .= '= $false | and $true $false;' . "\n";
+  $txt .= '= $true | and $true $true;' . "\n";
+
   for (my $i=0; $i<10; $i++)
     {
       $txt .= ShowLine(Op2("and",ShowTrueComparison(),ShowTrueComparison()));
