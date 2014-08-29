@@ -19,7 +19,28 @@ cos.section("now introduce other relational operators","MATH");
 cos.comment("After this lesson, it should be clear what contexts < > and = are appropriate in.");
 
 cos.add(["intro",">"]);
-var prev = {};
+cos.add(["intro","<"]);
+
+var prev = "";
+for (var i=1; i<=4; i++) {
+    for (var j=1; j<=4; j++) {
+	var r = j;
+	var r2 = i;
+	var idx = r*100+r2;
+	var cmp = "=";
+	if (r<r2) {
+	    cmp = ">";
+	} else if (r>r2) {
+	    cmp = "<";
+	}
+	cos.add([cmp,cos.unary(r2),cos.unary(r)]);
+	prev[idx] = true;
+    }
+}
+
+cos.comment("Some random examples");
+
+prev = {};
 for (var i=0; i<=10; i++) {
     var done = false;
     while (!done) {
@@ -48,26 +69,6 @@ for (var i=0; i<=10; i++) {
 	}
     }
 }
-
-cos.comment("Some mixed examples");
-
-prev = "";
-for (var i=1; i<=4; i++) {
-    for (var j=1; j<=4; j++) {
-	var r = j;
-	var r2 = i;
-	var idx = r*100+r2;
-	var cmp = "=";
-	if (r>r2) {
-	    cmp = ">";
-	} else if (r<r2) {
-	    cmp = "<";
-	}
-	cos.add([cmp,cos.unary(r),cos.unary(r2)]);
-	prev[idx] = true;
-    }
-}
-
 
 cos.comment("A few more random examples");
 
