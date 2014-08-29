@@ -9,7 +9,7 @@ sub ShowAndLogicLesson {
   
   $txt .= ShowLine(Op("intro","and"));
 
-  $txt .= "(define and (? x / ? y / if (x) (if (y) (true) (false)) (false)));\n";
+  $txt .= 'define and | ? x | ? y | if $x $y $false;' . "\n";
 
   for (my $i=0; $i<10; $i++)
     {

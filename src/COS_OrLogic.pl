@@ -7,8 +7,8 @@ sub ShowOrLogicLesson {
   my $txt = "";
   $txt .= "# MATH introduce the OR logical operator\n";
   
-  $txt .= "(define or (? x / ? y / if (x) (true) (if (y) (true) (false))));\n";
   $txt .= ShowLine(Op("intro","or"));
+  $txt .= 'define or | ? x | ? y | if $x $true $y' . "\n";
   for (my $i=0; $i<10; $i++)
     {
       $txt .= ShowLine(Op2("or",ShowTrueComparison(),ShowTrueComparison()));
@@ -63,8 +63,9 @@ sub ShowOrLogicLesson {
       $txt .= ShowLine($c);
     }
 
-  $txt .= "(define >= (? x / ? y / or (> (x) (y)) (= (x) (y))));\n";
-  $txt .= "(define <= (? x / ? y / or (< (x) (y)) (= (x) (y))));\n";
+  $txt .= "# Now is an opportune moment for '<=' and '>='\n";
+  $txt .= 'define >= | ? x | ? y | or (> $x $y) (= $x $y);' . "\n";
+  $txt .= 'define <= | ? x | ? y | or (< $x $y) (= $x $y);' . "\n";
   for (my $i=0; $i<3; $i++) {
       for (my $j=0; $j<3; $j++) {
 	  $txt .= "(" . (($i>=$j)?"":"not / ") . ">= $i $j);\n";
