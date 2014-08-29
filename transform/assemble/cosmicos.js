@@ -28,6 +28,9 @@ function showText(root,src) {
  .koan {\
    font-size: 32px; \
  }\
+ .s {\
+   color: #ccc;\
+ }\
  img {\
    height: 32px; \
    vertical-align:middle; \
@@ -99,7 +102,7 @@ function showText(root,src) {
 		    nb = false;
 		}
 		if (t == " ") {
-		    t = "&#x2000;";
+		    t = "<span class='s'>_</span>";
 		}
 		process.stdout.write(t);
 	    }
