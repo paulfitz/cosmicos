@@ -107,7 +107,7 @@ function showText(root,src) {
 		process.stdout.write(t);
 	    }
 	}
-	process.stdout.write("&nbsp;~\n</div>\n");
+	process.stdout.write("&nbsp;&nbsp;<span class='s'>~</span>\n</div>\n");
     }
     process.stdout.write("\
   </body>\
