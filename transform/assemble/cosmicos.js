@@ -5,6 +5,8 @@ var stanza = -1;
 var last_stanza = -1;
 var output = "";
 var vocab = "";
+var stop_phrase = "";
+var wrap = false;
 
 function needStanza() {
     if (stanza==-1) {
@@ -19,7 +21,8 @@ function needOutput() {
 }
 
 function showText(root,src) {
-    process.stdout.write("<!DOCTYPE html>\
+    if (wrap) {
+	process.stdout.write("<!DOCTYPE html>\
 <html lang='en'>\
   <head>\
     <meta charset='utf-8'>\
@@ -39,6 +42,7 @@ function showText(root,src) {
   </head>\
   <body>\
 ");
+    }
     var ev = require(root + "/transform/CosmicEval.js").cosmicos;
     var render = new ev.ManuscriptStyle();
     var letters_src = {};
@@ -54,9 +58,25 @@ function showText(root,src) {
 	}
     }
 
+    var acks = {};
     for (var s=stanza; s<=last_stanza; s++) {
 	var m = msg[s];
 	if (!m) continue;
+	if (stop_phrase!="") {
+	    var lines = m["lines"];
+	    var stop = false;
+	    var skip = false;
+	    for (var i=0; i<lines.length; i++) {
+		if (lines[i].indexOf(stop_phrase)!=-1) {
+		    stop = true;
+		}
+		if (lines[i].indexOf("GNU General Public License")!=-1) {
+		    skip = true;
+		}
+	    }
+	    if (stop) break;
+	    if (skip) continue;
+	}
 	var parse = m["parse"];
 	if (!parse) {
 	    if (m["role"] == "comment") {
@@ -79,6 +99,7 @@ function showText(root,src) {
 	    if (letter) {
 		if (letter.media) {
 		    process.stdout.write("<img src='" + letter.media + "'/>");
+		    acks[letter.media] = letter;
 		} else {
 		    var vs = letter.alias.split(":");
 		    for (var j=0; j<vs.length; j++) {
@@ -86,6 +107,7 @@ function showText(root,src) {
 			var letterv = letters[v];
 			if (letterv && letterv.media) {
 			    process.stdout.write("<img src='" + letterv.media + "'/>");
+			    acks[letter.media] = letter;
 			} else {
 			    process.stdout.write("" + v);
 			}
@@ -109,10 +131,26 @@ function showText(root,src) {
 	}
 	process.stdout.write("&nbsp;&nbsp;<span class='s'>~</span>\n</div>\n");
     }
-    process.stdout.write("\
-  </body>\
+    process.stdout.write("<div class='ack'><div>Icons used under CC BY, credits:</div><ul>\n");
+    var lst = Object.keys(acks);
+    for (var i=0; i<lst.length; i++) {
+	var ack = acks[lst[i]];
+	var author = ack["author"];
+	var license = ack["license"];
+	var lnk = ack["src"];
+	if (lnk) {
+	    if (license!="Public Domain") {
+		process.stdout.write("<li><a href='" + lnk + "'>" + author + "</a></li>\n");
+	    }
+	}
+    }
+    process.stdout.write("</ul></div>\n");
+    if (wrap) {
+	process.stdout.write("\
+</body>\
 </html>\
 ");
+    }
 }
 
 module.exports = function(root,src) {
@@ -128,8 +166,16 @@ module.exports = function(root,src) {
 	if (argv[i-1]=="-o") {
 	    output = argv[i];
 	}
+	if (argv[i-1]=="-s") {
+	    stop_phrase = argv[i];
+	}
 	if (argv[i-1]=="-v") {
 	    vocab = argv[i];
+	}
+    }
+    for (var i=2; i<argv.length; i++) {
+	if (argv[i]=="-w") {
+	    wrap = true;
 	}
     }
     if (last_stanza == -1) {
@@ -167,6 +213,7 @@ module.exports = function(root,src) {
     console.log("  cosmsg show -p NNNN               # show info about message part NNNN");
     console.log("  cosmsg hear -p NNNN -o audio.wav  # convert message part to audio");
     console.log("  cosmsg text -p NNNN -v vocab.json # experimental text rendering of message part NNNN");
+    console.log("  cosmsg text -p NFIRST -P NLAST -s 'stop phrase' -v vocab.json -w");
 }
 
 
