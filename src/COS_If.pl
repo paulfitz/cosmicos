@@ -73,7 +73,7 @@ sub ShowIfLesson {
       }  
   }
   $txt .= "# 'if' does not evaluate branch-not-taken, TODO show this.\n";
-  $txt .= "(define factorial | ? n | if (< \$n 1) 1 | * \$n | factorial | - \$n 1);\n";
+  $txt .= "(define factorial | ? x | if (< \$x 1) 1 | * \$x | factorial | - \$x 1);\n";
   my $v = 1;
   for (my $i=1; $i<=5; $i++) {
       $v = $v*$i;
