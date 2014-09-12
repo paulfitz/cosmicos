@@ -415,7 +415,7 @@ sub Lit {
 
 sub Ref {
   my $x = shift;
-  return Op($x);
+  return "\$" . $x;
 };
 
 sub Tag {

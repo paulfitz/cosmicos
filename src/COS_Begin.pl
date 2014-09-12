@@ -54,21 +54,21 @@ sub ShowTheLesson {
 		       4));
   $txt .= ShowLine(Op2("=",
 		       Op("begin",
-			  Op2("set!", Ref("demo-mut1"), 88),
-			  Op2("set!", Ref("demo-mut1"), 6),
-			  Op1("get!", Ref("demo-mut1"))),
+			  Op2("set!", Ref("demo:make-cell:x"), 88),
+			  Op2("set!", Ref("demo:make-cell:x"), 6),
+			  Op1("get!", Ref("demo:make-cell:x"))),
 		       6));
   $txt .= ShowLine(Op2("=",
 		       Op("begin",
-			  Op2("set!", Ref("demo-mut2"), 88),
-			  Op2("set!", Ref("demo-mut1"), 6),
-			  Op1("get!", Ref("demo-mut2"))),
+			  Op2("set!", Ref("demo:make-cell:y"), 88),
+			  Op2("set!", Ref("demo:make-cell:x"), 6),
+			  Op1("get!", Ref("demo:make-cell:y"))),
 		       88));
   $txt .= ShowLine(Op2("=",
 		       Op("begin",
-			  Op2("set!", Ref("demo-mut1"), 88),
-			  Op2("set!", Ref("demo-mut1"), 6),
-			  Op1("get!", Ref("demo-mut1")),
+			  Op2("set!", Ref("demo:make-cell:x"), 88),
+			  Op2("set!", Ref("demo:make-cell:x"), 6),
+			  Op1("get!", Ref("demo:make-cell:x")),
 			  4),
 		       4));
 
