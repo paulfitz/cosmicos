@@ -31,7 +31,7 @@ CosWrite.prototype.permute = function(lst) {
     while (lst.length>0) {
 	out = out.concat(lst.splice(this.irand(lst.length),1));
     }
-    return out;
+     return out;
 }
 
 CosWrite.prototype.bag = function(first,last) {
@@ -42,6 +42,10 @@ CosWrite.prototype.bag = function(first,last) {
     return this.permute(lst);
 }
 
+CosWrite.prototype.prand = function(top,crop) {
+    var lst = this.bag(0,top-1);
+    return lst.slice(0,crop);
+}
 
 CosWrite.prototype.add = function(s) {
     if (typeof s == 'object') {
