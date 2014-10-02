@@ -108,6 +108,8 @@ function showText(root,src) {
 			if (letterv && letterv.media) {
 			    process.stdout.write("<img src='" + letterv.media + "'/>");
 			    acks[letter.media] = letter;
+			} else if (letterv && letterv.alias) {
+			    process.stdout.write("" + letterv.alias);
 			} else {
 			    process.stdout.write("" + v);
 			}
@@ -123,28 +125,30 @@ function showText(root,src) {
 		} else {
 		    nb = false;
 		}
-		if (t == " ") {
-		    t = "<span class='s'>_</span>";
-		}
+		//if (t == " ") {
+		//    t = "<span class='s'>_</span>";
+		//}
 		process.stdout.write(t);
 	    }
 	}
 	process.stdout.write("&nbsp;&nbsp;<span class='s'>~</span>\n</div>\n");
     }
-    process.stdout.write("<div class='ack'><div>Icons used under CC BY, credits:</div><ul>\n");
     var lst = Object.keys(acks);
-    for (var i=0; i<lst.length; i++) {
-	var ack = acks[lst[i]];
-	var author = ack["author"];
-	var license = ack["license"];
-	var lnk = ack["src"];
-	if (lnk) {
-	    if (license!="Public Domain") {
-		process.stdout.write("<li><a href='" + lnk + "'>" + author + "</a></li>\n");
+    if (lst.length>0) {
+	process.stdout.write("<div class='ack'><div>Icons used under CC BY, credits:</div><ul>\n");
+	for (var i=0; i<lst.length; i++) {
+	    var ack = acks[lst[i]];
+	    var author = ack["author"];
+	    var license = ack["license"];
+	    var lnk = ack["src"];
+	    if (lnk) {
+		if (license!="Public Domain") {
+		    process.stdout.write("<li><a href='" + lnk + "'>" + author + "</a></li>\n");
+		}
 	    }
 	}
+	process.stdout.write("</ul></div>\n");
     }
-    process.stdout.write("</ul></div>\n");
     if (wrap) {
 	process.stdout.write("\
 </body>\
