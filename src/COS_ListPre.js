@@ -11,7 +11,7 @@ function listVerbose(lst,wrap) {
 cos.section("illustrate lists and some list operators","MATH");
 cos.comment("To make list describable as a function, need to preceed lists with an argument count. Lists keep an explicit record of their length. This is to avoid the need for using a special 'nil' symbol which cannot itself be placed in the list.");
 
-cos.comment("pending: should introduce number? check function - but will be rewriting all this list stuff soon.");
+cos.comment("pending: should introduce single? check function - but will be rewriting all this list stuff soon.");
 
 cos.add("define list-helper | ? n | ? ret | if (> $n 1) (? x | list-helper (- $n 1) (? y | ? z | ret (+ 1 $y) (cons $x $z))) (? x | ret 1 $x)");
 
@@ -27,7 +27,7 @@ cos.add("define list-ref | ? lst | ? n | if (= (list-ref $lst) 0) $undefined (if
 
 cos.add("define prepend | ? x | ? lst | if (= (list-length $lst) 0) (cons 1 $x) (cons (+ (list-length $lst) 1) (cons $x (cdr $lst)))");
 
-cos.add("define equal | ? x | ? y | if (= (number? $x) (number? $y)) (if (number? $x) (= $x $y) (list= $x $y)) $false");
+cos.add("define equal | ? x | ? y | if (= (single? $x) (single? $y)) (if (single? $x) (= $x $y) (list= $x $y)) $false");
 
 cos.add("define list= | ? x | ? y | if (= (list-length $x) (list-length $y)) (if (> (list-length $x) 0) (and (equal (head $x) (head $y)) (list= (tail $x) (tail $y))) $true) $false");
 

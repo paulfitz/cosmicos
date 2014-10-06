@@ -2,12 +2,17 @@
 
 var cosmicos = require('../lib/cosmicos').cosmicos;
 var cc = new cosmicos.Evaluate();
+var cache = "";
 cc.applyOldOrder();
 cc.addStd();
 
 function cosmicos_eval(input, context, filename, callback) {
     input = "" + input;
     input = input.substr(1,input.length-3);
+    var input0 = input;
+    if (cache!="") {
+	input = cache + input;
+    }
     var out = "";
     try {
 	if (input=="help") {
@@ -50,13 +55,21 @@ function cosmicos_eval(input, context, filename, callback) {
 	    out = true;
 	} else {
 	    out = cc.evaluateLine(input);
-	    var v = parseInt(out);
-	    if (""+v == out) out = v;
+	    if (out==null) {
+		cache += input0 + "\n";
+	    } else {
+		var v = parseInt(out);
+		if (""+v == out) out = v;
+		cache = "";
+	    }
 	}
     } catch (e) {
+	cache = "";
 	out = "" + e;
     }
-    callback(null, out);
+    if (cache=="") {
+	callback(null, out);
+    }
 }
 
 var args = process.argv.slice(2);
