@@ -5,20 +5,20 @@ package cosmicos;
 @:expose
 class Memory {
     public var parent : Memory;
-    public var block : Map<Int,Dynamic>;
+    public var block : Map<String,Dynamic>;
     public var key : Int;
     public var val : Dynamic;
 
-    public function new(parent: Memory, key : Int = -1, val : Dynamic = null) {
+    public function new(parent: Memory, key : Dynamic = -1, val : Dynamic = null) {
         this.parent = parent;
         this.key = key;
         this.val = val;
         if (key==-1) {
-            block = new Map<Int,Dynamic>();
+            block = new Map<String,Dynamic>();
         }
     }
 
-    public function add(key: Int, val: Dynamic) {
+    public function add(key: Dynamic, val: Dynamic) {
         if (block!=null) {
             block.set(key,val);
             return;
@@ -28,12 +28,14 @@ class Memory {
         }
     }
 
-    public function get(key: Int) : Dynamic {
+    public function get(key: Dynamic) : Dynamic {
         if (block==null) {
             if (this.key==key) return val;
             if (parent==null) return null;
             return parent.get(key);
         }
-        return block.get(key);
+        var result = block.get(key);
+        if (result==null && parent!=null) result = parent.get(key);
+        return result;
     }
 }
