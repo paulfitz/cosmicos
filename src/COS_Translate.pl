@@ -95,7 +95,7 @@ sub ShowTranslateLesson {
 		       Op2("=", Ref("x"), 20)));
 
   $txt .= ShowLine(Op2("let",
-		       Paren(Paren("x",50), Paren("y",20)),
+	       Paren(Paren("x",50), Paren("y",20)),
 		       Op2("=", Op2("-",Ref("x"),Ref("y")), 30)));
 
   return $txt;
