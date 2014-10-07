@@ -71,6 +71,7 @@ try {
 	    process.stderr.write("At " + i + "\n");
 	}
 
+	/*
 	if (op[0] == '(') {
 	    op = op.replace(/^\(/,"");
 	    op = op.replace(/\);/,"");
@@ -79,6 +80,8 @@ try {
 		part.lines[part.lines.length-1] = part.lines[part.lines.length-1].replace(/\);/,";");
 	    }
 	}
+	*/
+
 	var v = run(op,part,skippy);
 
 	if (op.indexOf("demo ")==0) {
@@ -94,12 +97,15 @@ try {
 	    v = 1;
 	}
 
+	if (v!=1) {
+	    throw v;
+	}
 	assert(v==1);
     }
 } catch (e) {
     process.stderr.write("* evaluate.js failed on " + err_i + ": " + JSON.stringify(err_part) + "\n");
     // continue for now, to compare with old version
-    throw(e);
+    //throw(e);
 }
 
 

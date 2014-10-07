@@ -121,7 +121,8 @@ add_custom_command(OUTPUT ${WORK}/assem.txt
 add_custom_command(OUTPUT ${WORK}/assem.json
   COMMAND ${NODE} ${CMAKE_SOURCE_DIR}/transform/assemble/assemble2json.js ${WORK}/assem.txt
   WORKING_DIRECTORY ${WORK}
-  DEPENDS ${WORK}/assem.txt)
+  DEPENDS ${WORK}/assem.txt
+  ${CMAKE_SOURCE_DIR}/transform/assemble/assemble2json.js)
 
 # primer.json is a numeric version of the message, for self-references.
 # Note that any lines relying on self-evaluation are inaccurate.

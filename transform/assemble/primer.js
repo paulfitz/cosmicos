@@ -14,9 +14,6 @@ try {
 	var part = all[i];
 	if (part.role != "code") continue;
 	var op = part.lines.join("\n");
-	// now using one layer less of nesting
-	op = op.replace(/^\(/,"");
-	op = op.replace(/\);/,"");
 	var v = ev.numberizeLine(op);
 	cos.Parse.removeSlashMarker(v);
 	console.log(JSON.stringify(v));
@@ -26,6 +23,7 @@ try {
 } catch (e) {
     console.log("Problem: " + e);
     // continue for now, to compare with old version
+    throw e;
 }
 
 

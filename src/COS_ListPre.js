@@ -126,7 +126,6 @@ cos.add("define list-find | ? lst | ? key | ? fail | list-find-helper $lst $key 
 
 cos.add("define example-fail | ? x 100");
 
-
 for (var i=0; i<10; i++) {
     var len = cos.irand(10)+1;
     var lst = [];
