@@ -312,6 +312,17 @@ sub ShowUnary {
   return $txt;
 };
 
+sub ShowReal {
+  my $ct = shift;
+  my $txt = "(real ";
+  for (my $i=0.0; $i<$ct; $i++)
+    {
+      $txt .= " 1";
+    }
+  $txt .= " 0)";
+  return $txt;
+};
+
 
 sub ShowBinary {
   my $txt = "";
