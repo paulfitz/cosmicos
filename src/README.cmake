@@ -10,7 +10,6 @@ set(COSMIC_DEPENDS
   COS_Addition
   COS_Subtraction
   COS_Multiplication
-  COS_Real
   COS_Binary
   COS_Evaluation
   COS_DefineFunction
