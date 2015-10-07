@@ -30,7 +30,7 @@ sub ShowTranslateLesson {
 		       "translate",
 		       Proc("x",
 			    Op("if",
-			       Op1("number?", Ref("x")),
+			       Op1("single?", Ref("x")),
 			       Op1("base-translate",
 				   Ref("x")),
 			       Op("if",
@@ -77,7 +77,7 @@ sub ShowTranslateLesson {
 		       "translate",
 		       Proc("x",
 			    Op("if",
-			       Op1("number?", Ref("x")),
+			       Op1("single?", Ref("x")),
 			       Op1("translate-with-vector",
 				   Ref("x")),
 			       Op("if",
@@ -95,7 +95,7 @@ sub ShowTranslateLesson {
 		       Op2("=", Ref("x"), 20)));
 
   $txt .= ShowLine(Op2("let",
-		       Paren(Paren("x",50), Paren("y",20)),
+	       Paren(Paren("x",50), Paren("y",20)),
 		       Op2("=", Op2("-",Ref("x"),Ref("y")), 30)));
 
   return $txt;

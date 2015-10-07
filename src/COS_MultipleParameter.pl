@@ -59,7 +59,7 @@ sub ShowMultipleParameterLesson {
 			  Paren(Paren("prev",Ref("prev-translate"))),
 			  Proc("x",
 			       Op("if",
-				  Op1("number?", Ref("x")),
+				  Op1("single?", Ref("x")),
 				  Op1("prev", Ref("x")),
 				  Op("if",
 				     Op2("=", Op1("head",Ref("x")), "lambda"),
