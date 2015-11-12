@@ -3,6 +3,8 @@ CosmicOS
 
 Sending the lambda calculus into deep space.  http://cosmicos.github.io/
 
+[![Build Status](https://travis-ci.org/paulfitz/cosmicos.svg?branch=master)](https://travis-ci.org/paulfitz/cosmicos)
+
 Long-distance relationships
 ----------------------------
 
