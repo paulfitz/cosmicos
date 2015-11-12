@@ -13,7 +13,7 @@ sub ShowListLesson {
 		      "is-list",
 		      Proc("x",
 			   Op1("not",
-			       Op1("number?",
+			       Op1("single?",
 				   Ref("x"))))));
   $txt .= ShowLine(Op1("is-list",
 		       ShowListVerbose(1, 3)));

@@ -41,6 +41,27 @@ function emit(txt) {
     }
     if (need_flush) {
 	if (cache.length>0) {
+	    var jn = cache.join(" ");
+	    var len = jn.length;
+	    if (len>3) {
+		if (jn.charAt(0)=="("&&jn.charAt(len-1)==";"&&jn.charAt(len-2)==")") {
+		    var at = 0;
+		    for (var k=1; k<len-2; k++) {
+			var ch = jn.charAt(k);
+			if (ch=='('||ch=='{') at++;
+			if (ch==')'||ch=='}') at--;
+			if (at<0) break;
+		    }
+		    if (at>=0) {
+			cache[0] = cache[0].substr(1);
+			var alt = cache.length-1;
+			cache[alt] = cache[alt].substr(0,cache[alt].length-2) + ";";
+		    }
+		    if (jn.indexOf("point")>=0) {
+			process.stderr.write(" " + at + " // " + jn + " --> " + cache.join(" ") + "\n");
+		    }
+		}
+	    }
 	    all.push({
 		"role": role_flush,
 		"lines": cache

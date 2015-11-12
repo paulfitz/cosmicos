@@ -6,14 +6,16 @@ package cosmicos;
 class Evaluate {
     private var vocab : Vocab;
     private var mem : Memory;
-    private var id_lambda : Int;
-    private var id_lambda0 : Int;
-    private var id_define : Int;
-    private var id_if : Int;
-    private var id_assign : Int;
-    private var id_translate : Int;
+    private var id_lambda : Dynamic;
+    private var id_lambda0 : Dynamic;
+    private var id_define : Dynamic;
+    private var id_if : Dynamic;
+    private var id_assign : Dynamic;
+    private var id_translate : Dynamic;
 
-    public function evaluateInContext(e0: Dynamic, c: Memory) : Dynamic {
+    public function evaluateInContext(e0: Dynamic, cbase: Memory) : Dynamic {
+        var c = cbase;
+        var c_is_private = false;
         var more = false;
         do {
             if (Std.is(e0,String)) {
@@ -23,7 +25,7 @@ class Evaluate {
                 }
                 return str;
             }
-            if (Std.is(e0,Int)||Std.is(e0,BigInteger)) {
+            if (Std.is(e0,Int)||Std.is(e0,BigInteger)||Std.is(e0,BitString)) {
                 return e0;
             }
             //trace("working on " + Parse.deconsify(e0));
@@ -52,8 +54,9 @@ class Evaluate {
                 var k2 = cursor.next();
                 var v2 = evaluateInContext(cursor.next(),c);
                 var code = evaluateInContext(k2,c);
-                c.add(code,v2);
-                return 1;
+                //c.add(code,v2);
+                //return 1;
+                return new CosDefine(code,v2);
             } else if (x==id_if) { // if
                 // Not really needed now that we have meta-lambda "??"
                 var choice = evaluateInContext(cursor.next(),c);
@@ -64,42 +67,74 @@ class Evaluate {
                     e0 = cursor.next(); more = true; continue;
                 }
             } else {
-                var x0 : Dynamic = x;
-                var len = cursor.length();
-                //trace("== " + len + " ==");
-                if (Std.is(x,Int)||Std.is(x,BigInteger)) {
-                    var j : Int = cast x;
-                    x = c.get(j);
-                    if (len>0) {
-                        if (x == null) {
-                            trace("Problem with " + j + " (" + vocab.reverse(j) + ")");
+                try {
+                    var open = true;
+                    var x0 : Dynamic = x;
+                    var len = cursor.length();
+                    for (i in 0...len) {
+                        if (i>0) {
+                            if (x==1) {
+                                open = true;
+                            }
+                            var v = cursor.next();
+                            if (open) {
+                                x = evaluateInContext(v,c);
+                            } else {
+                                if (Std.is(x,CosFunction)) {
+                                    // Currently only used for META functions.
+                                    // So: we skip
+                                    x = x.fn(function(x) { return evaluateInContext(v,c); });
+                                } else {
+                                    x = x(evaluateInContext(v,c));
+                                }
+                            }
+                        }
+                        if (open) {
+                            if (Std.is(x,Int)||Std.is(x,BigInteger)) {
+                                var j : Int = cast x;
+                                x = c.get(j);
+                                if (len>0) {
+                                    if (x == null) {
+                                        trace("Problem with " + j + " (" + vocab.reverse(j) + ")");
+                                    }
+                                }
+                                open = false;
+                            } else if (Std.is(x,String)) {
+                                var j : String = cast x;
+                                x = c.get(j);
+                                if (len>0) {
+                                    if (x == null) {
+                                        trace("Symbol '" + j + "' unrecognized");
+                                    }
+                                }
+                                open = false;
+
+                            } else if (Std.is(x,BitString)) {
+                                // binary string
+                                var bs : BitString = cast x;
+                                var str : String = x.txt;
+                                var u : BigInteger = BigInteger.ofInt(0);
+                                var two : BigInteger = BigInteger.ofInt(2);
+                                for (j in 0...str.length) {
+                                    u = u.mul(two);
+                                    if (str.charAt(j) == ':') u = u.add(BigInteger.ONE);
+                                }
+                                x = u;
+                                open = false;
+                            } else if (Std.is(x,CosDefine)) {
+                                if (!c_is_private) {
+                                    c = new Memory(c);
+                                    c_is_private = true;
+                                }
+                                applyDefine(x,c);
+                            } else {
+                                open = false;
+                            }
                         }
                     }
-                } else if (Std.is(x,String)) {
-                    // binary string
-                    var str : String = cast x;
-                    var u : BigInteger = BigInteger.ofInt(0);
-                    var two : BigInteger = BigInteger.ofInt(2);
-                    for (j in 0...str.length) {
-                        u = u.mul(two);
-                        if (str.charAt(j) == ':') u = u.add(BigInteger.ONE);
-                    }
-                    x = u;
-                }
-                for (i in 1...len) {
-                    var v = cursor.next();
-                    try {
-                        if (Std.is(x,CosFunction)) {
-                            // Currently only used for META functions.
-                            // So: we skip
-                            x = x.fn(function(x) { return evaluateInContext(v,c); });
-                        } else {
-                            x = x(evaluateInContext(v,c));
-                        }
-                    } catch(e : Dynamic) {
-                        trace("Problem evaluating " + x + " with " + v + " in " + x0 + " (" + vocab.reverse(x0) + ") from " + Parse.deconsify(e0));
-                        throw(e);
-                    }
+                } catch(e : Dynamic) {
+                    trace("Problem evaluating " + Parse.deconsify(e0));
+                    throw(e);
                 }
                 return x;
             }
@@ -107,16 +142,26 @@ class Evaluate {
         return null;
     }
 
+    public function applyDefine(e: Dynamic, mem: Memory) : Bool {
+        if (!Std.is(e,CosDefine)) return false;
+        var def : CosDefine = e;
+        mem.add(def.k,def.v);
+        return true;
+    }
+
     public function evaluateExpression(e: Dynamic) : Dynamic {
-        return evaluateInContext(e,mem);
+        var r = evaluateInContext(e,mem);
+        if (applyDefine(r,mem)) r = 1;
+        return r;
     }
 
     public function evaluateLine(str: String) : Dynamic {
         var lst = Parse.stringToList(str,vocab);
+        if (lst==null) return null;
         Parse.encodeSymbols(lst,vocab);
         Parse.removeSlashMarker(lst);
         lst = Parse.consify(lst);
-        if (id_translate>=0) {
+        if (id_translate!=-1) {
             var translate = mem.get(id_translate);
             if (translate!=null) {
                 lst = translate(lst);
@@ -182,14 +227,16 @@ class Evaluate {
         mem = new Memory(null);
         vocab.clear();
         vocab.check("intro",0);
-        vocab.check("<",1);
-        vocab.check("=",2);
-        vocab.check(">",3);
-        vocab.check("not",4);
-        vocab.check("and",5);
-        vocab.check("or",6);
+        // need to free up "1" -- order will
+        // be evaporating soon in any case.
+        vocab.check("true",1); // this is what I needed to insert.
+        vocab.check("<",2); // was 1
+        vocab.check("=",3); // was 2
+        vocab.check(">",4); // was 3
+        vocab.check("not",5); // was 4
+        vocab.check("and",6); // was 5
+        vocab.check("or",7);  // was 6
         
-        vocab.check("demo",7);
         vocab.check("equal",8);
         vocab.check("*",9);
         vocab.check("+",10);
@@ -219,9 +266,12 @@ class Evaluate {
         vocab.check("!",33);
         vocab.check("div",34);
         vocab.check("primer",35);
+        vocab.check("demo",36); // was 7
 
         mem.add(vocab.get("intro"), function(x){ return 1; });
         addStdMin();
+        evaluateLine("@ 1 1");
+        evaluateLine("@ true 1");
         evaluateLine("@ not | ? 0 | if $0 0 1");
         evaluateLine("@ and | ? 0 | ? 1 | if $0 $1 0");
         evaluateLine("@ or | ? 0 | ? 1 | if $0 1 $1");
@@ -233,9 +283,11 @@ class Evaluate {
                     x.data = y; 
                     return 1; 
                 }; } );
-        mem.add(vocab.get("number?"), function(x){ return Std.is(x,Int)||Std.is(x,BigInteger)||Std.is(x,String); } );
+        mem.add(vocab.get("number?"), function(x){ return Std.is(x,Int)||Std.is(x,BigInteger); } );
+        mem.add(vocab.get("symbol?"), function(x){ return Std.is(x,String); } );
+        mem.add(vocab.get("single?"), function(x){ return Std.is(x,Int)||Std.is(x,BigInteger)||Std.is(x,String)||Std.is(x,BitString); } );
         mem.add(vocab.get("translate"), function(x){ 
-                if (Std.is(x,Int)||Std.is(x,BigInteger)||Std.is(x,String)) return x;
+                if (Std.is(x,Int)||Std.is(x,BigInteger)||Std.is(x,String)||Std.is(x,BitString)) return x;
                 var rep = function(x) {
                 }
                 var len = Parse.car(x);

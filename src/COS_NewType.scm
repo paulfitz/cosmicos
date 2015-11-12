@@ -13,28 +13,28 @@
 
 (define objectify
   (? x 
-     (if (number? (x))
+     (if (single? (x))
 	 (make-integer (x))
 	 (x))));
 
 (define instanceof
   (lambda (T t)
-    (if (number? (t))
+    (if (single? (t))
 	(= (T) int)
-	(not (number? ((objectify (t)) (T)))))));
+	(not (single? ((objectify (t)) (T)))))));
 
 # add version of lambda that allows types to be declared
 (define prev-translate (translate));
 (define translate
   (let ((prev (prev-translate)))
     (? x
-      (if (number? (x))
+      (if (single? (x))
         (prev (x))
         (if (= (head (x)) lambda)
           (let ((formals (head (tail (x))))
                 (body (head (tail (tail (x))))))
             (if (> (list-length (formals)) 0)
-		(if (number? (last (formals)))
+		(if (single? (last (formals)))
 		    (translate
 		     (vector
 		      lambda
@@ -65,7 +65,7 @@
 (define translate
   (let ((prev (prev-translate)))
     (? x
-      (if (number? (x))
+      (if (single? (x))
         (prev (x))
         (if (= (head (x)) cond)
           (let ((cnd (head (tail (x))))
@@ -280,7 +280,7 @@
 
 (define setup-this
   (lambda (this self)
-    (if (number? | this)
+    (if (single? | this)
 	(self)
 	(this))));
 
@@ -293,7 +293,7 @@
 (define translate
   (let ((prev (prev-translate)))
     (? x
-       (if (number? (x))
+       (if (single? (x))
 	   (prev (x))
 	   (if (= (head (x)) class)
 	       (let ((name (list-ref (x) 1))
@@ -529,7 +529,7 @@
        (field name (cell new 0))
        (method set-room (lambda ((r room)) 
 			  (begin
-			    (if (not (number? | location get))
+			    (if (not (single? | location get))
 				(location get remove (self))
 				0)
 			    (r add (self))
