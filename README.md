@@ -110,6 +110,10 @@ To build the message, type:
 You should find the message saved in your build directory 
 as `index.json` and `index.txt`.
 
+Troubleshooting
+---------------
+If you have compilation issues with NodeJS, this can be resolved by symlinking it to "node".
+
 License
 -------
 
