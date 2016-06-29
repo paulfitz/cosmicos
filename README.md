@@ -112,7 +112,7 @@ as `index.json` and `index.txt`.
 
 Troubleshooting
 ---------------
-If you have compilation issues with NodeJS, this can be resolved by symlinking it to "node".
+If you have compilation issues with `nodejs` similar to `node returned No such file or directory`, this can be resolved by symlinking it to `node`.
 
 License
 -------
