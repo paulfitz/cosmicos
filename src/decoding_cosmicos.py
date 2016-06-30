@@ -3,7 +3,11 @@
 """
 Created on Mon Jun 27 21:16:12 2016
 
-@author: joha2 
+@author: joha2
+
+The complexity of this decoder is IMHO a measure for the simplicity of the message.
+Format was taken from an old form of message.
+
 """
 
 import re
