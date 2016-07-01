@@ -119,8 +119,6 @@ class DecoderClass(object):
                 floatmsg.append(NaN)
 
         nummsgtext = np.array(floatmsg)
-
-        print(size(nummsgtext))
         
 
         Data = nummsgtext.reshape((numlines+1, width))
@@ -273,15 +271,15 @@ def main(argv):
     d = DecoderClass()    
     
     #msglen = d.generateRandomMessage(limit=300000)
-    msglen = d.readMessage(argv[1], limit=0)
+    msglen = d.readMessage(argv[1], limit=10000)
     d.doesItObeyZipfsLaw('[23]+')
     d.showGraphicalRepresentation(width=512)
 
     # message at the actual version is somehow not correctly encoded
 
-    #d.guessShortControlSymbols(maxlen=4)
-    #res = d.parseBlock(leftdelimiter='2', rightdelimiter='3', eol='2233')
-    #decodedlines = d.decodeBlock(res)
+    d.guessShortControlSymbols(maxlen=4)
+    res = d.parseBlock(leftdelimiter='2', rightdelimiter='3', eol='2233')
+    decodedlines = d.decodeBlock(res)
 
     print('dictionaries ....')
     print(d.commanddict)
