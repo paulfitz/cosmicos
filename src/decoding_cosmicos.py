@@ -11,7 +11,6 @@ Format was taken from an old form of message.
 """
 
 import re
-import numpy as np
 import sys
 
 class DecoderClass(object):
