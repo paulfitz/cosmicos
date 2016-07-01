@@ -24,7 +24,15 @@ class DecoderClass(object):
         self.commandcounter = 0
         self.defdict = {}
         self.defcounter = 0
-        
+
+
+    def generateRandomMessage(self, limit=10000):
+        print('---------')
+        print("Generating random message with limit %d characters" % (limit,))
+        preliminary = [str(i) for i in list(np.random.random_integers(0, 3, (limit,)))]
+        self.origmsgtext = ''.join(preliminary)
+        self.msgtext = self.origmsgtext
+        return limit
     
     def readMessage(self, filename, limit=10000):
         print('---------')
@@ -264,6 +272,7 @@ def main(argv):
 
     d = DecoderClass()    
     
+    #msglen = d.generateRandomMessage(limit=300000)
     msglen = d.readMessage(argv[1], limit=0)
     d.doesItObeyZipfsLaw('[23]+')
     d.showGraphicalRepresentation(width=512)
