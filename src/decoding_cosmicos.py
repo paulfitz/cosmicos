@@ -47,6 +47,7 @@ class DecoderClass(object):
         print("This should give a power law according to Zipf\'s law.")        
         
         modifiedmsg = re.sub(delimsymbols, ' ', self.msgtext)
+        lenmodifiedmsg = len(modifiedmsg)
         pwords = re.compile(r'[01]+') # usually \w+ but we have digits instead of letters
         wordlist = pwords.findall(modifiedmsg)
 
@@ -58,9 +59,20 @@ class DecoderClass(object):
                 worddict[w] += 1
                 
         ranklist = [pair for pair in sorted(worddict.items(), key=lambda (word, rank): rank)]
+        ranklist.reverse()        
         
-        lengthranking = np.array([(len(w), i) for (w, i) in ranklist])
+        lengthranking = np.array([(k+1, float(i)/float(lenmodifiedmsg)) 
+            for (k, (w, i)) in enumerate(ranklist)])
         
+        log10lengthranking = np.log10(lengthranking)
+        
+        [decreasing, intersection] = np.lib.polynomial.polyfit(log10lengthranking[:,0],log10lengthranking[:,1],1)
+        
+        # y = a*x^b
+        # log10 y = log10 a + b*log10 x
+
+        xfit = np.linspace(lengthranking[0, 0], lengthranking[-1, 0], 100)
+        yfit = 10.0**intersection*np.power(xfit, decreasing)
         
         fig = plt.figure(1)
         ax = fig.add_subplot(111)
@@ -71,9 +83,60 @@ class DecoderClass(object):
         ax.set_yscale('log')
         ax.set_xscale('log')
         
-        ax.plot(lengthranking[:, 0], lengthranking[:, 1], '.', color='r')
+        ax.set_title('Zipfs law y = a*x^b: a = '
+            +str(10.0**intersection) + ' b = ' + str(decreasing))
+        ax.set_xlabel('rank # according to wordlength (increasing len ->)')
+        ax.set_ylabel('word frequency')
+        
+        ax.plot(lengthranking[:, 0], lengthranking[:, 1], 'r.', xfit, yfit, 'b')
 
-        plt.show()        
+        plt.show()
+
+    def showGraphicalRepresentation(self, width=128):
+
+        msgtext = self.msgtext
+        lenmsg = len(msgtext)
+
+        numlines = lenmsg/width
+        numoverhead = lenmsg % width
+        padding = width - numoverhead
+
+        msgtext += "".join(['X' for i in range(padding)])
+
+        floatmsg = []
+        for c in msgtext:
+            if c != 'X':
+                floatmsg.append(float(c))
+            else:
+                floatmsg.append(NaN)
+
+        nummsgtext = np.array(floatmsg)
+
+        print(size(nummsgtext))
+        
+
+        Data = nummsgtext.reshape((numlines+1, width))
+
+
+        nx, ny = width, numlines+1
+        x = range(nx)
+        y = range(ny)
+
+        X, Y = np.meshgrid(x, y)  
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        
+        ax.set_xlabel('width')
+        ax.set_ylabel('lines')
+        
+        ax.set_title('Graphical Representation of Message')
+
+        ax.imshow(Data, interpolation='None')
+
+        #plt.show()
+       
+        
 
     def guessShortControlSymbols(self, maxlen=5):
         print('---------')
@@ -203,6 +266,7 @@ def main(argv):
     
     msglen = d.readMessage(argv[1], limit=0)
     d.doesItObeyZipfsLaw('[23]+')
+    d.showGraphicalRepresentation(width=512)
 
     # message at the actual version is somehow not correctly encoded
 
