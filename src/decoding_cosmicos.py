@@ -187,10 +187,11 @@ class DecoderClass(object):
         (results, remain) = scanner.scan(linetext)
 
         # the first data cell in the line is typically a command
+        
 
-        if results[0][0] == 'DATA':
-            results[0] = ('COMMAND', results[0][1])
-    
+        if linetext != '':
+            if results[0][0] == 'DATA':
+                results[0] = ('COMMAND', results[0][1])    
     
         # now add commands and definitions to dictionaries
         for w in results:
@@ -271,7 +272,7 @@ def main(argv):
     d = DecoderClass()    
     
     #msglen = d.generateRandomMessage(limit=300000)
-    msglen = d.readMessage(argv[1], limit=10000)
+    msglen = d.readMessage(argv[1], limit=0)
     d.doesItObeyZipfsLaw('[23]+')
     d.showGraphicalRepresentation(width=512)
 
