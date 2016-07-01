@@ -12,6 +12,8 @@ Format was taken from an old form of message.
 
 import re
 import sys
+import numpy as np
+import matplotlib.pyplot as plt
 
 class DecoderClass(object):
     
@@ -29,16 +31,51 @@ class DecoderClass(object):
         print("Reading message from file %s with limit %d characters" % (filename, limit))
         
         fl = open(filename,'r')
-        origmsgtext = fl.read()
+        self.origmsgtext = fl.read()
         fl.close()
-        msgtext = re.sub(r'[\n]+', '', origmsgtext) # remove end line symbols
+        self.msgtext = re.sub(r'[\n]+', '', self.origmsgtext) # remove end line symbols
         if limit > 0:
-            msgtext = msgtext[0:limit]
-        lenmsg = len(msgtext)
+            self.msgtext = self.msgtext[0:limit]
+        lenmsg = len(self.msgtext)
         print('---------')
-        return (origmsgtext, msgtext, lenmsg)
+        return lenmsg
 
-    def guessShortControlSymbols(self, msgtext, maxlen=5):
+    def doesItObeyZipfsLaw(self, delimsymbols):
+        
+        print("Printing word frequency over word length.")
+        print("This obviously relies on the correct choice of delimiter symbols.")
+        print("This should give a power law according to Zipf\'s law.")        
+        
+        modifiedmsg = re.sub(delimsymbols, ' ', self.msgtext)
+        pwords = re.compile(r'[01]+') # usually \w+ but we have digits instead of letters
+        wordlist = pwords.findall(modifiedmsg)
+
+        worddict = {}
+        for w in wordlist:
+            if worddict.get(w) == None:
+                worddict[w] = 1
+            else:
+                worddict[w] += 1
+                
+        ranklist = [pair for pair in sorted(worddict.items(), key=lambda (word, rank): rank)]
+        
+        lengthranking = np.array([(len(w), i) for (w, i) in ranklist])
+        
+        
+        fig = plt.figure(1)
+        ax = fig.add_subplot(111)
+
+        ax.axis('equal')
+        #ax.set_axis_bgcolor('black')        
+
+        ax.set_yscale('log')
+        ax.set_xscale('log')
+        
+        ax.plot(lengthranking[:, 0], lengthranking[:, 1], '.', color='r')
+
+        plt.show()        
+
+    def guessShortControlSymbols(self, maxlen=5):
         print('---------')
         print('Guessing control symbols by counting')  
         print('every occurence of strings of fixed') 
@@ -50,7 +87,7 @@ class DecoderClass(object):
         for k in range(maxlen):
             wordlength = k+1
             pk = re.compile(r'[0-3]{'+str(wordlength)+'}')
-            nk = pk.findall(msgtext)
+            nk = pk.findall(self.msgtext)
             
             nkdict = {}
             for wk in nk:
@@ -111,11 +148,11 @@ class DecoderClass(object):
     
         return results
 
-    def parseBlock(self, msgtext, leftdelimiter='', rightdelimiter='', eol=''):
+    def parseBlock(self, leftdelimiter='', rightdelimiter='', eol=''):
         print('--------')
         print("Using leftdelimiter '%s', rightdelimiter '%s', EOL '%s'" % (leftdelimiter, rightdelimiter, eol))    
     
-        modifiedmsg = msgtext    
+        modifiedmsg = self.msgtext    
     
         if eol!='':        
             modifiedmsg = re.sub(eol, '\n', modifiedmsg)
@@ -145,8 +182,8 @@ class DecoderClass(object):
                 if parsedPair[0] == 'HASPROPERTY':
                     linestring += 'HASPROPERTY '
                 if parsedPair[0] == 'NESTED_COMMAND':
-                    linestring += 'NESTED ' + parsedPair[1]
-            print(linestring)
+                    linestring += 'NESTED_COMMAND ' + parsedPair[1]
+            #print(linestring)
             lines.append(linestring)
         return lines
         
@@ -154,19 +191,24 @@ class DecoderClass(object):
 def main(argv):
    
     if len(argv) != 2:
+        print("Shows a few properties of the message:")
+        print("string frequencies -- to determine delimiters")
+        print("graphics -- fulfillment of Zipf's law")
+        print("preliminary decoding -- as far as possible")
+        print("dictionaries -- of commands, data, ...")
         print("%s msgfile\n" % (argv[0],))
         return
 
     d = DecoderClass()    
     
-    (origmsg, msg, msglen) = d.readMessage(argv[1], limit=10000)
-    d.guessShortControlSymbols(msg, maxlen=4)
-    res = d.parseBlock(msg, leftdelimiter='2', rightdelimiter='3', eol='2233')
-    #for line in res:
-    #    print(line)
+    msglen = d.readMessage(argv[1], limit=0)
+    d.doesItObeyZipfsLaw('[23]+')
 
-    decodedlines = d.decodeBlock(res)
-    #print(decodedlines)
+    # message at the actual version is somehow not correctly encoded
+
+    #d.guessShortControlSymbols(maxlen=4)
+    #res = d.parseBlock(leftdelimiter='2', rightdelimiter='3', eol='2233')
+    #decodedlines = d.decodeBlock(res)
 
     print('dictionaries ....')
     print(d.commanddict)
