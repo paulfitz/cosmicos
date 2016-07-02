@@ -24,6 +24,29 @@ class DecoderClass(object):
         self.commandcounter = 0
         self.defdict = {}
         self.defcounter = 0
+
+
+    def generateRandomMessage(self, limit=10000):
+        print('---------')
+        print("Generating random message with limit %d characters" % (limit,))
+        preliminary = [str(i) for i in list(np.random.random_integers(0, 3, (limit,)))]
+        self.origmsgtext = ''.join(preliminary)
+        self.msgtext = self.origmsgtext
+        return (limit, self.msgtext)
+        
+    def readStandardTextFromFile(self, filename, limit=10000):
+        print('---------')
+        print("Reading text from file %s with limit %d characters" % (filename, limit))
+        
+        fl = open(filename,'r')
+        s = fl.read()
+        s.lower()
+        fl.close()
+        if limit > 0:
+            s = s[0:limit]
+        lenmsg = len(s)
+        print('---------')
+        return (lenmsg, s)
         
     
     def readMessage(self, filename, limit=10000):
@@ -39,15 +62,12 @@ class DecoderClass(object):
         lenmsg = len(self.msgtext)
         print('---------')
         return lenmsg
-
-    def doesItObeyZipfsLaw(self, delimsymbols):
         
-        print("Printing word frequency over word length.")
-        print("This obviously relies on the correct choice of delimiter symbols.")
-        print("This should give a power law according to Zipf\'s law.")        
         
-        modifiedmsg = re.sub(delimsymbols, ' ', self.msgtext)
-        pwords = re.compile(r'[01]+') # usually \w+ but we have digits instead of letters
+    def performFrequencyRankOrderingAndFit(self, msgtext, delimsymbols, wordre):
+        modifiedmsg = re.sub(delimsymbols, ' ', msgtext)
+        lenmodifiedmsg = len(modifiedmsg)
+        pwords = re.compile(wordre) # usually \w+ but we have digits instead of letters
         wordlist = pwords.findall(modifiedmsg)
 
         worddict = {}
@@ -58,10 +78,24 @@ class DecoderClass(object):
                 worddict[w] += 1
                 
         ranklist = [pair for pair in sorted(worddict.items(), key=lambda (word, rank): rank)]
+        ranklist.reverse()        
         
-        lengthranking = np.array([(len(w), i) for (w, i) in ranklist])
+        freqranking = np.array([(k+1, float(i)/float(lenmodifiedmsg)) 
+            for (k, (w, i)) in enumerate(ranklist)])
         
+        log10freqranking = np.log10(freqranking)
         
+        [decreasing, intersection] = np.lib.polynomial.polyfit(log10freqranking[:,0],log10freqranking[:,1],1)
+
+        return (freqranking, decreasing, intersection)
+
+
+    def doesItObeyZipfsLaw(self, textlist, delimiterlist, wordrelist, colorlist_points, colorlist_fits):
+        
+        print("Printing word frequency over ordered by frequency rank.")
+        print("This obviously relies on the correct choice of delimiter symbols.")
+        print("This should give a power law according to Zipf\'s law.")        
+
         fig = plt.figure(1)
         ax = fig.add_subplot(111)
 
@@ -70,10 +104,78 @@ class DecoderClass(object):
 
         ax.set_yscale('log')
         ax.set_xscale('log')
-        
-        ax.plot(lengthranking[:, 0], lengthranking[:, 1], '.', color='r')
 
-        plt.show()        
+        ax.set_xlabel('rank # according to frequency (-> decreasing frequency)')
+        ax.set_ylabel('word frequency')
+ 
+        texts_to_analyse = [self.msgtext] + textlist       
+        delimiters_to_use = [r'[23]+'] + delimiterlist
+        wordres_to_use = [r'[01]+'] + wordrelist
+        colorlist_points_to_use = ['r'] + colorlist_points
+        colorlist_fits_to_use = ['r'] + colorlist_fits
+        
+        for (text, delimiters, wordre, color_points, color_fits) in zip(texts_to_analyse, delimiters_to_use, wordres_to_use, colorlist_points_to_use, colorlist_fits_to_use):
+            
+            (freqranking, decreasing, intersection) = self.performFrequencyRankOrderingAndFit(text, delimiters, wordre)        
+        
+            # y = a*x^b
+            # log10 y = log10 a + b*log10 x
+
+            xfit = np.linspace(freqranking[0, 0], freqranking[-1, 0], 100)
+            yfit = 10.0**intersection*np.power(xfit, decreasing)
+        
+       
+            ax.set_title('Zipf\'s Law y = a*x^b')
+        
+            print('a = %f, b = %f' % (10.0**intersection, decreasing))        
+        
+            ax.plot(freqranking[:, 0], freqranking[:, 1], color_points+'.', xfit, yfit, color_fits)
+
+        plt.show()
+
+    def showGraphicalRepresentation(self, width=128):
+
+        msgtext = self.msgtext
+        lenmsg = len(msgtext)
+
+        numlines = lenmsg/width
+        numoverhead = lenmsg % width
+        padding = width - numoverhead
+
+        msgtext += "".join(['X' for i in range(padding)])
+
+        floatmsg = []
+        for c in msgtext:
+            if c != 'X':
+                floatmsg.append(float(c))
+            else:
+                floatmsg.append(NaN)
+
+        nummsgtext = np.array(floatmsg)
+        
+
+        Data = nummsgtext.reshape((numlines+1, width))
+
+
+        nx, ny = width, numlines+1
+        x = range(nx)
+        y = range(ny)
+
+        X, Y = np.meshgrid(x, y)  
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        
+        ax.set_xlabel('width')
+        ax.set_ylabel('lines')
+        
+        ax.set_title('Graphical Representation of Message')
+
+        ax.imshow(Data, interpolation='None')
+
+        #plt.show()
+       
+        
 
     def guessShortControlSymbols(self, maxlen=5):
         print('---------')
@@ -118,10 +220,11 @@ class DecoderClass(object):
         (results, remain) = scanner.scan(linetext)
 
         # the first data cell in the line is typically a command
+        
 
-        if results[0][0] == 'DATA':
-            results[0] = ('COMMAND', results[0][1])
-    
+        if linetext != '':
+            if results[0][0] == 'DATA':
+                results[0] = ('COMMAND', results[0][1])    
     
         # now add commands and definitions to dictionaries
         for w in results:
@@ -201,14 +304,20 @@ def main(argv):
 
     d = DecoderClass()    
     
+    (msglen, randomtext) = d.generateRandomMessage(limit=600000)
+    #(txtlen, mobytext) = d.readStandardTextFromFile("../moby_dick.txt", limit=0)
     msglen = d.readMessage(argv[1], limit=0)
-    d.doesItObeyZipfsLaw('[23]+')
+    
+    d.doesItObeyZipfsLaw([randomtext], [r'[23]+'], [r'[01]+'], ['g'], ['g'])
+    # check various texts or messages for their ranked frequency content    
+    
+    d.showGraphicalRepresentation(width=512)
 
     # message at the actual version is somehow not correctly encoded
 
-    #d.guessShortControlSymbols(maxlen=4)
-    #res = d.parseBlock(leftdelimiter='2', rightdelimiter='3', eol='2233')
-    #decodedlines = d.decodeBlock(res)
+    d.guessShortControlSymbols(maxlen=4)
+    res = d.parseBlock(leftdelimiter='2', rightdelimiter='3', eol='2233')
+    decodedlines = d.decodeBlock(res)
 
     print('dictionaries ....')
     print(d.commanddict)
