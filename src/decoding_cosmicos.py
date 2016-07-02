@@ -50,7 +50,7 @@ class DecoderClass(object):
 
     def doesItObeyZipfsLaw(self, delimsymbols):
         
-        print("Printing word frequency over word length.")
+        print("Printing word frequency over ordered by frequency rank.")
         print("This obviously relies on the correct choice of delimiter symbols.")
         print("This should give a power law according to Zipf\'s law.")        
         
@@ -69,17 +69,17 @@ class DecoderClass(object):
         ranklist = [pair for pair in sorted(worddict.items(), key=lambda (word, rank): rank)]
         ranklist.reverse()        
         
-        lengthranking = np.array([(k+1, float(i)/float(lenmodifiedmsg)) 
+        freqranking = np.array([(k+1, float(i)/float(lenmodifiedmsg)) 
             for (k, (w, i)) in enumerate(ranklist)])
         
-        log10lengthranking = np.log10(lengthranking)
+        log10freqranking = np.log10(freqranking)
         
-        [decreasing, intersection] = np.lib.polynomial.polyfit(log10lengthranking[:,0],log10lengthranking[:,1],1)
+        [decreasing, intersection] = np.lib.polynomial.polyfit(log10freqranking[:,0],log10freqranking[:,1],1)
         
         # y = a*x^b
         # log10 y = log10 a + b*log10 x
 
-        xfit = np.linspace(lengthranking[0, 0], lengthranking[-1, 0], 100)
+        xfit = np.linspace(freqranking[0, 0], freqranking[-1, 0], 100)
         yfit = 10.0**intersection*np.power(xfit, decreasing)
         
         fig = plt.figure(1)
@@ -93,10 +93,10 @@ class DecoderClass(object):
         
         ax.set_title('Zipfs law y = a*x^b: a = '
             +str(10.0**intersection) + ' b = ' + str(decreasing))
-        ax.set_xlabel('rank # according to wordlength (increasing len ->)')
+        ax.set_xlabel('rank # according to frequency (decreasing len frequency)')
         ax.set_ylabel('word frequency')
         
-        ax.plot(lengthranking[:, 0], lengthranking[:, 1], 'r.', xfit, yfit, 'b')
+        ax.plot(freqranking[:, 0], freqranking[:, 1], 'r.', xfit, yfit, 'b')
 
         plt.show()
 
