@@ -9,6 +9,7 @@ addons:
     - nodejs 
     - ocaml
     - camlp4
+    - neko
 script: 
     - git clone --recursive git://github.com/HaxeFoundation/haxe.git
     - cd haxe
