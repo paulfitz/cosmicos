@@ -105,7 +105,7 @@ class DecoderClass(object):
         ax.set_yscale('log')
         ax.set_xscale('log')
 
-        ax.set_xlabel('rank # according to frequency (decreasing len frequency)')
+        ax.set_xlabel('rank # according to frequency (-> decreasing frequency)')
         ax.set_ylabel('word frequency')
  
         texts_to_analyse = [self.msgtext] + textlist       
@@ -126,6 +126,8 @@ class DecoderClass(object):
         
        
             ax.set_title('Zipf\'s Law y = a*x^b')
+        
+            print('a = %f, b = %f' % (10.0**intersection, decreasing))        
         
             ax.plot(freqranking[:, 0], freqranking[:, 1], color_points+'.', xfit, yfit, color_fits)
 
