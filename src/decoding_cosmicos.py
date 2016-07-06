@@ -175,6 +175,76 @@ class DecoderClass(object):
 
         #plt.show()
        
+    def showGraphicalRepresentationLineTerminal(self, terminalsymbol='2233', maxlen=1000):
+
+        msgtext = self.msgtext
+        lenmsg = len(msgtext)
+
+        # split msg at terminalsymbol
+        # fill all lines up with X until length of longest line
+        # convert into image
+
+        msgtext = re.split(terminalsymbol, msgtext)
+        
+        howmanylines = len(msgtext)        
+        
+        sortedlines = sorted(msgtext, key=lambda line: len(line))
+        
+        lengths = sorted([len(l) for l in msgtext])
+
+        print("last 20 lengths: %s" % str(lengths[-20:-1]))        
+        
+        longestline = sortedlines[-1]
+        
+        if maxlen == -1:        
+            width = len(longestline)
+        else:
+            width = maxlen
+            
+        howmanypixel = int(ceil(float(howmanylines)/float(width)))
+        # to correct the aspect ratio between length and width
+        
+        paddedfloatlines = []
+        for (linnum, line) in enumerate(msgtext):
+            paddedline = line
+            if len(line) < width:
+                paddedline = line + (''.join(['X' for i in range(width - len(line))]))
+            elif len(line) > width:
+                print("truncated line %d" % (linnum,))
+                paddedline = line[:width]
+            tmplist = []
+            for c in paddedline:
+                if c != 'X':
+                    tmplist = tmplist + [float(c) for i in range(howmanypixel)]
+                else:
+                    tmplist = tmplist + [NaN for i in range(howmanypixel)]
+            paddedfloatlines.append(tmplist)
+        numlines = len(paddedfloatlines)
+        newwidth = len(paddedfloatlines[0])        
+        
+        
+        
+
+        Data = np.array(paddedfloatlines)
+
+        nx, ny = newwidth, numlines+1
+        x = range(nx)
+        y = range(ny)
+
+        X, Y = np.meshgrid(x, y)  
+
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        
+        ax.set_xlabel('width')
+        ax.set_ylabel('lines')
+
+        #ax.axis([0, width, 0, numlines+1])        
+        
+        ax.set_title('Linewise Graphical Representation of Message')
+
+        ax.imshow(Data, interpolation='None')       
+       
         
 
     def guessShortControlSymbols(self, maxlen=5):
@@ -312,6 +382,8 @@ def main(argv):
     # check various texts or messages for their ranked frequency content    
     
     d.showGraphicalRepresentation(width=512)
+    
+    d.showGraphicalRepresentationLineTerminal(maxlen=128)
 
     # message at the actual version is somehow not correctly encoded
 
@@ -319,10 +391,10 @@ def main(argv):
     res = d.parseBlock(leftdelimiter='2', rightdelimiter='3', eol='2233')
     decodedlines = d.decodeBlock(res)
 
-    print('dictionaries ....')
-    print(d.commanddict)
-    print(d.datadict)
-    print(d.defdict)
+    #print('dictionaries ....')
+    #print(d.commanddict)
+    #print(d.datadict)
+    #print(d.defdict)
 
     
 if __name__ == '__main__':
