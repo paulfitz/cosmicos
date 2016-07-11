@@ -12,6 +12,7 @@ Format was taken from an old form of message.
 
 import re
 import sys
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -64,7 +65,43 @@ class DecoderClass(object):
         return lenmsg
         
         
-    def performFrequencyRankOrderingAndFit(self, msgtext, delimsymbols, wordre):
+    def performStatistics(self, msgtext, letters, maxlen=2):
+        
+        worddict = {}
+        for k in range(maxlen):
+            kp = k + 1
+            pattern = re.compile(letters+"{"+str(kp)+"}")            
+            matchedpattern = re.findall(pattern, msgtext)            
+            numpatterns = len(matchedpattern)
+            print("%d %d-grams" % (numpatterns,kp))
+            for w in matchedpattern:
+                if worddict.get(w) == None:
+                    worddict[w] = 1.0/numpatterns
+                else:
+                    worddict[w] += 1.0/numpatterns
+
+
+        digrams = []
+        monograms = []
+        for (gr, hgr) in worddict.items():
+            if len(gr) == 2:
+                digrams.append((gr, hgr))
+            if len(gr) == 1:
+                monograms.append((gr, hgr))
+                
+        hsum = 0.0
+        for (mon, hmon) in monograms:
+            print("h(\'%c\') = %f" % (mon, -hmon*math.log(hmon, 2)))
+            hsum += -hmon*math.log(hmon, 2)
+        print("hsum = %f" % (hsum,))
+                
+        hsumdi = 0.0
+        for (di, hdi) in digrams:
+            print("h(\'%s\') = %f" % (di, -hdi*math.log(hdi, 2)))
+            hsumdi += -hdi*math.log(hdi, 2)
+        print("hsumdi = %f" % (hsumdi,))
+        
+    def performFrequencyRankOrderingAndFit(self, msgtext, delimsymbols, wordre, rankcutoff=100):
         modifiedmsg = re.sub(delimsymbols, ' ', msgtext)
         lenmodifiedmsg = len(modifiedmsg)
         pwords = re.compile(wordre) # usually \w+ but we have digits instead of letters
@@ -76,9 +113,13 @@ class DecoderClass(object):
                 worddict[w] = 1
             else:
                 worddict[w] += 1
-                
-        ranklist = [pair for pair in sorted(worddict.items(), key=lambda (word, rank): rank)]
-        ranklist.reverse()        
+        print(sorted(worddict.items()))      
+        ranklist = [pair for pair in sorted(worddict.items(), key=lambda (word,rank): rank, reverse=True)]
+        
+        if rankcutoff > 0:        
+            ranklist = ranklist[0:rankcutoff]        
+        
+        
         
         freqranking = np.array([(k+1, float(i)/float(lenmodifiedmsg)) 
             for (k, (w, i)) in enumerate(ranklist)])
@@ -90,7 +131,7 @@ class DecoderClass(object):
         return (freqranking, decreasing, intersection)
 
 
-    def doesItObeyZipfsLaw(self, textlist, delimiterlist, wordrelist, colorlist_points, colorlist_fits):
+    def doesItObeyZipfsLaw(self, textlist, delimiterlist, wordrelist, colorlist_points, colorlist_fits, rankcutoff=100):
         
         print("Printing word frequency over ordered by frequency rank.")
         print("This obviously relies on the correct choice of delimiter symbols.")
@@ -116,7 +157,7 @@ class DecoderClass(object):
         
         for (text, delimiters, wordre, color_points, color_fits) in zip(texts_to_analyse, delimiters_to_use, wordres_to_use, colorlist_points_to_use, colorlist_fits_to_use):
             
-            (freqranking, decreasing, intersection) = self.performFrequencyRankOrderingAndFit(text, delimiters, wordre)        
+            (freqranking, decreasing, intersection) = self.performFrequencyRankOrderingAndFit(text, delimiters, wordre, rankcutoff)        
         
             # y = a*x^b
             # log10 y = log10 a + b*log10 x
@@ -128,10 +169,16 @@ class DecoderClass(object):
             ax.set_title('Zipf\'s Law y = a*x^b')
         
             print('a = %f, b = %f' % (10.0**intersection, decreasing))        
-        
+            print(freqranking)
+            
             ax.plot(freqranking[:, 0], freqranking[:, 1], color_points+'.', xfit, yfit, color_fits)
+                
 
-        plt.show()
+        try:
+            plt.show()
+        except ValueError:
+            print('something wrong with values in log plot')
+            
 
     def showGraphicalRepresentation(self, width=128):
 
@@ -149,7 +196,7 @@ class DecoderClass(object):
             if c != 'X':
                 floatmsg.append(float(c))
             else:
-                floatmsg.append(NaN)
+                floatmsg.append(np.NaN)
 
         nummsgtext = np.array(floatmsg)
         
@@ -178,7 +225,6 @@ class DecoderClass(object):
     def showGraphicalRepresentationLineTerminal(self, terminalsymbol='2233', maxlen=1000):
 
         msgtext = self.msgtext
-        lenmsg = len(msgtext)
 
         # split msg at terminalsymbol
         # fill all lines up with X until length of longest line
@@ -201,7 +247,7 @@ class DecoderClass(object):
         else:
             width = maxlen
             
-        howmanypixel = int(ceil(float(howmanylines)/float(width)))
+        howmanypixel = int(math.ceil(float(howmanylines)/float(width)))
         # to correct the aspect ratio between length and width
         
         paddedfloatlines = []
@@ -217,7 +263,7 @@ class DecoderClass(object):
                 if c != 'X':
                     tmplist = tmplist + [float(c) for i in range(howmanypixel)]
                 else:
-                    tmplist = tmplist + [NaN for i in range(howmanypixel)]
+                    tmplist = tmplist + [np.NaN for i in range(howmanypixel)]
             paddedfloatlines.append(tmplist)
         numlines = len(paddedfloatlines)
         newwidth = len(paddedfloatlines[0])        
@@ -281,7 +327,7 @@ class DecoderClass(object):
     def decodeLine(self, linetext, leftdelimiter='', rightdelimiter=''):
     
         scanner=re.Scanner([
-            (r"2132[01]+3", lambda scanner, token: ("DEFINITION", token[4:-1])),
+            (r"2032[01]+3", lambda scanner, token: ("DEFINITION", token[4:-1])),
             (r"2[01]+3*", lambda scanner, token: ("DATA", token[1:-1])),
             (r"2[0123]+3*", lambda scanner, token: ("NESTED_COMMAND", token[1:-1])),
             (r"023", lambda scanner, token: ("HASPROPERTY", token))
@@ -374,22 +420,24 @@ def main(argv):
 
     d = DecoderClass()    
     
-    (msglen, randomtext) = d.generateRandomMessage(limit=600000)
+    #(msglen, randomtext) = d.generateRandomMessage(limit=600000)
     #(txtlen, mobytext) = d.readStandardTextFromFile("../moby_dick.txt", limit=0)
-    msglen = d.readMessage(argv[1], limit=0)
+    d.readMessage(argv[1], limit=0)
     
-    d.doesItObeyZipfsLaw([randomtext], [r'[23]+'], [r'[01]+'], ['g'], ['g'])
+    #d.doesItObeyZipfsLaw([randomtext], [r'[23]+'], [r'[01]+'], ['g'], ['g'])
     # check various texts or messages for their ranked frequency content    
     
-    d.showGraphicalRepresentation(width=512)
+    #d.showGraphicalRepresentation(width=512)
     
-    d.showGraphicalRepresentationLineTerminal(maxlen=128)
+    #d.showGraphicalRepresentationLineTerminal(maxlen=128)
 
     # message at the actual version is somehow not correctly encoded
 
-    d.guessShortControlSymbols(maxlen=4)
-    res = d.parseBlock(leftdelimiter='2', rightdelimiter='3', eol='2233')
-    decodedlines = d.decodeBlock(res)
+    #d.guessShortControlSymbols(maxlen=2)
+    #res = d.parseBlock(leftdelimiter='2', rightdelimiter='3', eol='2233')
+    #d.decodeBlock(res)
+
+    d.performStatistics(d.msgtext, r'[0123]')
 
     #print('dictionaries ....')
     #print(d.commanddict)
