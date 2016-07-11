@@ -6,6 +6,7 @@ package cosmicos;
 class Parse {
     public static function stringToList(x: String,
                                         vocab: Vocab) : Array<Dynamic> {
+	trace(x);
         var ch = x.charAt(x.length-1);
         if (ch == ';') {
             x = x.substr(0,x.length-1);
@@ -121,7 +122,7 @@ class Parse {
                     } else if (ch0 == "U" && ~/^U1*U$/.match(str)) {
                         // unary number e.g. U111U represent as string
                         v = str.substr(1,str.length-2);
-                    } else if (ch0 == "\"") {
+                    } else if (ch0 == "\"" || ch0 == "\'") {
                         // will need to tweak this for utf8, for
                         // now ASCII ok
                         var len : Int = str.length;
@@ -140,10 +141,14 @@ class Parse {
                         v = u;
                         */
                     } else if (vocab!=null) {
-                        v = vocab.get(str);
+			trace("found string \"" + str + "\"; looking up vocab");
+                        v = vocab.get(str); // TODO: should be getBase?
+			trace("found code \"" + v + "\"");
                     }
                 } else {
-                    v = Std.parseInt(str);
+		    trace("converting number " + str);
+                    v = Std.parseInt(str); // convert numbers to bitcodes
+		    trace("to " + v);
                 }
                 e[i] = v;
             }
@@ -242,6 +247,7 @@ class Parse {
                 txt += codifyInner(ei,level+1);
             } else if (Std.is(v,BitString)) {
                 var bs : BitString = cast v;
+		trace(bs);
                 var str : String = bs.txt;
                 var len : Int = str.length;
                 if (str.length == 0 || str.charAt(0) == '1') {
@@ -259,6 +265,7 @@ class Parse {
                     rem = Std.int(rem/2);
                 } while (rem!=0);
                 txt += "2" + b + "3";
+		trace(b); // debug
             }
         }
         if (need_paren) txt += "3";
