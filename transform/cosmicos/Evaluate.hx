@@ -18,26 +18,28 @@ class Evaluate {
         var c_is_private = false;
         var more = false;
 
-	//trace("eval in context: " + e0);
+	trace("eval in context: " + e0);
 
         do {
             if (Std.is(e0,String)) {
-		//trace("string branch");
+		trace("--> not open string branch \"" + e0 + "\"");
                 var str : String = cast e0;
                 if (str.length==0 || str.charAt(0) == '1') {
                     return str.length;
                 }
+		trace("--> returning \"" + e0 + "\"");
                 return str;
             }
             if (Std.is(e0,Int)||Std.is(e0,BigInteger)||Std.is(e0,BitString)) {
-		//trace("int branch");
+		trace("--> int branch");
+		trace("--> returning \"" + e0 + "\"");
                 return e0;
             }
-            trace("working on " + Parse.deconsify(e0));
+            trace("--> working on " + Parse.deconsify(e0));
             var cursor = new Cursor(e0);
             var x : Dynamic = evaluateInContext(cursor.next(),c);
             if (x==id_lambda) { // ?
-		//trace("lambda branch");
+		trace("--> lambda branch");
                 var k2 : Int = evaluateInContext(cursor.next(),c);
                 var e2 : Dynamic = cursor.next();
                 return function(v) {
@@ -45,7 +47,7 @@ class Evaluate {
                     return evaluateInContext(e2,c2);
                 };
             } else if (x==id_lambda0) { // ??
-		//trace("lambda0 branch");
+		trace("--> lambda0 branch");
                 var k2 : Int = evaluateInContext(cursor.next(),c);
                 var e2 : Dynamic = cursor.next();
                 return new CosFunction(function(v) {
@@ -53,13 +55,13 @@ class Evaluate {
                         return evaluateInContext(e2,c2);
                 }, true);
             } else if (x==id_assign) { // not super needs
-		//trace("assign branch");
+		trace("--> assign branch");
                 var k2 : Int = evaluateInContext(cursor.next(),c);
                 var v2 : Int = evaluateInContext(cursor.next(),c);
                 var c2 = new Memory(c,k2,v2);
                 e0 = cursor.next(); c = c2; more = true; continue;
             } else if (x==id_define) { // @
-		//trace("define branch");
+		trace("--> define branch");
                 var k2 = cursor.next();
                 var v2 = evaluateInContext(cursor.next(),c);
                 var code = evaluateInContext(k2,c);
@@ -67,11 +69,13 @@ class Evaluate {
                 //return 1;
                 return new CosDefine(code,v2);
             } else if (x==id_if) { // if
-		//trace("if branch");
+		trace("--> if branch");
                 // Not really needed now that we have meta-lambda "??"
                 var choice = evaluateInContext(cursor.next(),c);
+
                 if (choice!=0) {
                     e0 = cursor.next(); more = true; continue;
+		    trace("if branch: " + e0);
                 } else {
                     cursor.next();
                     e0 = cursor.next(); more = true; continue;
@@ -80,12 +84,10 @@ class Evaluate {
                 try {
                     var open = true;
 
-		    //trace("open branch: x = " + x);
+		    trace("--> open branch: x = \"" + x + "\"");
 
                     var x0 : Dynamic = x;
                     var len = cursor.length();
-
-		    //trace("cursor length: " + len);
 
                     for (i in 0...len) {
                         if (i>0) {
@@ -106,8 +108,13 @@ class Evaluate {
                             }
                         }
                         if (open) {
+			    var strx : String = cast x;
+			    trace("if(open) branch: \"" + strx + "\"");
                             if (Std.is(x,Int)||Std.is(x,BigInteger)) {
                                 var j : Int = cast x;
+				var strx : String = cast x; // TODO: for debug
+				trace("int branch in open: \"" + strx + "\"");
+				trace("getting x from mem");
                                 x = c.get(j);
                                 if (len>0) {
                                     if (x == null) {
@@ -117,7 +124,11 @@ class Evaluate {
                                 open = false;
                             } else if (Std.is(x,String)) {
                                 var j : String = cast x;
+				trace("string branch in open: " + x);
+				trace("getting x from mem");
                                 x = c.get(j);
+				trace("x = \"" + x + "\"");
+
                                 if (len>0) {
                                     if (x == null) {
                                         trace("Symbol '" + j + "' unrecognized");
@@ -144,6 +155,7 @@ class Evaluate {
                                 }
                                 applyDefine(x,c);
                             } else {
+				trace("something other found in open branch");
                                 open = false;
                             }
                         }
@@ -152,6 +164,7 @@ class Evaluate {
                     trace("Problem evaluating " + Parse.deconsify(e0));
                     throw(e);
                 }
+		trace("--> returning for " + Parse.deconsify(e0) + " ->> \"" + x + "\"");
                 return x;
             }
         } while (more);
@@ -175,22 +188,26 @@ class Evaluate {
     }
 
     public function evaluateLine(str: String) : Dynamic {
-        var lst = Parse.stringToList(str,vocab);
+        
+	trace("original string: " + str);
+	trace("test preprocessing: " + Parse.preprocessString(str));
+	    
+	var lst = Parse.stringToList(str,vocab);
         if (lst==null) return null;
-
-	trace("evaluate line0: " + lst);
-
-        //Parse.encodeSymbols(lst,vocab); // TODO: why is encodeSymbols called here?
-
-	trace("evaluate line0.5: " + lst);
-
-        Parse.removeSlashMarker(lst);
 
 	trace("evaluate line1: " + lst);
 
-        lst = Parse.consify(lst);
+        //Parse.encodeSymbols(lst,vocab); // TODO: why is encodeSymbols called here?
 
 	trace("evaluate line2: " + lst);
+
+        Parse.removeSlashMarker(lst);
+
+	trace("evaluate line3: " + lst);
+
+        lst = Parse.consify(lst);
+
+	trace("evaluate line4: " + lst);
 
         if (id_translate!=-1) {
             var translate = mem.get(id_translate);
@@ -200,13 +217,13 @@ class Evaluate {
         }
         var lst2 = Parse.deconsify(lst);
 
-	//trace("evaluate line3: " + lst2 + " " + lst);
+	trace("evaluate line5: " + lst2 + " " + lst);
 
         var v = evaluateExpression(lst); // TODO: check! 
 
 	trace("eval line v = " + v);
 
-	//trace("evaluate line4: " + v);
+	trace("evaluate line6: \"" + v + "\"");
 
         if (!Std.is(v,Int)) {
             //v = "mu";
@@ -243,11 +260,11 @@ class Evaluate {
     public function new() {
         mem = new Memory(null);
         vocab = new Vocab();
-        id_lambda = vocab.get("?"); // TODO: was get
-        id_lambda0 = vocab.get("??"); // TODO: was get
-        id_define = vocab.get("@"); // TODO: was get
-        id_if = vocab.get("if"); // TODO: was get
-        id_assign = vocab.get("assign"); // TODO: was get
+        id_lambda = vocab.get("?"); 
+        id_lambda0 = vocab.get("??");
+        id_define = vocab.get("@"); 
+        id_if = vocab.get("if"); 
+        id_assign = vocab.get("assign"); 
         id_translate = -1;
     }
 

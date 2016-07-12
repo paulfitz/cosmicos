@@ -4,9 +4,74 @@ package cosmicos;
 
 @:expose
 class Parse {
+
+    public static function preprocessString(x: String) : String {
+	    //trace(x);
+
+	    var res : String = "";
+
+	    // first get rid of ; at the end
+
+            var ch = x.charAt(x.length-1);
+            if (ch == ';') {
+                x = x.substr(0,x.length-1);
+            }
+	    x = "(" + x + ")";
+
+	    // borrow code from stringToList and stringToListCore
+
+	    var level = 0;
+	    var level_last_slash = 0;
+	    var slashes = 0;
+	    var slashes_in_bracket = 0;
+	    var oldch = '';
+
+	    for (i in 0...x.length) {
+		var ch = x.charAt(i);
+		var appendstr = "";
+
+		// slashes within brackets are closed by the next closing bracket 
+
+		if (ch=='('||ch=='{') {
+		     level++;
+		     slashes_in_bracket = 0;
+		}
+		if (ch==')'||ch=='}') {
+		     level--;
+		     //if (level == level_last_slash) {
+		         for(j in 0...slashes_in_bracket) {
+			     level--;
+			     appendstr += ')';
+		         }
+		     //}
+		     slashes_in_bracket = slashes - slashes_in_bracket;
+		}
+		if (ch=='|'||ch=='/') {
+		     slashes++; // overall slashes
+		     slashes_in_bracket++; // slashes in current bracket
+		     level_last_slash = level;
+		     level++;
+		     appendstr += '(';
+		}
+		else
+		    if (!(ch == ' ' && (oldch == '/' || oldch == '|'))) // write space only if there was no / or | before
+		        appendstr += ch;
+		res += appendstr;
+		
+		oldch = ch;
+
+		trace("ch: " + ch + " lev: " + level + " slashes " + slashes + " in bracket " + slashes_in_bracket + "  old level: " + level_last_slash + " append: " + appendstr);
+
+	    }
+
+
+
+	    return res;
+    }
+
     public static function stringToList(x: String,
                                         vocab: Vocab) : Array<Dynamic> {
-	trace(x);
+	//trace(x);
         var ch = x.charAt(x.length-1);
         if (ch == ';') {
             x = x.substr(0,x.length-1);
