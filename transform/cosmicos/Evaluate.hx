@@ -166,7 +166,7 @@ class Evaluate {
     }
 
     public function evaluateExpression(e: Dynamic) : Dynamic {
-        var r = evaluateInContext(e,mem); // TODO: shit happens
+        var r = evaluateInContext(e,mem); // TODO: check!
 	var strr : String = cast r;
 	//trace("eval expr1: " + strr);
         if (applyDefine(r,mem)) r = 1;
@@ -177,14 +177,20 @@ class Evaluate {
     public function evaluateLine(str: String) : Dynamic {
         var lst = Parse.stringToList(str,vocab);
         if (lst==null) return null;
-        Parse.encodeSymbols(lst,vocab);
+
+	trace("evaluate line0: " + lst);
+
+        //Parse.encodeSymbols(lst,vocab); // TODO: why is encodeSymbols called here?
+
+	trace("evaluate line0.5: " + lst);
+
         Parse.removeSlashMarker(lst);
 
-	//trace("evaluate line1: " + lst);
+	trace("evaluate line1: " + lst);
 
         lst = Parse.consify(lst);
 
-	//trace("evaluate line2: " + lst);
+	trace("evaluate line2: " + lst);
 
         if (id_translate!=-1) {
             var translate = mem.get(id_translate);
@@ -196,7 +202,9 @@ class Evaluate {
 
 	//trace("evaluate line3: " + lst2 + " " + lst);
 
-        var v = evaluateExpression(lst); // TODO: shit happens
+        var v = evaluateExpression(lst); // TODO: check! 
+
+	trace("eval line v = " + v);
 
 	//trace("evaluate line4: " + v);
 
@@ -224,8 +232,11 @@ class Evaluate {
 
     public function nestedLine(str: String) : Dynamic {
         var lst = Parse.stringToList(str,vocab);
-        Parse.encodeSymbols(lst,null);
+	trace("nl1: " + lst);
+        Parse.encodeSymbols(lst,null); // TODO: is that necessary?
+	trace("nl2: " + lst);
         Parse.recoverList(lst);
+	trace("nl3: " + lst);
         return lst;
     }
 

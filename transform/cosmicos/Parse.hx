@@ -142,7 +142,7 @@ class Parse {
                         */
                     } else if (vocab!=null) {
 			trace("found string \"" + str + "\"; looking up vocab");
-                        v = vocab.get(str); // TODO: should be getBase?
+                        v = vocab.getBase(str); // TODO: should be getBase?
 			trace("found code \"" + v + "\"");
                     }
                 } else {

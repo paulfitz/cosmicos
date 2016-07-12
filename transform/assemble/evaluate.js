@@ -29,12 +29,15 @@ function run(op,part,skippy) {
 	part["parse"] = nest;
     }
     console.log(cline + ": " + op + "  -->  " + code);
+    process.stderr.write(cline + ": " + op + " --> " + code + "\n"); // TODO: just for debug
     txt += code;
     txt += "\n";
     if (skippy) return 1;
+    process.stderr.write("evaluating ... ");
     var v = ev.evaluateLine(op);
-    //console.log(JSON.stringify(cos.Parse.deconsify(v),ev.vocab));
-    //console.log(v);
+    process.stderr.write("OK -> v = " + v + " (should be 1)\n");
+    console.log(JSON.stringify(cos.Parse.deconsify(v),ev.vocab));
+    console.log(v);
     return v;
 }
 
