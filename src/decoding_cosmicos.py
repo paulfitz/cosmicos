@@ -30,6 +30,7 @@ class DecoderClass(object):
     def generateRandomMessage(self, limit=10000):
         print('---------')
         print("Generating random message with limit %d characters" % (limit,))
+        np.random.seed(1337)        
         preliminary = [str(i) for i in list(np.random.random_integers(0, 3, (limit,)))]
         self.origmsgtext = ''.join(preliminary)
         self.msgtext = self.origmsgtext
@@ -65,41 +66,85 @@ class DecoderClass(object):
         return lenmsg
         
         
-    def performStatistics(self, msgtext, letters, maxlen=2):
+    def performStatistics(self, msgtext, lets, maxlen=2):
         
+        print("msglen %d" % (len(msgtext),))
+
+        printentropies = False        
+        
+        letters = r'['+lets+']'
+        numletters = len(lets)
         worddict = {}
+        ngramlist = []
         for k in range(maxlen):
+            worddictngram = {}
             kp = k + 1
             pattern = re.compile(letters+"{"+str(kp)+"}")            
             matchedpattern = re.findall(pattern, msgtext)            
             numpatterns = len(matchedpattern)
-            print("%d %d-grams" % (numpatterns,kp))
+            #print("%d %d-grams" % (numpatterns,kp))
             for w in matchedpattern:
                 if worddict.get(w) == None:
                     worddict[w] = 1.0/numpatterns
                 else:
                     worddict[w] += 1.0/numpatterns
 
+                if worddictngram.get(w) == None:
+                    worddictngram[w] = 1.0/numpatterns
+                else:
+                    worddictngram[w] += 1.0/numpatterns
 
-        digrams = []
-        monograms = []
-        for (gr, hgr) in worddict.items():
-            if len(gr) == 2:
-                digrams.append((gr, hgr))
-            if len(gr) == 1:
-                monograms.append((gr, hgr))
+            ngramlist.append(worddictngram)
+
+        if printentropies:
+            digrams = []
+            monograms = []
+            for (gr, hgr) in worddict.items():
+                if len(gr) == 2:
+                    digrams.append((gr, hgr))
+                if len(gr) == 1:
+                    monograms.append((gr, hgr))
                 
-        hsum = 0.0
-        for (mon, hmon) in monograms:
-            print("h(\'%c\') = %f" % (mon, -hmon*math.log(hmon, 2)))
-            hsum += -hmon*math.log(hmon, 2)
-        print("hsum = %f" % (hsum,))
+            hsum = 0.0
+            for (mon, hmon) in monograms:
+                print("h(\'%c\') = %f" % (mon, -hmon*math.log(hmon, numletters)))
+                hsum += -hmon*math.log(hmon, numletters)
+                print("hsum = %f" % (hsum,))
                 
-        hsumdi = 0.0
-        for (di, hdi) in digrams:
-            print("h(\'%s\') = %f" % (di, -hdi*math.log(hdi, 2)))
-            hsumdi += -hdi*math.log(hdi, 2)
-        print("hsumdi = %f" % (hsumdi,))
+            numdigrams = len(digrams)
+            hsumdi = 0.0
+            for (di, hdi) in digrams:
+                print("h(\'%s\') = %f" % (di, -hdi*math.log(hdi, numdigrams)))
+                hsumdi += -hdi*math.log(hdi, numdigrams)
+            print("hsumdi = %f" % (hsumdi,))
+            
+        for (ind, wd) in enumerate(ngramlist):
+
+            hsumn = 0.0
+            numngrams = len(wd)
+            
+            for (ngram, hn) in wd.items():
+                sn = 0.0
+                if numngrams > 1 and hn != 0:
+                    sn = -hn*math.log(hn, numngrams)
+                hsumn += sn
+            
+            print("%d %f" % (ind+1, hsumn))
+
+    def preparePyPM(self, outputfile):
+        outputmsgtext = re.sub(r'2233', '\n', self.msgtext)
+
+        #outputmsgtext = re.sub(r'023', ' | ', outputmsgtext)
+        #outputmsgtext = re.sub(r'2([01]+)3', r'(\1) ', outputmsgtext)        
+        #outputmsgtext = re.sub(r'(2{1})', r' ( ', outputmsgtext)
+        #outputmsgtext = re.sub(r'(3{1})', r' ) ', outputmsgtext)
+
+        outputmsgtext = re.sub(r'([0123]{1})', r'\1 ', outputmsgtext)        
+        
+        fo = open(outputfile, 'w')
+        fo.write(outputmsgtext)
+        fo.close()
+
         
     def performFrequencyRankOrderingAndFit(self, msgtext, delimsymbols, wordre, rankcutoff=100):
         modifiedmsg = re.sub(delimsymbols, ' ', msgtext)
@@ -420,8 +465,9 @@ def main(argv):
 
     d = DecoderClass()    
     
-    #(msglen, randomtext) = d.generateRandomMessage(limit=600000)
-    #(txtlen, mobytext) = d.readStandardTextFromFile("../moby_dick.txt", limit=0)
+    (msglen, randomtext) = d.generateRandomMessage(limit=600000)
+    (txtlen, mobytext) = d.readStandardTextFromFile("../moby_dick.txt", limit=0)
+    (metilen, metitext) = d.readStandardTextFromFile("../meti.txt", limit=0)
     d.readMessage(argv[1], limit=0)
     
     #d.doesItObeyZipfsLaw([randomtext], [r'[23]+'], [r'[01]+'], ['g'], ['g'])
@@ -437,7 +483,28 @@ def main(argv):
     #res = d.parseBlock(leftdelimiter='2', rightdelimiter='3', eol='2233')
     #d.decodeBlock(res)
 
-    d.performStatistics(d.msgtext, r'[0123]')
+    wmeti = metitext.split()
+    encodedmeti = ''
+    metidict = {}
+    count = 0
+    for w in wmeti:
+        cdstr = ''
+        if metidict.get(w) == None:
+            metidict[w] = count
+            cdstr = hex(count)[2:]
+            count += 1
+        else:
+            cdstr = hex(metidict[w])[2:]
+        lcdstr = len(cdstr)
+        if lcdstr < 4:
+            cdstr = (''.join(['0' for i in range(4-lcdstr)])) + cdstr
+        encodedmeti += cdstr
+
+    d.performStatistics(randomtext, '0123', maxlen=100)
+    d.performStatistics(d.msgtext, '0123', maxlen=100)
+    d.performStatistics(mobytext, 'abcdefghijklmnopqrstuvwxyz ', maxlen=100)
+    d.performStatistics(encodedmeti, '0123456789abcdef', maxlen=100)
+    #d.preparePyPM('lm.txt')
 
     #print('dictionaries ....')
     #print(d.commanddict)
