@@ -80,7 +80,10 @@ class DecoderClass(object):
             worddictngram = {}
             kp = k + 1
             pattern = re.compile(letters+"{"+str(kp)+"}")            
-            matchedpattern = re.findall(pattern, msgtext)            
+            matchedpattern = re.findall(pattern, msgtext)
+
+            if matchedpattern == []:
+                print('empty matching for %s at length %d' % (letters, kp))
             numpatterns = len(matchedpattern)
             #print("%d %d-grams" % (numpatterns,kp))
             for w in matchedpattern:
@@ -118,6 +121,7 @@ class DecoderClass(object):
                 hsumdi += -hdi*math.log(hdi, numdigrams)
             print("hsumdi = %f" % (hsumdi,))
             
+        entropyngramlist = []
         for (ind, wd) in enumerate(ngramlist):
 
             hsumn = 0.0
@@ -129,7 +133,12 @@ class DecoderClass(object):
                     sn = -hn*math.log(hn, numngrams)
                 hsumn += sn
             
+            if hsumn < 1e-6:
+                print(wd)
+            
             print("%d %f" % (ind+1, hsumn))
+            entropyngramlist.append([ind+1, hsumn])
+        return(entropyngramlist)
 
     def preparePyPM(self, outputfile):
         outputmsgtext = re.sub(r'2233', '\n', self.msgtext)
@@ -452,6 +461,28 @@ class DecoderClass(object):
         return lines
         
 
+    def plotNGramEntropy(self, entlengtharrays, colors, labels):
+        fig = plt.figure(1)
+        ax = fig.add_subplot(111)
+
+        #ax.axis('equal')
+        #ax.set_axis_bgcolor('black')        
+
+        #ax.set_yscale('log')
+        #ax.set_xscale('log')
+
+        ax.set_xlabel('n-gram length')
+        ax.set_ylabel('Shannon-Boltzmann entropy')
+
+        for (data, color, l) in zip(entlengtharrays, colors, labels):
+
+            ax.plot(data[:, 0], data[:, 1], color+'-')
+        
+        ax.legend(labels, loc='lower right')
+
+        plt.show()
+        
+
 def main(argv):
    
     if len(argv) != 2:
@@ -483,6 +514,10 @@ def main(argv):
     #res = d.parseBlock(leftdelimiter='2', rightdelimiter='3', eol='2233')
     #d.decodeBlock(res)
 
+    mobytext = re.sub(r'\n', '', mobytext) # remove punctuation
+
+    metitext = re.sub(r'[ \n]+', '', metitext)
+
     wmeti = metitext.split()
     encodedmeti = ''
     metidict = {}
@@ -500,10 +535,15 @@ def main(argv):
             cdstr = (''.join(['0' for i in range(4-lcdstr)])) + cdstr
         encodedmeti += cdstr
 
-    d.performStatistics(randomtext, '0123', maxlen=100)
-    d.performStatistics(d.msgtext, '0123', maxlen=100)
-    d.performStatistics(mobytext, 'abcdefghijklmnopqrstuvwxyz ', maxlen=100)
-    d.performStatistics(encodedmeti, '0123456789abcdef', maxlen=100)
+    Srnd = np.array(d.performStatistics(randomtext, '0123', maxlen=100))
+    Scos = np.array(d.performStatistics(d.msgtext, '0123', maxlen=100))
+    Smoby = np.array(d.performStatistics(mobytext, '0123456789abcdefghijklmnopqrstuvwxyz', maxlen=100))
+    Smeti = np.array(d.performStatistics(metitext, '01234567', maxlen=100))
+
+    d.plotNGramEntropy([Srnd, Scos, Smoby, Smeti], 
+                       ['r', 'g', 'b', 'm'], 
+                        ['Random text (uniformly distributed 0123)', 'CosmicOS', 'Moby Dick (lowercase + numbers)', 'METI (dearet.org, removed space and \\n)'])
+    
     #d.preparePyPM('lm.txt')
 
     #print('dictionaries ....')
