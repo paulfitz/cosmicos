@@ -243,7 +243,8 @@ class Evaluate {
     }
 
     public function codifyLine(str: String) : String {
-        var lst = Parse.stringToList(str,vocab);
+        // inserted string preprocessing
+        var lst = Parse.stringToList(Parse.preprocessString(str),vocab);
 	    trace("codifyLine");
         Parse.encodeSymbols(lst,vocab); // rewrite numbers into bitcodes?
 	    trace("list after encodeSymbols");

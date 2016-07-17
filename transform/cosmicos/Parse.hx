@@ -280,7 +280,7 @@ class Parse {
                         */
                     } else if (vocab!=null) {
 			            trace("found string \"" + str + "\"; looking up vocab");
-                        v = vocab.get(str); // TODO: should be getBase?
+                        v = vocab.getBase(str); // TODO: should be getBase?
 			            trace("found code \"" + v + "\"");
                     }
                 } else {
@@ -385,7 +385,7 @@ class Parse {
                 txt += codifyInner(ei,level+1);
             } else if (Std.is(v,BitString)) {
                 var bs : BitString = cast v;
-		trace(bs);
+		        trace(bs);
                 var str : String = bs.txt;
                 var len : Int = str.length;
                 if (str.length == 0 || str.charAt(0) == '1') {
@@ -396,14 +396,17 @@ class Parse {
                     for (j in 0...len) txt += (str.charAt(j)==':')?"1":"0";
                 }
             } else {
+                var bitlengthnum = 8;
                 var b = "";
                 var rem : Int = cast v;
                 do {
                     b = ((rem%2!=0)?"1":"0") + b;
                     rem = Std.int(rem/2);
                 } while (rem!=0);
+                for (i in 0...bitlengthnum-b.length)
+                    b = '0' + b;
+		        trace(b); // debug
                 txt += "2" + b + "3";
-		trace(b); // debug
             }
         }
         if (need_paren) txt += "3";
