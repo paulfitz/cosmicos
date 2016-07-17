@@ -107,9 +107,14 @@ class Parse {
         if (founddollar) {
         // if dollar string is found add chars up to substring
         // and write back substring after terminal symbol is found
-          if (terminalsymbols.indexOf(ch) != -1) {
-            res += "(" + dollarstring + ")"; // reconstruct () from $
-            res += ch;
+          if (terminalsymbols.indexOf(ch) != -1 || i == x.length - 1) { // terminal symbol or line end
+            if (i != x.length - 1) {
+                res += "(" + dollarstring + ")"; // reconstruct () from $
+                res += ch;
+            }
+            else {
+                res += "(" + dollarstring + ch + ")"; // reconstruct () from $
+            }
             dollarstring = ""; // reset substring
             founddollar = false; // reset dollar flag
           }
@@ -121,6 +126,7 @@ class Parse {
         }
         else
           res += ch; // if non dollar string is found just copy old string
+        //trace("ch: " + ch + " i " + i + "  founddollar " + founddollar + " ds " + dollarstring + " len " + x.length);
       }
 
 
@@ -273,14 +279,14 @@ class Parse {
                         v = u;
                         */
                     } else if (vocab!=null) {
-			trace("found string \"" + str + "\"; looking up vocab");
-                        v = vocab.getBase(str); // TODO: should be getBase?
-			trace("found code \"" + v + "\"");
+			            trace("found string \"" + str + "\"; looking up vocab");
+                        v = vocab.get(str); // TODO: should be getBase?
+			            trace("found code \"" + v + "\"");
                     }
                 } else {
-		    trace("converting number " + str);
+		            trace("converting number " + str);
                     v = Std.parseInt(str); // convert numbers to bitcodes
-		    trace("to " + v);
+		            trace("to " + v);
                 }
                 e[i] = v;
             }
