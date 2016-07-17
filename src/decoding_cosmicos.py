@@ -35,6 +35,17 @@ class DecoderClass(object):
         self.origmsgtext = ''.join(preliminary)
         self.msgtext = self.origmsgtext
         return (limit, self.msgtext)
+
+    def generateBinomialRandomMessage(self, p=0.5, limit=10000):
+        print('---------')
+        print("Generating binomial distributed message with limit %d characters" % (limit,))
+        np.random.seed(1337)        
+        preliminary = [str(i) for i in list(np.random.binomial(3, p, (limit,)))]
+        self.origmsgtext = ''.join(preliminary)
+        self.msgtext = self.origmsgtext
+        return (limit, self.msgtext)
+
+
         
     def readStandardTextFromFile(self, filename, limit=10000):
         print('---------')
@@ -476,7 +487,7 @@ class DecoderClass(object):
 
         for (data, color, l) in zip(entlengtharrays, colors, labels):
 
-            ax.plot(data[:, 0], data[:, 1], color+'-')
+            ax.plot(data[:, 0], data[:, 1], '-', color=color)
         
         ax.legend(labels, loc='lower right')
 
@@ -497,6 +508,11 @@ def main(argv):
     d = DecoderClass()    
     
     (msglen, randomtext) = d.generateRandomMessage(limit=600000)
+    (mlenb1, binomialtext1) = d.generateBinomialRandomMessage(p=0.1, limit=600000)
+    #(mlenb2, binomialtext2) = d.generateBinomialRandomMessage(p=0.2, limit=600000)
+    #(mlenb3, binomialtext3) = d.generateBinomialRandomMessage(p=0.3, limit=600000)
+    #(mlenb4, binomialtext4) = d.generateBinomialRandomMessage(p=0.5, limit=600000)
+                
     (txtlen, mobytext) = d.readStandardTextFromFile("../moby_dick.txt", limit=0)
     (metilen, metitext) = d.readStandardTextFromFile("../meti.txt", limit=0)
     d.readMessage(argv[1], limit=0)
@@ -536,13 +552,37 @@ def main(argv):
         encodedmeti += cdstr
 
     Srnd = np.array(d.performStatistics(randomtext, '0123', maxlen=100))
+    Sbinomial1 = np.array(d.performStatistics(binomialtext1, '0123', maxlen=100))
+    #Sbinomial2 = np.array(d.performStatistics(binomialtext2, '0123', maxlen=100))
+    #Sbinomial3 = np.array(d.performStatistics(binomialtext3, '0123', maxlen=100))
+    #Sbinomial4 = np.array(d.performStatistics(binomialtext4, '0123', maxlen=100))
     Scos = np.array(d.performStatistics(d.msgtext, '0123', maxlen=100))
     Smoby = np.array(d.performStatistics(mobytext, '0123456789abcdefghijklmnopqrstuvwxyz', maxlen=100))
     Smeti = np.array(d.performStatistics(metitext, '01234567', maxlen=100))
 
-    d.plotNGramEntropy([Srnd, Scos, Smoby, Smeti], 
-                       ['r', 'g', 'b', 'm'], 
-                        ['Random text (uniformly distributed 0123)', 'CosmicOS', 'Moby Dick (lowercase + numbers)', 'METI (dearet.org, removed space and \\n)'])
+    d.plotNGramEntropy([Srnd, 
+                        Sbinomial1, 
+                        #Sbinomial2, 
+                        #Sbinomial3, 
+                        #Sbinomial4, 
+                        Scos, 
+                        Smoby, 
+                        Smeti], 
+                       ['r', 
+                       r'#000000', 
+                       #r'#220000', 
+                       #r'#440000', 
+                       #r'#880000', 
+                       'g', 
+                       'b', 
+                       'm'], 
+                        ['Random text (uniformly distributed 0123)', 
+                        'Random text (binomial distributed 0123 p=0.1)', 
+                        #'Random text (binomial distributed 0123 p=0.2)', 
+                        #'Random text (binomial distributed 0123 p=0.3)', 
+                        #'Random text (binomial distributed 0123 p=0.5)', 
+                        'CosmicOS', 
+                        'Moby Dick (lowercase + numbers)', 'METI (dearet.org, removed space and \\n)'])
     
     #d.preparePyPM('lm.txt')
 
