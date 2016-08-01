@@ -21,6 +21,9 @@ class Vocab {
     public function getBase(name: String) : Int {
         if (name=="define") name = "@";
         if (!nameToCode.exists(name)) {
+            while (codeToName.exists(topCode)) {
+                topCode++;
+            }
             nameToCode.set(name,topCode);
             codeToName.set(topCode,name);
             topCode++;
@@ -30,7 +33,8 @@ class Vocab {
 
     public function get(name: String) : String {
         if (name=="define") name = "@";
-        return name; // switching from int coding to symbols.
+        getBase(name); // keep allocating ints for now
+        return name;
     }
 
     public function check(name: String, id : Int) : String {
@@ -38,6 +42,12 @@ class Vocab {
         if (id!=nid) {
             throw("id for " + name + " is unexpected (" + nid + " vs " + id + ")");
         }
+        return get(name);
+    }
+
+    public function set(name: String, id : Int) : String {
+        codeToName.set(id,name);
+        nameToCode.set(name,id);
         return get(name);
     }
 

@@ -6,7 +6,7 @@ package cosmicos;
 class Memory {
     public var parent : Memory;
     public var block : Map<String,Dynamic>;
-    public var key : Int;
+    public var key : Dynamic;
     public var val : Dynamic;
 
     public function new(parent: Memory, key : Dynamic = -1, val : Dynamic = null) {

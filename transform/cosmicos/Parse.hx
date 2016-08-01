@@ -132,15 +132,10 @@ class Parse {
                             u = u.add(BigInteger.ofInt(str.charCodeAt(j)));
                         }
                         v = u;
-                        /*
-                    } else if (~/^.*-in-unary$/.match(str) && vocab!=null) {
-                        var v0 : Int = vocab.get(str.substr(0,str.length-9));
-                        var u : String = "";
-                        for (j in 0...v0) u += '1';
-                        v = u;
-                        */
-                    } else if (vocab!=null) {
-                        v = vocab.get(str);
+                    } else {
+                        v = str;
+                        // make any renames that haven't yet happened across codebase
+                        if (v=="define") v = "@";
                     }
                 } else {
                     v = Std.parseInt(str);
@@ -223,7 +218,7 @@ class Parse {
         return cons(len,r);
     }
 
-    public static function codifyInner(e: Array<Dynamic>, level: Int) : String {
+    public static function codifyInner(e: Array<Dynamic>, level: Int, vocab: Vocab) : String {
         var txt : String = "";
         var need_paren : Bool = (level>0);
         var first : Int = 0;
@@ -239,7 +234,7 @@ class Parse {
             var v : Dynamic = e[i];
             if (Std.is(v,Array)) {
                 var ei : Array<Dynamic> = cast v;
-                txt += codifyInner(ei,level+1);
+                txt += codifyInner(ei,level+1,vocab);
             } else if (Std.is(v,BitString)) {
                 var bs : BitString = cast v;
                 var str : String = bs.txt;
@@ -251,6 +246,17 @@ class Parse {
                 } else {
                     for (j in 0...len) txt += (str.charAt(j)==':')?"1":"0";
                 }
+            } else if (Std.is(v,String)) {
+                // encode symbol as an integer for now
+                var str : String = cast v;
+                var len : Int = str.length;
+                var rem : Int = vocab.getBase(str);
+                var b = "";
+                do {
+                    b = ((rem%2!=0)?"1":"0") + b;
+                    rem = Std.int(rem/2);
+                } while (rem!=0);
+                txt += "2" + b + "3";
             } else {
                 var b = "";
                 var rem : Int = cast v;
@@ -265,8 +271,8 @@ class Parse {
         return txt;
     }
 
-    public static function codify(e: Array<Dynamic>) : String {
-        var txt : String = codifyInner(e,0);
+    public static function codify(e: Array<Dynamic>, vocab: Vocab) : String {
+        var txt : String = codifyInner(e,0,vocab);
         txt += "2233";
         return txt;
     }

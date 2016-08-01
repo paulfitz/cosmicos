@@ -25,14 +25,14 @@ class Evaluate {
                 }
                 return str;
             }
-            if (Std.is(e0,Int)||Std.is(e0,BigInteger)||Std.is(e0,BitString)) {
+            if (Std.is(e0,Int)||Std.is(e0,BigInteger)||Std.is(e0,BitString)||
+                Std.is(e0,String)) {
                 return e0;
             }
-            //trace("working on " + Parse.deconsify(e0));
             var cursor = new Cursor(e0);
             var x : Dynamic = evaluateInContext(cursor.next(),c);
             if (x==id_lambda) { // ?
-                var k2 : Int = evaluateInContext(cursor.next(),c);
+                var k2 : Dynamic = evaluateInContext(cursor.next(),c);
                 var e2 : Dynamic = cursor.next();
                 return function(v) {
                     var c2 = new Memory(c,k2,v);
@@ -184,7 +184,7 @@ class Evaluate {
     public function codifyLine(str: String) : String {
         var lst = Parse.stringToList(str,vocab);
         Parse.encodeSymbols(lst,vocab);
-        return Parse.codify(lst);
+        return Parse.codify(lst,vocab);
     }
 
     public function nestedLine(str: String) : Dynamic {
@@ -267,6 +267,10 @@ class Evaluate {
         vocab.check("div",34);
         vocab.check("primer",35);
         vocab.check("demo",36); // was 7
+
+        // start using longer codes for early symbols
+        vocab.set("is:int", 183);  //0b10110111
+        vocab.set("unary", 255);   //0b11111111
 
         mem.add(vocab.get("intro"), function(x){ return 1; });
         addStdMin();
