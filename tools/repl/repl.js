@@ -8,7 +8,27 @@ cc.addStd();
 
 function cosmicos_eval(input, context, filename, callback) {
     input = "" + input;
-    input = input.substr(1,input.length-3);
+    var len = input.length;
+    if (len>=3) {
+        if (input[0]=='(' && input[len-1]==')' && input[len-2]=='\n') {
+            // old-style node repl - strip extra parens
+            input = input.substr(1,len-2);
+        }
+    }
+    len = input.length;
+    if (len>0) {
+        if (input[len-1]=='\n') {
+            // strip newline
+            input = input.substr(0,len-1);
+        }
+    }
+    len = input.length;
+    if (len>=2) {
+        if (input[0]=='(' && input[len-1]==')') {
+            // we don't wrap top level statements any more
+            input = input.substr(1,len-2);
+        }
+    }
     var input0 = input;
     if (cache!="") {
 	input = cache + input;
