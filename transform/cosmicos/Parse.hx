@@ -132,7 +132,7 @@ class Parse {
     }
 
 
-    public static function preprocessString(x: String) : String {
+    public static function removeFlatteningSyntax(x: String) : String {
         var res = removePipes(x, 0); // start at level zero and remove | elements
         res = removeDollars(res); // transform $x into (x)
         return res;
