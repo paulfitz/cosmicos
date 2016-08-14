@@ -41,6 +41,7 @@ add_custom_command(OUTPUT ${WORK}/CosmicEval.js
   ${SRC}/cosmicos/Memory.hx
   ${SRC}/cosmicos/ManuscriptStyle.hx
   ${SRC}/cosmicos/CosFunction.hx
+  ${SRC}/cosmicos/BitString.hx
 )
 
 add_custom_command(OUTPUT ${WORK}/SpiderScrawl.js
@@ -138,6 +139,7 @@ add_custom_command(OUTPUT ${WORK}/primer.json
   DEPENDS ${WORK}/assem.json
   ${WORK}/CosmicEval.js
   ${CMAKE_SOURCE_DIR}/transform/assemble/primer.js)
+add_custom_target(primer ALL DEPENDS ${WORK}/primer.json)
 
 # assem2.json is assem.json but marked up also with message fragments
 # in final form
