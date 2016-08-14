@@ -6,8 +6,8 @@
 # standard A-B trick for giving e.g. a Turing machine
 # access to its own description.
 # Instead, will simply introduce a "primer" function
-# that gives access to every statement made so far 
-# (question: should future statements be included? 
+# that gives access to every statement made so far
+# (question: should future statements be included?
 # tentatively assume YES: will simplify
 # discussion of creating modified copies of the
 # complete message).
@@ -22,15 +22,16 @@
 (intro primer);
 
 # this line is referred to later - change/move carefully
-(equal (list-ref (primer) 0) (vector intro is:int));
-(equal (list-ref (primer) 1) (vector is:int (vector unary 0)));
-(equal (list-ref (primer) 2) (vector is:int (vector unary 1 0)));
+(equal (list-ref (primer) 0) (vector intro unary));
+(equal (list-ref (primer) 1) (vector intro is:int));
+(equal (list-ref (primer) 2) (vector is:int (vector unary 0)));
+(equal (list-ref (primer) 3) (vector is:int (vector unary 1 0)));
 (assign idx (list-find (primer) (vector intro primer) (? x 0))
 	(equal (list-ref (primer) (+ (idx) 1))
-	       (vector equal 
+	       (vector equal
 		       (vector list-ref (vector primer) 0)
-		       (vector vector intro is:int))));
-		       
+		       (vector vector intro unary))));
+
 # Now, we could return to the MUD, simulate an agent A
 # transferring a copy of the primer to another agent B,
 # and then show B making a modified copy of that primer
@@ -38,5 +39,3 @@
 
 # We could also show agents experimenting with the
 # primer in various ways.
-
-
