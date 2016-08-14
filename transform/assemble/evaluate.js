@@ -33,8 +33,8 @@ function run(op,part,skippy) {
     txt += "\n";
     if (skippy) return 1;
     var v = ev.evaluateLine(op);
-    console.log(JSON.stringify(cos.Parse.deconsify(v),ev.vocab));
-    console.log(v);
+    //console.log(JSON.stringify(cos.Parse.deconsify(v),ev.vocab));
+    //console.log(v);
     return v;
 }
 

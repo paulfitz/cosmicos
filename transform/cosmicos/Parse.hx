@@ -4,6 +4,140 @@ package cosmicos;
 
 @:expose
 class Parse {
+
+    public static function removePipes(x: String, bracketlevel: Int) : String {
+    //trace(x);
+
+        var res : String = "";
+
+        // first get rid of ; at the end
+
+        var ch = x.charAt(x.length-1);
+        if (ch == ';') {
+            x = x.substr(0,x.length-1);
+        }
+        // borrow code from stringToList and stringToListCore
+
+        var level = 0;
+        var slashes = 0;
+        var appendstr = "";
+        var substring = "";
+        var oldch = ''; // for saving the old character in string
+
+        for (i in 0...x.length) {
+            var ch = x.charAt(i);
+
+            var delta_level = 0;
+            appendstr = "";
+
+            if (ch == "(") {
+                level++;
+                delta_level = 1;
+            }
+            if (ch == ")") {
+                level--;
+                delta_level = -1;
+            }
+
+            if (level == 0)
+            // only perform tests at highest level and
+            // solve rest via recursion
+            {
+                if (ch == "|" || ch == "/") {
+                    // remove | at highest level
+                    slashes++;
+                    appendstr = '(';
+                }
+                else
+                {
+                    appendstr = ch;
+                    if ((oldch == '/' || oldch == '|') && appendstr == " ") // removing spaces after |
+                    appendstr = "";
+                }
+                if (delta_level == -1) // substring analysis finished
+                {
+                    appendstr = "(" + removePipes(substring.substr(1,substring.length), bracketlevel+1) + ")"; // first char is "("
+                    // will not be performed on initial step
+                    substring = "";
+                }
+
+
+            }
+            else
+            // all strings below level = 0 should go into some substring
+            // and are interpreted afterwards
+            {
+                substring += ch;
+            }
+
+            res += appendstr;
+
+            /*trace("ch: " + ch +
+            " oldch: " + oldch +
+            " lev: " + level +
+            " delta " + delta_level +
+            " sub " + substring +
+            " bracketlevel: " + bracketlevel +
+            " append \'" + appendstr + "\'");*/
+
+            oldch = ch; // for removing spaces directly after | or /
+        }
+
+        for (i in 0...slashes) {
+            res += ')';
+        }
+
+
+        return res;
+    }
+
+    public static function removeDollars(x: String) {
+        var terminalsymbols = " ();";
+        var founddollar = false;
+        var res = "";
+        var dollarstring = "";
+
+        // after these symbols the substring search for $ symbols should terminate
+
+        for (i in 0...x.length) {
+            var ch = x.charAt(i);
+            if (ch == "$") {
+                founddollar = true;
+            }
+            if (founddollar) {
+                // if dollar string is found add chars up to substring
+                // and write back substring after terminal symbol is found
+                if (terminalsymbols.indexOf(ch) != -1 || i == x.length - 1) { // terminal symbol or line end
+                    if (i != x.length - 1) {
+                        res += "(" + dollarstring + ")"; // reconstruct () from $
+                        res += ch;
+                    }
+                    else {
+                        res += "(" + dollarstring + ch + ")"; // reconstruct () from $
+                    }
+                    dollarstring = ""; // reset substring
+                    founddollar = false; // reset dollar flag
+                }
+                else {
+                    if (ch != '$')
+                        dollarstring += ch; // ch belongs to $ string
+                    }
+
+                }
+                else
+                    res += ch; // if non dollar string is found just copy old string
+        //trace("ch: " + ch + " i " + i + "  founddollar " + founddollar + " ds " + dollarstring + " len " + x.length);
+        }
+        return res;
+    }
+
+
+    public static function preprocessString(x: String) : String {
+        var res = removePipes(x, 0); // start at level zero and remove | elements
+        res = removeDollars(res); // transform $x into (x)
+        return res;
+    }
+
     public static function stringToList(x: String,
                                         vocab: Vocab) : Array<Dynamic> {
         var ch = x.charAt(x.length-1);
