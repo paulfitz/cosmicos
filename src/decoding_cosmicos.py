@@ -5,7 +5,8 @@ Created on Mon Jun 27 21:16:12 2016
 
 @author: joha2
 
-The complexity of this decoder is IMHO a measure for the simplicity of the message.
+The complexity of this decoder is IMHO a measure 
+for the simplicity of the message.
 Format was taken from an old form of message.
 
 """
@@ -96,7 +97,7 @@ class DecoderClass(object):
             if matchedpattern == []:
                 print('empty matching for %s at length %d' % (letters, kp))
             numpatterns = len(matchedpattern)
-            #print("%d %d-grams" % (numpatterns,kp))
+
             for w in matchedpattern:
                 if worddict.get(w) == None:
                     worddict[w] = 1.0/numpatterns
@@ -154,11 +155,6 @@ class DecoderClass(object):
     def preparePyPM(self, outputfile):
         outputmsgtext = re.sub(r'2233', '\n', self.msgtext)
 
-        #outputmsgtext = re.sub(r'023', ' | ', outputmsgtext)
-        #outputmsgtext = re.sub(r'2([01]+)3', r'(\1) ', outputmsgtext)        
-        #outputmsgtext = re.sub(r'(2{1})', r' ( ', outputmsgtext)
-        #outputmsgtext = re.sub(r'(3{1})', r' ) ', outputmsgtext)
-
         outputmsgtext = re.sub(r'([0123]{1})', r'\1 ', outputmsgtext)        
         
         fo = open(outputfile, 'w')
@@ -206,7 +202,6 @@ class DecoderClass(object):
         ax = fig.add_subplot(111)
 
         ax.axis('equal')
-        #ax.set_axis_bgcolor('black')        
 
         ax.set_yscale('log')
         ax.set_xscale('log')
@@ -223,7 +218,8 @@ class DecoderClass(object):
         for (text, delimiters, wordre, color_points, color_fits) in zip(texts_to_analyse, delimiters_to_use, wordres_to_use, colorlist_points_to_use, colorlist_fits_to_use):
             
             (freqranking, decreasing, intersection) = self.performFrequencyRankOrderingAndFit(text, delimiters, wordre, rankcutoff)        
-        
+
+            # formulas for the log-log plot        
             # y = a*x^b
             # log10 y = log10 a + b*log10 x
 
@@ -285,8 +281,6 @@ class DecoderClass(object):
 
         ax.imshow(Data, interpolation='None')
 
-        #plt.show()
-       
     def showGraphicalRepresentationLineTerminal(self, terminalsymbol='2233', maxlen=1000):
 
         msgtext = self.msgtext
@@ -350,8 +344,6 @@ class DecoderClass(object):
         ax.set_xlabel('width')
         ax.set_ylabel('lines')
 
-        #ax.axis([0, width, 0, numlines+1])        
-        
         ax.set_title('Linewise Graphical Representation of Message')
 
         ax.imshow(Data, interpolation='None')       
@@ -402,12 +394,12 @@ class DecoderClass(object):
 
         # the first data cell in the line is typically a command
         
-
         if linetext != '':
             if results[0][0] == 'DATA':
                 results[0] = ('COMMAND', results[0][1])    
     
         # now add commands and definitions to dictionaries
+
         for w in results:
             if w[0] == 'DEFINITION':
                 if  self.defdict.get(w[1]) == None:
@@ -424,8 +416,6 @@ class DecoderClass(object):
                     self.datacounter += 1
                 
                 
-    
-    
         # is there something remaining which is not covered by our pattern matching?   
         if remain != '':
             print('CANNOT INTERPRET %s \n' % (remain,))
@@ -467,7 +457,6 @@ class DecoderClass(object):
                     linestring += 'HASPROPERTY '
                 if parsedPair[0] == 'NESTED_COMMAND':
                     linestring += 'NESTED_COMMAND ' + parsedPair[1]
-            #print(linestring)
             lines.append(linestring)
         return lines
         
@@ -475,12 +464,6 @@ class DecoderClass(object):
     def plotNGramEntropy(self, entlengtharrays, colors, labels):
         fig = plt.figure(1)
         ax = fig.add_subplot(111)
-
-        #ax.axis('equal')
-        #ax.set_axis_bgcolor('black')        
-
-        #ax.set_yscale('log')
-        #ax.set_xscale('log')
 
         ax.set_xlabel('n-gram length')
         ax.set_ylabel('Shannon-Boltzmann entropy')
@@ -495,6 +478,9 @@ class DecoderClass(object):
         
 
 def main(argv):
+
+    # TODO: rewrite main function into different analysis 
+    # steps per command line to clean up this section
    
     if len(argv) != 2:
         print("Shows a few properties of the message:")
@@ -521,11 +507,7 @@ def main(argv):
     # check various texts or messages for their ranked frequency content    
     
     #d.showGraphicalRepresentation(width=512)
-    
     #d.showGraphicalRepresentationLineTerminal(maxlen=128)
-
-    # message at the actual version is somehow not correctly encoded
-
     #d.guessShortControlSymbols(maxlen=2)
     #res = d.parseBlock(leftdelimiter='2', rightdelimiter='3', eol='2233')
     #d.decodeBlock(res)
@@ -583,15 +565,10 @@ def main(argv):
                         #'Random text (binomial distributed 0123 p=0.5)', 
                         'CosmicOS', 
                         'Moby Dick (lowercase + numbers)', 'METI (dearet.org, removed space and \\n)'])
-    
+
+    # used later for automated process analysis    
     #d.preparePyPM('lm.txt')
 
-    #print('dictionaries ....')
-    #print(d.commanddict)
-    #print(d.datadict)
-    #print(d.defdict)
-
-    
 if __name__ == '__main__':
     main(sys.argv)    
     
