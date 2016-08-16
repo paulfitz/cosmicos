@@ -1,4 +1,5 @@
 sudo: required
+language: haxe
 addons:
   apt:
     packages:
@@ -6,16 +7,8 @@ addons:
     - libbcel-java
     - openjdk-6-jdk
     - libgd-gd2-perl
-    - nodejs 
-    - ocaml
-    - camlp4
-    - neko
+    - nodejs
 script: 
-    - git clone --recursive git://github.com/HaxeFoundation/haxe.git
-    - cd haxe
-    - make
-    - sudo make install
-    - cd ..
     - mkdir build
     - cd build 
     - cmake ..
