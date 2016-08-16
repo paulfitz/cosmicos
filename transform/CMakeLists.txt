@@ -35,13 +35,14 @@ add_custom_command(OUTPUT ${WORK}/CosmicEval.js
   COMMAND ${HAXE} -js CosmicEval.js -main cosmicos.Evaluate -cp ${SRC}
   WORKING_DIRECTORY ${WORK}
   DEPENDS 
+  ${SRC}/cosmicos/BitString.hx
+  ${SRC}/cosmicos/Config.hx
+  ${SRC}/cosmicos/CosFunction.hx
   ${SRC}/cosmicos/Evaluate.hx
+  ${SRC}/cosmicos/ManuscriptStyle.hx
+  ${SRC}/cosmicos/Memory.hx
   ${SRC}/cosmicos/Parse.hx
   ${SRC}/cosmicos/Vocab.hx
-  ${SRC}/cosmicos/Memory.hx
-  ${SRC}/cosmicos/ManuscriptStyle.hx
-  ${SRC}/cosmicos/CosFunction.hx
-  ${SRC}/cosmicos/BitString.hx
 )
 
 add_custom_command(OUTPUT ${WORK}/SpiderScrawl.js
@@ -68,8 +69,18 @@ add_custom_target(jshelpers ALL DEPENDS
 ## Add targets for message parts
 ##
 
-# we expect to get a variable COSMIC_DEPENDS that lists all parts
-include(${CMAKE_SOURCE_DIR}/src/README.cmake)
+set(COSMIC_VARIANT "default" CACHE STRING "Version of message to build")
+set(COSMIC_LINES "0" CACHE INT "Number of lines to process (0 for unlimited)")
+set_property(
+  CACHE COSMIC_VARIANT
+  PROPERTY STRINGS
+  "default" "nested" # should read this from variant directory once there
+                     # are more variants to support
+)
+# We expect to get these variables:
+#   COSMIC_DEPENDS that lists all parts
+#   COSMIC_USE_FLATTENER that controls whether '|' can be encoded
+include(${CMAKE_SOURCE_DIR}/variant/${COSMIC_VARIANT}.cmake)
 
 get_target_property(UnlessDriverLoc UnlessDriver JAR_FILE)
 get_target_property(FritzifierLoc Fritzifier JAR_FILE)
@@ -88,8 +99,8 @@ set(ACTIVE_DEPENDS)
 set(ACTIVE_DEPENDS_SHORT "")
 set(EXTRA_DEPEND_pl ${MSG}/cosmic.pm)
 set(EXTRA_DEPEND_js ${MSG}/cosmic.js)
-set(EXTRA_DEPEND_gate ${CMAKE_SOURCE_DIR}/bin/drawgate-ppm.pl ${CMAKE_SOURCE_DIR}/bin/drawgate-txt.pl ${UnlessDriverLoc})
-set(EXTRA_DEPEND_java ${FritzifierLoc})
+set(EXTRA_DEPEND_gate ${CMAKE_SOURCE_DIR}/bin/drawgate-ppm.pl ${CMAKE_SOURCE_DIR}/bin/drawgate-txt.pl UnlessDriver)
+set(EXTRA_DEPEND_java Fritzifier)
 foreach(depend ${COSMIC_DEPENDS})
   foreach(ext pl scm gate java js)
     if(EXISTS ${MSG}/${depend}.${ext})
@@ -107,6 +118,9 @@ foreach(depend ${COSMIC_DEPENDS})
     endif()
   endforeach()
 endforeach()
+
+set(COSMIC_OPTION_FILE ${WORK}/config.json)
+configure_file(config.json ${COSMIC_OPTION_FILE} @ONLY)
 
 # assem.txt contains a concatenation of all message parts, in
 # original textual form
@@ -223,4 +237,3 @@ add_custom_target(cli ALL DEPENDS ${CMAKE_BINARY_DIR}/bin/cosh.js)
 ##
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assemble/cosmicos ${CMAKE_BINARY_DIR}/bin/cosmsg.js @ONLY)
-

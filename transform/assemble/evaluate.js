@@ -3,10 +3,9 @@ var assert = require('assert');
 var cos = require("CosmicEval").cosmicos;
 
 var all = JSON.parse(fs.readFileSync("assem.json", 'utf8'));
-// var all = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+var config = new cos.Config(fs.readFileSync("config.json", 'utf8'));
 
-
-var ev = new cos.Evaluate();
+var ev = new cos.Evaluate(config);
 ev.applyOldOrder();
 
 try {
@@ -33,17 +32,15 @@ function run(op,part,skippy) {
     txt += "\n";
     if (skippy) return 1;
     var v = ev.evaluateLine(op);
-    //console.log(JSON.stringify(cos.Parse.deconsify(v),ev.vocab));
-    //console.log(v);
     return v;
 }
 
 var err_part = null;
 var err_i = -1;
+var line_limit = config.lines();
 try {
-    //throw "skip it all";
     var cline = 0;
-    for (var i=0; i<all.length && i<5000; i++) {
+    for (var i=0; i<all.length && (i<line_limit || line_limit==0); i++) {
 	var part = all[i];
 	err_part = part;
 	err_i = i;
@@ -71,24 +68,14 @@ try {
 	    process.stderr.write("At " + i + "\n");
 	}
 
-	/*
-	if (op[0] == '(') {
-	    op = op.replace(/^\(/,"");
-	    op = op.replace(/\);/,"");
-	    if (part.lines.length>0) {
-		part.lines[0] = part.lines[0].replace(/^\(/,"");
-		part.lines[part.lines.length-1] = part.lines[part.lines.length-1].replace(/\);/,";");
-	    }
-	}
-	*/
-
+        op = ev.preprocessLine(op);
+        part['preprocessed'] = op;
 	var v = run(op,part,skippy);
 
 	if (op.indexOf("demo ")==0) {
 	    var r = cos.Parse.recover(cos.Parse.deconsify(v));
 	    console.log("Evaluated to: " + r);
 	    op = "equal " + r + " " + op.substr(5,op.length);
-	    // v = run(op); // will need a separate pass for this
 	    part["lines_original"] = part["lines"];
 	    part["lines"] = [ "(" + op + ");" ];
 	    part["code"] = ev.codifyLine(op);
@@ -104,8 +91,7 @@ try {
     }
 } catch (e) {
     process.stderr.write("* evaluate.js failed on " + err_i + ": " + JSON.stringify(err_part) + "\n");
-    // continue for now, to compare with old version
-    //throw(e);
+    throw(e);
 }
 
 
@@ -140,8 +126,6 @@ for (var i=0; i<all.length; i++) {
     ct++;
 }
 
-//console.log(txt);
-//txt = txt.match(/.{1,80}/g).join("\n");
 fs.writeFileSync('q.txt',txt);
 fs.writeFileSync('assem2.json',JSON.stringify(all, null, 2));
 

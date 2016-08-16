@@ -4,6 +4,7 @@ package cosmicos;
 
 @:expose
 class Evaluate {
+    private var config : Config;
     private var vocab : Vocab;
     private var mem : Memory;
     private var id_lambda : Dynamic;
@@ -181,6 +182,13 @@ class Evaluate {
         return lst;
     }
 
+    public function preprocessLine(str: String) : String {
+        if (!config.useFlattener()) {
+            str = Parse.removeFlatteningSyntax(str);
+        }
+        return str;
+    }
+
     public function codifyLine(str: String) : String {
         var lst = Parse.stringToList(str,vocab);
         Parse.encodeSymbols(lst,vocab);
@@ -194,7 +202,7 @@ class Evaluate {
         return lst;
     }
 
-    public function new() {
+    public function new(config: Config = null) {
         mem = new Memory(null);
         vocab = new Vocab();
         id_lambda = vocab.get("?");
@@ -203,6 +211,10 @@ class Evaluate {
         id_if = vocab.get("if");
         id_assign = vocab.get("assign");
         id_translate = -1;
+        this.config = config;
+        if (config == null) {
+            this.config = new Config();
+        }
     }
 
     static private function isBi(x:Dynamic) : Bool {

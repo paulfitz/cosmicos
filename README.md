@@ -110,6 +110,18 @@ To build the message, type:
 You should find the message saved in your build directory 
 as `index.json` and `index.txt`.
 
+Compilation options
+-------------------
+
+There are options in how the message is built.  Run the cmake gui (`cmake-gui` or `ccmake` in Linux)
+and look for options starting with `COSMIC_`.
+
+ * `COSMIC_VARIANT` set to `default` - this currently assumes that symbols like `$` and `|` can be
+   somehow represented in the encoded message.
+ * `COSMIC_VARIANT` set to `nested` - this converts the `$` and `|` symbols to parentheses.
+ * `COSMIC_LINES` controls how many lines of the message are processed.  The default is 0, meaning
+   unlimited.
+
 Troubleshooting
 ---------------
 If you have compilation issues with `nodejs` similar to `node returned No such file or directory`, this can be resolved by symlinking it to `node`.  Another workaround is to install `nodejs-legacy`.
