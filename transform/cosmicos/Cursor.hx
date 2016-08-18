@@ -9,8 +9,8 @@ class Cursor {
 
     public function new(e: Dynamic) {
         at = 0;
-        len = Parse.car(e);
-        this.e = Parse.cdr(e);
+        len = Cons.car(e);
+        this.e = Cons.cdr(e);
     }
 
     public function length() : Int {
@@ -27,11 +27,11 @@ class Cursor {
             result = e;
             e = null;
         } else if (at==len-1) {
-            result = Parse.cdr(e);
+            result = Cons.cdr(e);
             e = null;
         } else {
-            result = Parse.car(e);
-            if (at!=len-2) e = Parse.cdr(e);
+            result = Cons.car(e);
+            if (at!=len-2) e = Cons.cdr(e);
         }
         at++;
         return result;

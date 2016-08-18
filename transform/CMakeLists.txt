@@ -36,12 +36,22 @@ add_custom_command(OUTPUT ${WORK}/CosmicEval.js
   WORKING_DIRECTORY ${WORK}
   DEPENDS 
   ${SRC}/cosmicos/BitString.hx
+  ${SRC}/cosmicos/ChainCodec.hx
+  ${SRC}/cosmicos/Codec.hx
   ${SRC}/cosmicos/Config.hx
+  ${SRC}/cosmicos/Cons.hx
   ${SRC}/cosmicos/CosFunction.hx
   ${SRC}/cosmicos/Evaluate.hx
+  ${SRC}/cosmicos/EvaluateCodec.hx
+  ${SRC}/cosmicos/FourSymbolCodec.hx
   ${SRC}/cosmicos/ManuscriptStyle.hx
   ${SRC}/cosmicos/Memory.hx
   ${SRC}/cosmicos/Parse.hx
+  ${SRC}/cosmicos/ParseCodec.hx
+  ${SRC}/cosmicos/PreprocessCodec.hx
+  ${SRC}/cosmicos/Statement.hx
+  ${SRC}/cosmicos/TranslateCodec.hx
+  ${SRC}/cosmicos/UnflattenCodec.hx
   ${SRC}/cosmicos/Vocab.hx
 )
 
@@ -69,14 +79,19 @@ add_custom_target(jshelpers ALL DEPENDS
 ## Add targets for message parts
 ##
 
-set(COSMIC_VARIANT "default" CACHE STRING "Version of message to build")
-set(COSMIC_LINES "0" CACHE INT "Number of lines to process (0 for unlimited)")
-set_property(
-  CACHE COSMIC_VARIANT
-  PROPERTY STRINGS
-  "default" "nested" # should read this from variant directory once there
-                     # are more variants to support
+file(GLOB variant_files
+  RELATIVE "${CMAKE_SOURCE_DIR}/variant/"
+  "${CMAKE_SOURCE_DIR}/variant/*.cmake"
 )
+set(VARIANTS)
+foreach(variant_file ${variant_files})
+  get_filename_component(variant ${variant_file} NAME_WE)
+  list(APPEND VARIANTS ${variant})
+endforeach()
+set(COSMIC_VARIANT "default" CACHE STRING "Version of message to build (${VARIANTS})")
+set(COSMIC_LINES "0" CACHE INT "Number of lines to process (0 for unlimited)")
+set_property(CACHE COSMIC_VARIANT PROPERTY STRINGS ${VARIANTS})
+
 # We expect to get these variables:
 #   COSMIC_DEPENDS that lists all parts
 #   COSMIC_USE_FLATTENER that controls whether '|' can be encoded

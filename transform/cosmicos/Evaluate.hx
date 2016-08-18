@@ -4,6 +4,7 @@ package cosmicos;
 
 @:expose
 class Evaluate {
+    private var state : State;
     private var config : Config;
     private var vocab : Vocab;
     private var mem : Memory;
@@ -97,6 +98,7 @@ class Evaluate {
                                 if (len>0) {
                                     if (x == null) {
                                         trace("Problem with " + j + " (" + vocab.reverse(j) + ")");
+                                        throw("Problem with " + j + " (" + vocab.reverse(j) + ")");
                                     }
                                 }
                                 open = false;
@@ -106,6 +108,7 @@ class Evaluate {
                                 if (len>0) {
                                     if (x == null) {
                                         trace("Symbol '" + j + "' unrecognized");
+                                        throw("Symbol '" + j + "' unrecognized");
                                     }
                                 }
                                 open = false;
@@ -113,14 +116,16 @@ class Evaluate {
                             } else if (Std.is(x,BitString)) {
                                 // binary string
                                 var bs : BitString = cast x;
-                                var str : String = x.txt;
-                                var u : BigInteger = BigInteger.ofInt(0);
+                                /*var str : String = x.txt;
+                                  var u : BigInteger = BigInteger.ofInt(0);
                                 var two : BigInteger = BigInteger.ofInt(2);
                                 for (j in 0...str.length) {
                                     u = u.mul(two);
                                     if (str.charAt(j) == ':') u = u.add(BigInteger.ONE);
                                 }
                                 x = u;
+                                */
+                                x = bs.asBigInteger();
                                 open = false;
                             } else if (Std.is(x,CosDefine)) {
                                 if (!c_is_private) {
@@ -134,7 +139,7 @@ class Evaluate {
                         }
                     }
                 } catch(e : Dynamic) {
-                    trace("Problem evaluating " + Parse.deconsify(e0));
+                    trace("Problem evaluating " + Cons.deconsify(e0) + " (" + e + ")");
                     throw(e);
                 }
                 return x;
@@ -157,64 +162,29 @@ class Evaluate {
     }
 
     public function evaluateLine(str: String) : Dynamic {
-        var lst = Parse.stringToList(str,vocab);
-        if (lst==null) return null;
-        Parse.encodeSymbols(lst,vocab);
-        Parse.removeSlashMarker(lst);
-        lst = Parse.consify(lst);
-        if (id_translate!=-1) {
-            var translate = mem.get(id_translate);
-            if (translate!=null) {
-                lst = translate(lst);
-            }
-        }
-        var lst2 = Parse.deconsify(lst);
-        var v = evaluateExpression(lst);
-        if (!Std.is(v,Int)) {
-            //v = "mu";
-        }
-        return v;
+        var codec = new ChainCodec([
+                                    new ParseCodec(vocab),
+                                    new NormalizeCodec(vocab),
+                                    new UnflattenCodec(),
+                                    new TranslateCodec(state)
+                                    ]);
+        var statement = new Statement(str);
+        codec.encode(statement);
+        return evaluateExpression(statement.content);
     }
 
-    public function numberizeLine(str: String) : Dynamic {
-        var lst = Parse.stringToList(str,vocab);
-        Parse.encodeSymbols(lst,vocab);
-        return lst;
-    }
-
-    public function preprocessLine(str: String) : String {
-        if (!config.useFlattener()) {
-            str = Parse.removeFlatteningSyntax(str);
-        }
-        return str;
-    }
-
-    public function codifyLine(str: String) : String {
-        var lst = Parse.stringToList(str,vocab);
-        Parse.encodeSymbols(lst,vocab);
-        return Parse.codify(lst,vocab);
-    }
-
-    public function nestedLine(str: String) : Dynamic {
-        var lst = Parse.stringToList(str,vocab);
-        Parse.encodeSymbols(lst,null);
-        Parse.recoverList(lst);
-        return lst;
-    }
-
-    public function new(config: Config = null) {
-        mem = new Memory(null);
-        vocab = new Vocab();
+    public function new(state : State = null) {
+        if (state == null) state = new State();
+        this.state = state;
+        mem = state.getMemory();
+        vocab = state.getVocab();
         id_lambda = vocab.get("?");
         id_lambda0 = vocab.get("??");
         id_define = vocab.get("@");
         id_if = vocab.get("if");
         id_assign = vocab.get("assign");
         id_translate = -1;
-        this.config = config;
-        if (config == null) {
-            this.config = new Config();
-        }
+        this.config = state.getConfig();
     }
 
     static private function isBi(x:Dynamic) : Bool {
@@ -235,8 +205,16 @@ class Evaluate {
         return vocab;
     }
 
+    public function getMemory() : Memory {
+        return mem;
+    }
+
+    public function getState() : State {
+        return state;
+    }
+
     public function applyOldOrder() {
-        mem = new Memory(null);
+        if (mem == null) mem = new Memory(null);
         vocab.clear();
         vocab.check("intro",0);
         // need to free up "1" -- order will
@@ -306,17 +284,17 @@ class Evaluate {
                 if (Std.is(x,Int)||Std.is(x,BigInteger)||Std.is(x,String)||Std.is(x,BitString)) return x;
                 var rep = function(x) {
                 }
-                var len = Parse.car(x);
+                var len = Cons.car(x);
                 if (len==0) return x;
                 var current : Dynamic = mem.get(id_translate);
-                if (len==1) return Parse.cons(1,current(Parse.cdr(x)));
+                if (len==1) return Cons.cons(1,current(Cons.cdr(x)));
                 var rep = function(r : Dynamic, len : Int, rec : Dynamic) : Dynamic {
-                    if (len==2) return Parse.cons(current(Parse.car(r)),
-                                                  current(Parse.cdr(r)));
-                    return Parse.cons(current(Parse.car(r)),
-                                      rec(Parse.cdr(r),len-1,rec));
+                    if (len==2) return Cons.cons(current(Cons.car(r)),
+                                                  current(Cons.cdr(r)));
+                    return Cons.cons(current(Cons.car(r)),
+                                     rec(Cons.cdr(r),len-1,rec));
                 }
-                return Parse.cons(len,rep(Parse.cdr(x),len,rep));
+                return Cons.cons(len,rep(Cons.cdr(x),len,rep));
             });
         mem.add(vocab.get("forall"), function(f) {
                 // try a few samples - not real code, just adequate for message
@@ -338,7 +316,7 @@ class Evaluate {
                         lst.push(i);
                     }
                 }
-                return Parse.consify(lst);
+                return Cons.consify(lst);
             });
         mem.add(vocab.get("natural-set"), 
                 mem.get(vocab.get("all"))(function (x) { return x>=0; }));
@@ -362,6 +340,7 @@ class Evaluate {
         // very very inefficient!        
         evaluateLine("@ has-square-divisor-within | ? top | ? x | if (< $top 0) 0 | if (= $x | * $top $top) 1 | has-square-divisor-within (- $top 1) $x");
         evaluateLine("@ is:square | ? x | has-square-divisor-within $x $x");
+        evaluateLine("@ undefined 999");
 
         // meta-lambda-function
         id_lambda0 = vocab.get("??");
@@ -415,7 +394,7 @@ class Evaluate {
     }
 
     public function addPrimer(primer: Dynamic) {
-        mem.add(vocab.get("primer"), Parse.consify(Parse.integrate(primer)));
+        mem.add(vocab.get("primer"), Cons.consify(primer));
     }
     
     static function main() {
@@ -433,6 +412,10 @@ class Evaluate {
     }
 
     static function dummy() {
-        var v = new ManuscriptStyle();
+        // make sure classes needed externally don't get pruned
+        new ManuscriptStyle();
+        new FourSymbolCodec(null);
+        new EvaluateCodec(null);
+        new PreprocessCodec(null);
     }
 }

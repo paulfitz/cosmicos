@@ -270,6 +270,7 @@ class Parse {
                         v = str;
                         // make any renames that haven't yet happened across codebase
                         if (v=="define") v = "@";
+                        v = vocab.get(v);
                     }
                 } else {
                     v = Std.parseInt(str);
@@ -294,18 +295,6 @@ class Parse {
         }
     }
 
-    public static function cons(x:Dynamic,y:Dynamic) {
-        return function(f) { return f(x)(y); };
-    }
-
-    public static function car(x:Dynamic) {
-        return x(function(a) { return function(b) { return a; }});
-    }
-
-    public static function cdr(x:Dynamic) {
-        return x(function(a) { return function(b) { return b; }});
-    }
-
     public static function textify(e: Dynamic, vocab: Vocab) : String {
         var txt = "";
         if (Std.is(e,Array)) {
@@ -322,34 +311,6 @@ class Parse {
         var v = vocab.reverse(e);
         if (v==null) return "" + e;
         return e + "-" + v;
-    }
-
-    public static function deconsify(e: Dynamic) : Dynamic {
-        if (Std.is(e,Int)) return e;
-        if (Std.is(e,BigInteger)) return e;
-        if (Std.is(e,String)) return e;
-        if (Std.is(e,BitString)) return e;
-        var c = new Cursor(e);
-        var lst = new Array<Dynamic>();
-        var len = c.length();
-        for (i in 0...len) {
-            var ei = c.next();
-            lst.push(deconsify(ei));
-        }
-        return lst;
-    }
-
-    public static function consify(e: Dynamic) : Dynamic {
-        if (!Std.is(e,Array)) return e;
-        var lst : Array<Dynamic> = cast e;
-        var len : Int = lst.length;
-        if (len==0) return cons(0,0);
-        if (len==1) return cons(1,consify(lst[0]));
-        var r = cons(consify(lst[len-2]),consify(lst[len-1]));
-        for (i in 0...(len-2)) {
-            r = cons(consify(lst[len-3-i]),r);
-        }
-        return cons(len,r);
     }
 
     public static function codifyInner(e: Array<Dynamic>, level: Int, vocab: Vocab) : String {
@@ -411,25 +372,6 @@ class Parse {
         return txt;
     }
 
-    public static function integrate(e0: Dynamic) : Dynamic {
-        if (Std.is(e0,Int)||Std.is(e0,BigInteger)) {
-            return e0;
-        }
-        if (Std.is(e0,String)) {
-            var str : String = cast e0;
-            if (str.length==0 || str.charAt(0) == '1') {
-                return str.length;
-            }
-            return e0;
-        }
-        var lst : Array<Dynamic> = cast e0;
-        var len : Int = lst.length;
-        for (i in 0...len) {
-            lst[i] = integrate(lst[i]);
-        }
-        return e0;
-    }
-
     public static function recoverList(e: Array<Dynamic>) {
         for (i in 0...e.length) {
             var v : Dynamic = e[i];
@@ -440,6 +382,10 @@ class Parse {
                 e[i] = recover(v);
             }
         }
+    }
+
+    public static function examine(e: Array<Dynamic>) {
+        trace("my type is " + Type.getClassName(Type.getClass(e[0])));
     }
 
     public static function recover(x: Dynamic) : Dynamic {
@@ -455,6 +401,10 @@ class Parse {
                 x = x.div(mod);
             }
             return "\"" + txt + "\"";
+        }
+        if (Std.is(x,BitString)) {
+            var bs : BitString = cast x;
+            return bs.txt;
         }
         var txt = "";
         if (Std.is(x,Array)) {
