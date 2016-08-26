@@ -7,9 +7,11 @@ class Vocab {
     private var nameToCode : Map<String,Int>;
     private var codeToName : Map<Int,String>;
     private var topCode : Int;
+    private var useInt : Bool;
 
-    public function new() {
+    public function new(useInt : Bool = false) {
         clear();
+        this.useInt = useInt;
     }
 
     public function clear() {
@@ -31,13 +33,17 @@ class Vocab {
         return nameToCode.get(name);
     }
 
-    public function get(name: String) : String {
+    public function get(name: String) : Dynamic {
         if (name=="define") name = "@";
-        getBase(name); // keep allocating ints for now
-        return name;
+        var code = getBase(name); // keep allocating ints for now
+        return useInt ? code : name;
     }
 
-    public function check(name: String, id : Int) : String {
+    public function exists(name: String) : Bool {
+        return nameToCode.exists(name);
+    }
+
+    public function check(name: String, id : Int) : Dynamic {
         var nid : Int = getBase(name);
         if (id!=nid) {
             throw("id for " + name + " is unexpected (" + nid + " vs " + id + ")");
