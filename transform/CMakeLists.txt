@@ -149,7 +149,8 @@ add_custom_command(OUTPUT ${WORK}/assem.txt
 
 # assem.json is a structured version of assem.txt, but still in original form
 add_custom_command(OUTPUT ${WORK}/assem.json
-  COMMAND ${NODE} ${CMAKE_SOURCE_DIR}/transform/assemble/assemble2json.js ${WORK}/assem.txt
+  COMMAND 
+    ${NODE} ${CMAKE_SOURCE_DIR}/transform/assemble/assemble2json.js ${WORK}/assem.txt
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${WORK}/assem.txt
   ${CMAKE_SOURCE_DIR}/transform/assemble/assemble2json.js)
@@ -163,20 +164,23 @@ add_custom_command(OUTPUT ${WORK}/primer.json
   "-Din:STRING=${CMAKE_SOURCE_DIR}/transform/assemble/primer.js" 
   "-Dnargs:STRING=${WORK}/assem.json"
   "-Dlog:STRING=make-primer"
+  "-Dpath:STRING=${CMAKE_SOURCE_DIR}/transform/assemble"
   -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/node.cmake
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${WORK}/assem.json
   ${WORK}/CosmicEval.js
+  ${CMAKE_SOURCE_DIR}/transform/assemble/CosmicDrive.js
   ${CMAKE_SOURCE_DIR}/transform/assemble/primer.js)
 add_custom_target(primer ALL DEPENDS ${WORK}/primer.json)
 
 # assem2.json is assem.json but marked up also with message fragments
 # in final form
-add_custom_command(OUTPUT ${WORK}/assem2.json ${CMAKE_BINARY_DIR}/index.txt
+add_custom_command(OUTPUT ${WORK}/assem2.json ${CMAKE_BINARY_DIR}/index.txt ${CMAKE_BINARY_DIR}/index.json
   COMMAND ${CMAKE_COMMAND} 
   "-Din:STRING=${CMAKE_SOURCE_DIR}/transform/assemble/evaluate.js" 
   "-Dnargs:STRING="
-  "-Dlog:STRING=make-assem2"
+  "-Dlog:STRING=make-assem2" 
+  "-Dpath:STRING=${CMAKE_SOURCE_DIR}/transform/assemble"
   -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/node.cmake
   COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/assem2.json ${CMAKE_BINARY_DIR}/index.json
   COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/q.txt ${CMAKE_BINARY_DIR}/index.txt
@@ -184,6 +188,7 @@ add_custom_command(OUTPUT ${WORK}/assem2.json ${CMAKE_BINARY_DIR}/index.txt
   DEPENDS ${WORK}/assem.json
   ${WORK}/primer.json
   ${WORK}/CosmicEval.js
+  ${CMAKE_SOURCE_DIR}/transform/assemble/CosmicDrive.js
   ${CMAKE_SOURCE_DIR}/transform/assemble/evaluate.js)
 
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/wrapped.txt ${CMAKE_BINARY_DIR}/entropy.txt

@@ -1,31 +1,22 @@
-var fs = require('fs');
-var cosmicos = require("CosmicEval").cosmicos;
+var CosmicDrive = require('CosmicDrive');
+var cosmicos = new CosmicDrive({
+    'primer': false,
+    'txt': false
+});
 
-var all = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+var all = cosmicos.get_message();
 var primer = [];
-
-var config = new cosmicos.Config(fs.readFileSync("config.json", 'utf8'));
-var state = new cosmicos.State(state);
-var vocab = state.getVocab();
-
-var prep = new cosmicos.ChainCodec([
-    new cosmicos.PreprocessCodec(state),
-    new cosmicos.ParseCodec(vocab),
-    new cosmicos.NormalizeCodec(vocab),
-    new cosmicos.UnflattenCodec()
-]);
 
 var cline = 0;
 for (var i=0; i<all.length; i++) {
     var part = all[i];
     if (part.role != "code") continue;
     var op = part.lines.join("\n");
-    var statement = new cosmicos.Statement(op);
-    prep.encode(statement);
-    var v = statement.content;
+    var v = cosmicos.text_to_list(op);
     console.log(JSON.stringify(v));
     primer.push(v);
     cline++;
 }
 
+var fs = require('fs');
 fs.writeFileSync("primer.json", JSON.stringify(primer, null, 2));

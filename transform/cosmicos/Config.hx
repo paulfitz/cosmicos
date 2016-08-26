@@ -5,9 +5,11 @@ package cosmicos;
 @:expose
 class Config {
     private var config : Dynamic;
-
+    private var external_vocab : Dynamic;
+    
     public function new(txt: String = null) {
         config = null;
+        external_vocab = null;
         if (txt != null) {
             config = haxe.Json.parse(txt);
         }
@@ -34,5 +36,20 @@ class Config {
     public function lines() : Int {
         if (config == null) return 0;
         return Reflect.field(config, 'lines');
+    }
+
+    public function getExternalVocabPath() : String {
+        if (config == null) return null;
+        var fname = Reflect.field(config, 'vocab');
+        if (fname == "") return null;
+        return fname;
+    }
+
+    public function setExternalVocab(txt : String) {
+        external_vocab = haxe.Json.parse(txt);
+    }
+
+    public function getExternalVocab() : Dynamic {
+        return external_vocab;
     }
 }

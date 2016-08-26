@@ -1,0 +1,148 @@
+{
+  "vocab": [
+    {
+      "title": "is",
+      "alias": "&#9728;"
+    },
+    {
+      "title": "int",
+      "alias": "&#8258;"
+    },
+    {
+      "title": "unary",
+      "alias": "&#9856;"
+    },
+    {
+      "title": "=",
+      "alias": "&#9775;"
+    },
+    {
+      "title": "prime",
+      "alias": "&#10083;"
+    },
+    {
+      "title": "square",
+      "alias": "&#9633;"
+    },
+    {
+      "title": "not",
+      "alias": "&#9851;"
+    },
+    {
+      "title": "intro",
+      "alias": "&#9776;"
+    },
+    {
+      "title": "assign",
+      "alias": "&#9993;"
+    },
+    {
+      "title": "?-SKIP",
+      "alias": "&#9992;"
+    },
+    {
+      "title": "x",
+      "alias": "&#5771;"
+    },
+    {
+      "title": "y",
+      "alias": "&#5772;"
+    },
+    {
+      "title": "z",
+      "alias": "&#5773;"
+    },
+    {
+      "title": "define",
+      "alias": "assign:assign"
+    },
+    {
+      "title": "meaning-of-life-universe-everything",
+      "alias": "&#10052;"
+    },
+    {
+      "title": "false",
+      "alias": "&#9785;"
+    },
+    {
+      "title": "true",
+      "alias": "&#9786;"
+    },
+    {
+      "title": "pair",
+      "alias": "&#9803;"
+    },
+    {
+      "title": "begin",
+      "alias": "&#8712;"
+    },
+    {
+      "title": "end",
+      "alias": "&#8715;"
+    },
+    {
+      "title": "make-cell",
+      "alias": "&#9734;"
+    },
+    {
+      "title": "emerge",
+      "alias": "&#8738;"
+    },
+    {
+      "title": "demo",
+      "alias": "&#9732;"
+    },
+    {
+      "title": "if",
+      "alias": "true:false"
+    },
+    {
+      "title": "max",
+      "alias": ">:>"
+    },
+    {
+      "title": "min",
+      "alias": "<:<"
+    },
+    {
+      "title": "factorial",
+      "alias": "*:<"
+    },
+    {
+      "title": "and",
+      "alias": "true:*"
+    },
+    {
+      "title": "or",
+      "alias": "true:+"
+    },
+    {
+      "title": ">=",
+      "alias": ">:="
+    },
+    {
+      "title": "<=",
+      "alias": "<:="
+    },
+    {
+      "title": "cons",
+      "alias": "pair"
+    },
+    {
+      "title": "car",
+      "alias": "pair:begin"
+    },
+    {
+      "title": "cdr",
+      "alias": "pair:end"
+    },
+    {
+      "title": "set!",
+      "alias": "make-cell:assign"
+    },
+    {
+      "title": "get!",
+      "alias": "make-cell:emerge"
+    }
+  ]
+}
