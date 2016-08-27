@@ -238,17 +238,17 @@ if (UNIX)
 endif()
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/bin/cosh.js
   COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/CosmicEval.js ${CMAKE_BINARY_DIR}/lib/cosmicos.js
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/repl/repl.js ${CMAKE_BINARY_DIR}/bin/cosh.js
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/command_line/cosh.js ${CMAKE_BINARY_DIR}/bin/cosh.js
   ${PERM_CMD}
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${WORK}/CosmicEval.js
-  ${CMAKE_SOURCE_DIR}/tools/repl/repl.js)
+  ${CMAKE_SOURCE_DIR}/tools/command_line/cosh.js)
 add_custom_target(cli ALL DEPENDS ${CMAKE_BINARY_DIR}/bin/cosh.js)
 
 
 ##############################################################################
 ##
-## Add a little utility for scanning message
+## Add a little utility for scanning message called cosmsg
 ##
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assemble/cosmicos ${CMAKE_BINARY_DIR}/bin/cosmsg.js @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/tools/command_line/cosmsg.js ${CMAKE_BINARY_DIR}/bin/cosmsg.js @ONLY)

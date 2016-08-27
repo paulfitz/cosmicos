@@ -45,11 +45,6 @@ oghams:
 	head -n 25 ../msg/glyph.txt > ../msg/glyph_head.txt
 
 
-msg:
-	./assemble/assemble.sh | tee assem.txt
-	node ./assemble/assemble2json.js assem.txt
-	NODE_PATH=$(PWD) node ./assemble/evaluate.js
-
 yaml:
 	# npm install -g json2yaml
 	json2yaml assem2.json > assem2.yaml

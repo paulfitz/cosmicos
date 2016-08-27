@@ -1,8 +1,0 @@
-
-#rm -f junk.scm $2
-#./bin/pp.pl $1 > junk.scm
-#cp junk.scm /tmp/`echo $1 | sed "s/[^a-z]/_/g"`.scm
-#echo '(load "junk.scm")' |  scheme | sed "s/ *ppcc */:/g" | sed "s/ *ppcd */./g" | perl -pe 'if (/STOPIT/) {$x = 1;} if ($x) { $_ = ""; }'| perl -e '$x = 0; while (<>) {  if ($x) { print $_; }; if (/ppf/) {$x=1;}  }'  | perl -e 'while (<>) { chomp($_); if (/^\;/) { print "$_"; } else { print "\n$_"; } }; print "\n";' | grep "." | sed 's/^(//' | sed 's/)\;$/\;/' | ./bin/slash.pl > $2
-#grep -q "Joy Joy" $2 && cp $1 $2 || echo -n
-#rm -f junk.scm
-cp $1 $2
