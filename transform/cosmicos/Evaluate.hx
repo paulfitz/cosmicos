@@ -213,29 +213,41 @@ class Evaluate {
         return state;
     }
 
+    public function explain(name: String, desc: String, ?example: String) {
+        vocab.setMeta(name, new VocabMeta(desc, example));
+    }
+
     public function applyOldOrder() {
         if (mem == null) mem = new Memory(null);
         vocab.clear();
         vocab.check("intro",0);
-        // need to free up "1" -- order will
-        // be evaporating soon in any case.
-        vocab.check("true",1); // this is what I needed to insert.
-        vocab.check("<",2); // was 1
-        vocab.check("=",3); // was 2
-        vocab.check(">",4); // was 3
-        vocab.check("not",5); // was 4
-        vocab.check("and",6); // was 5
-        vocab.check("or",7);  // was 6
+        vocab.check("true",1);
+        vocab.check("<",2);
+        explain("<", "is one integer less than another", "< 41 42");
+        vocab.check("=",3);
+        explain("=", "test for integer equality", "= 42 42");
+        vocab.check(">",4);
+        explain(">", "is one integer greater than another", "> 42 41");
+        vocab.check("not",5);
+        vocab.check("and",6);
+        vocab.check("or",7);
         
         vocab.check("equal",8);
         vocab.check("*",9);
+        explain("*", "multiply two integers", "* 2 21");
         vocab.check("+",10);
+        explain("+", "add two integers", "+ 22 20");
         vocab.check("-",11);
+        explain("+", "subtract one integer from another", "- 44 2");
 
         id_lambda = vocab.check("?",12);
+        explain("?", "create an anonymous function", "? x | - $x 1");
         id_define = vocab.check("define",13);
+        // define and @ are fudged together, TODO fix this
+        explain("@", "store an expression in memory", "@ dec | ? x | - $x 1");
         id_assign = vocab.check("assign",14);
         id_if = vocab.check("if",15);
+        explain("if", "conditional evaluation", "if (> $x 1) (dec $x) $x");
         vocab.check("vector",16);
         vocab.check("unused1",17);
         vocab.check("unused2",18);
@@ -266,9 +278,9 @@ class Evaluate {
         addStdMin();
         evaluateLine("@ 1 1");
         evaluateLine("@ true 1");
-        evaluateLine("@ not | ? 0 | if $0 0 1");
-        evaluateLine("@ and | ? 0 | ? 1 | if $0 $1 0");
-        evaluateLine("@ or | ? 0 | ? 1 | if $0 1 $1");
+        addDefinition("not", "? 0 | if $0 0 1");
+        addDefinition("and", "? 0 | ? 1 | if $0 $1 0");
+        addDefinition("or", "? 0 | ? 1 | if $0 1 $1");
         mem.add(vocab.get("make-cell"), function(x){ return { data: x }; } );
         mem.add(vocab.get("get!"), function(x){ 
                 return x.data; 
@@ -385,16 +397,39 @@ class Evaluate {
         //evaluateLine("@ if | ? v | (pure $v) (? x | ?? y $x) (?? x | ? y $y)");
         evaluateLine("@ eval | ? x | x 1");
     }
+
+    public function addDefinition(name: String, body: String) {
+        evaluateLine("@ " + name + " | " + body);
+        vocab.setMeta(name, new VocabMeta(body, ""));
+    }
     
     public function addStd() {
         addStdMin();
-        evaluateLine("@ not | ? x | if $x 0 1");
-        evaluateLine("@ and | ? x | ? y | if $x $y 0");
-        evaluateLine("@ or | ? x | ? y | if $x 1 $y");
+        addDefinition("not", "? x | if $x 0 1");
+        addDefinition("and", "? x | ? y | if $x $y 0");
+        addDefinition("or", "? x | ? y | if $x 1 $y");
     }
 
     public function addPrimer(primer: Dynamic) {
         mem.add(vocab.get("primer"), Cons.consify(primer));
+    }
+
+    public function examples(): Array<String> {
+        return [
+                "+ 3 (* 10 2)",
+                "+ 3 | * 10 2",
+                "+ 3 20",
+                "@ square | ? x | * $x $x",
+                "square 10",
+                "@ factorial | ? n | if (= $n 0) 1 | * $n | factorial (- $n 1)",
+                "factorial 5",
+                "@ first | ? x | ? y | x",
+                "@ second | ? x | ? y | y",
+                "@ cons | ? x | ? y | ? f | f $x $y",
+                "@ car | ? f | f $first",
+                "@ cdr | ? f | f $second",
+                "car | cons 10 15",
+                "cdr | cons 10 15"];
     }
     
     static function main() {

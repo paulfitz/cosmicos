@@ -35,7 +35,7 @@ function cosmicos_eval(input, context, filename, callback) {
     }
     var out = "";
     try {
-	if (input=="help") {
+	if (input==="help") {
 	    out+= "Syntax:\n";
 	    out+= "  Space-separated lists of integers with nesting e.g.: 1 2 3 (4 5) (6 7 (8 9))\n";
 	    out+= "  Shorthand: symbols (listed below) can be used to stand for integers.\n";
@@ -47,32 +47,40 @@ function cosmicos_eval(input, context, filename, callback) {
 	    var vocab = cc.getVocab();
 	    var names = vocab.getNames();
 	    for (var i=0; i<names.length; i++) {
+                var lout = "";
 		var name = names[i];
 		var idx = "" + vocab.get(i);
 		for (var j=idx.length; j<5; j++) {
-		    out += " ";
+		    lout += " ";
 		}
-		out += idx;
-		out += " ";
-		out += name;
+		lout += idx;
+		lout += " ";
+		lout += name;
 		for (var j=name.length; j<7; j++) {
-		    out += " ";
+		    lout += " ";
 		}
-		var e = "(missing)"; // no explanation
+                var meta = vocab.getMeta(name);
+                var e = meta ? meta.description : null;
 		if (e) {
-		    out += " " + e;
+		    lout += " " + e;
 		    for (var j=e.length; j<33; j++) {
-			out += " ";
+			lout += " ";
 		    }
-		    var ex = "(see http://cosmicos.github.io/evaluate.html)" // no example
+		    var ex = meta ? meta.example : null;
 		    if (ex) {
-			out += " " + ex;
+			lout += " " + ex;
 		    }
 		}
-		out += "\n";
+		lout += "\n";
+                if (e) {
+                  out += lout;
+                }
 	    }
 	    console.log(out);
 	    out = true;
+	} else if (input==="examples") {
+          console.log(cc.examples().join("\n"));
+          out = true;
 	} else {
 	    out = cc.evaluateLine(input);
 	    if (out==null) {
@@ -95,7 +103,7 @@ function cosmicos_eval(input, context, filename, callback) {
 var args = process.argv.slice(2);
 
 if (args.length == 0) {
-    console.log("[See http://cosmicos.github.io/evaluate.html for help]");
+    console.log("Welcome to a CosmicOS test console, \"help\" and \"examples\" available");
     repl = require('repl');
     repl.start({
 	prompt: "cosmicos> ",

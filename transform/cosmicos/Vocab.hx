@@ -6,6 +6,7 @@ package cosmicos;
 class Vocab {
     private var nameToCode : Map<String,Int>;
     private var codeToName : Map<Int,String>;
+    private var nameToMeta : Map<String,VocabMeta>;
     private var topCode : Int;
     private var useInt : Bool;
 
@@ -17,6 +18,7 @@ class Vocab {
     public function clear() {
         nameToCode = new Map<String,Int>();
         codeToName = new Map<Int,String>();
+        nameToMeta = new Map<String, VocabMeta>();
         topCode = 0;
     }
 
@@ -55,6 +57,14 @@ class Vocab {
         codeToName.set(id,name);
         nameToCode.set(name,id);
         return get(name);
+    }
+
+    public function setMeta(name: String, meta: VocabMeta) {
+        nameToMeta.set(name,meta);
+    }
+
+    public function getMeta(name: String): VocabMeta {
+        return nameToMeta.get(name);
     }
 
     public function reverse(id: Int) : String {
