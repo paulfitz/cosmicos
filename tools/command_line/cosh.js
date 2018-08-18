@@ -42,8 +42,8 @@ function cosmicos_eval(input, context, filename, callback) {
 	    out+= "  Shorthand: \"$x\" is equivalent to \"(x)\"\n";
 	    out+= "  Shorthand: \"/\" nests to end of expression: (1 2 / 3 4) is equiv. to (1 2 (3 4))\n";
 	    out+= "  Lists are evaluated by calling the first element with each of the others in turn.\n";
-	    out+= "  If the first element of the list is a number, it is treated as a variable lookup.\n";
-	    out+= "Index Symbol  Meaning                           Example\n";
+	    out+= "  If the first element of the list is a number, it is treated as a variable lookup.\n\n";
+	    out+= "  Int Symbol  Meaning when called               Example\n";
 	    var vocab = cc.getVocab();
 	    var names = vocab.getNames();
 	    for (var i=0; i<names.length; i++) {

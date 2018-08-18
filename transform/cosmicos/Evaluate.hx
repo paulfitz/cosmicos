@@ -398,16 +398,16 @@ class Evaluate {
         evaluateLine("@ eval | ? x | x 1");
     }
 
-    public function addDefinition(name: String, body: String) {
+    public function addDefinition(name: String, body: String, ?example: String) {
         evaluateLine("@ " + name + " | " + body);
-        vocab.setMeta(name, new VocabMeta(body, ""));
+        vocab.setMeta(name, new VocabMeta(body, example));
     }
     
     public function addStd() {
         addStdMin();
-        addDefinition("not", "? x | if $x 0 1");
-        addDefinition("and", "? x | ? y | if $x $y 0");
-        addDefinition("or", "? x | ? y | if $x 1 $y");
+        addDefinition("not", "? x | if $x 0 1", "not (> 41 42)");
+        addDefinition("and", "? x | ? y | if $x $y 0", "and (> 42 41) (< 41 42)");
+        addDefinition("or", "? x | ? y | if $x 1 $y", "or (> 42 41) (< 42 41)");
     }
 
     public function addPrimer(primer: Dynamic) {

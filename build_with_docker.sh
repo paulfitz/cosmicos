@@ -17,4 +17,4 @@ fi
 mkdir -p build
 touch build/docker_build.txt
 
-docker run -it --rm -v $PWD:/cosmicos paulfitz/cosmicos_builder ./build.sh
+docker run -it --rm -v $PWD:/cosmicos paulfitz/cosmicos_builder ./build.sh "$@"
