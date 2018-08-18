@@ -1,4 +1,4 @@
-build*
+build*/
 package
 INTERNAL.txt
 *~

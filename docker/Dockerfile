@@ -7,3 +7,5 @@ RUN \
   apt-get install -y --no-install-recommends libbcel-java openjdk-8-jdk libgd-perl nodejs \
     haxe cmake make && \
   rm -rf /var/lib/apt/lists/*
+
+WORKDIR /cosmicos
