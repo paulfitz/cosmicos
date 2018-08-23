@@ -271,7 +271,7 @@ class Evaluate {
         vocab.check("demo",36); // was 7
 
         // start using longer codes for early symbols
-        vocab.set("is:int", 183);  //0b10110111
+        vocab.set("is:int", 40);  //0b00101000
         vocab.set("unary", 255);   //0b11111111
 
         mem.add(vocab.get("intro"), function(x){ return 1; });

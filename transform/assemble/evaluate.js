@@ -1,5 +1,7 @@
 var fs = require('fs');
 var cosmicos = require("CosmicEval").cosmicos;
+var spiders = require("SpiderScrawl").cosmicos;
+var spider = new spiders.SpiderScrawl(null,0,0);
 
 var all = JSON.parse(fs.readFileSync("assem.json", 'utf8'));
 
@@ -37,6 +39,7 @@ function run_core(op,part,skippy) {
         part["preprocessed"] = preprocessed;
 	part["code"] = code;
 	part["parse"] = parsed.content;
+        part["spider"] = spider.addString(code);
     }
     console.log(cline + ": " + op + "  -->  " + code);
     txt += code;
@@ -60,6 +63,7 @@ function run_line(op,part,skippy) {
 	var r = backtrack.content[0];
 	op = "equal " + r + " " + op.substr(5,op.length);
 	part["lines_original"] = part["lines"];
+        part["lines"] = [op];
         run_core(op,part,true);  // have to skip because of a demo of operation with side-effects
 	v = 1;
     }
@@ -83,7 +87,7 @@ try {
 
 	var skippy = false;
 	// skip the most time consuming parts of message for now
-	if (true) {
+      if (true) {
 	    if (op.indexOf("distill-circuit")>=0) {
 		process.stderr.write("Skipping distill-circuit\n");
 		skippy = true;

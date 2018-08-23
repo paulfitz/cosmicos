@@ -1,3 +1,10 @@
+var child_process = require('child_process');
+var path = require('path');
+
+// My apologies for the horrible quality of this code.  It was written a long time ago.
+
+var target = process.argv[2];
+
 var w = 32;
 var h = 32;
 var Canvas = require('canvas')
@@ -19,9 +26,12 @@ for (var open=0; open<=1; open++) {
     }
 }
 
-function process() {
+function processGlyph() {
     var t = todo.shift();
-    if (t==null) return;
+    if (t==null) {
+      finalizeGlyph();
+      return;
+    }
     var open = t[0];
     var closed = t[1];
     var m = t[2];
@@ -37,16 +47,28 @@ function process() {
     } else {
 	code += "____";
     }
-    var out = fs.createWriteStream(__dirname + '/../vectors/coschar_' + code + ".png");
+    var fname = path.resolve(target, 'icons', 'spider', 'coschar_' + code + ".png");
+    var out = fs.createWriteStream(fname);
     var stream = canvas.syncPNGStream();
     stream.on('data', function(chunk){
 	out.write(chunk);
     });
     stream.on('end', function(){
-	console.log('saved png ' + code);
-	process();
+        out.end(() => {
+	  console.log('saved png ' + fname);
+	  processGlyph();
+        });
     });
 }
 
-process();
+processGlyph();
+
+function finalizeGlyph() {
+  console.log("Spawning...");
+  child_process.spawnSync(path.resolve(__dirname, "glyphs_to_svg.sh"),
+                          [path.resolve(target, 'icons', 'spider'),
+                           path.resolve(target, 'fonts', 'spider')],
+                          {stdio: [0, 1, 2]});
+  console.log("Spawned...");
+}
 

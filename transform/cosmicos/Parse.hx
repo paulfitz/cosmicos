@@ -345,7 +345,13 @@ class Parse {
                 // encode symbol as an integer for now
                 var str : String = cast v;
                 var len : Int = str.length;
-                var rem : Int = vocab.getBase(str);
+                var rem : Int = 0;
+                var ch = str.charAt(0);
+                if (ch>='0' && ch<='9') {
+                    rem = Std.parseInt(str);
+                } else {
+                    rem = vocab.getBase(str);
+                }
                 var b = "";
                 do {
                     b = ((rem%2!=0)?"1":"0") + b;

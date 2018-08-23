@@ -20,6 +20,73 @@ function needOutput() {
     }
 }
 
+function showSpider(root,src) {
+    var cos = require(root + "/transform/SpiderScrawl").cosmicos;
+    var ss = new cos.SpiderScrawl(null,0,0);
+    var path = root + "/assets/fonts/spider/";
+    if (wrap) {
+	process.stdout.write("<!DOCTYPE html>\
+<html lang='en'>\
+  <head>\
+    <meta charset='utf-8'>\
+    <title>CosmicOS</title>\
+<style type='text/css'>\
+      @font-face { \
+  font-family: 'cosmic_spider'; \
+  src: url('" + path + "cosmic_spider.eot'); \
+  src: url('" + path + "cosmic_spider.eot?#iefix') format('embedded-opentype'), \
+       url('" + path + "cosmic_spider.woff2') format('woff2'), \
+       url('" + path + "cosmic_spider.woff') format('woff'), \
+       url('" + path + "cosmic_spider.ttf') format('truetype'), \
+       url('" + path + "cosmic_spider.svg#cosmic_spider') format('svg'); \
+} \
+ .koan {\
+   font-size: 32px; \
+ }\
+ .s {\
+   color: #ccc;\
+ }\
+ img {\
+   height: 32px; \
+   vertical-align:middle; \
+ }\
+ body { \
+  font-family: \"cosmic_spider\"; \
+  font-style: normal; \
+  font-weight: normal; \
+  font-variant: normal; \
+  word-break: break-all; \
+  background: white; \
+  color: blue; \
+} \
+ p { \
+  margin: 0; \
+  padding: 0; \
+  padding: 5px; \
+} \
+</style>\
+  </head>\
+  <body>\
+");
+    }
+    for (var s=stanza; s<=last_stanza; s++) {
+      var m = msg[s];
+      if (!m) continue;
+      var code = m["code"];
+      if (!code) {
+	continue;
+      }
+      var txt = ss.addString(code);
+      process.stdout.write("<p>" + txt + "</p>\n");
+    }
+    if (wrap) {
+	process.stdout.write("\
+</body>\
+</html>\
+");
+    }
+}
+
 function showText(root,src) {
     if (wrap) {
 	process.stdout.write("<!DOCTYPE html>\
@@ -198,6 +265,11 @@ module.exports = function(root,src) {
 	showText(root,src);
 	return 0;
     }
+    if (cmd == 'spider') {
+	needStanza();
+	showSpider(root,src);
+	return 0;
+    }
     if (cmd == 'hear') {
 	var cos = require(root + "/transform/CosmicAudio.js").cosmicos;
 	var snd = new cos.Sound();
@@ -214,10 +286,11 @@ module.exports = function(root,src) {
 	return 0;
     }
     console.log("Welcome to the CosmicOS message inspector command. Usage:");
-    console.log("  cosmsg show -p NNNN               # show info about message part NNNN");
-    console.log("  cosmsg hear -p NNNN -o audio.wav  # convert message part to audio");
-    console.log("  cosmsg text -p NNNN -v vocab.json # experimental text rendering of message part NNNN");
+    console.log("  cosmsg show -p NNNN                  # show info about message part NNNN");
+    console.log("  cosmsg hear -p NNNN -o audio.wav     # convert message part to audio");
+    console.log("  cosmsg text -p NNNN -v vocab.json    # experimental text rendering of message part NNNN");
     console.log("  cosmsg text -p NFIRST -P NLAST -s 'stop phrase' -v vocab.json -w");
+    console.log("  cosmsg spider -p NFIRST -P NLAST -w  # spider font rendering of message");
 }
 
 

@@ -224,6 +224,22 @@ add_custom_command(OUTPUT ${WORK}/vocab.json
 
 add_custom_target(vocab DEPENDS ${WORK}/vocab.json)
 
+# generate old spider-script style glyphs
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/assets/icons/spider)
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/assets/fonts/spider)
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/assets/fonts/spider/cosmic_spider.ttf
+  COMMAND ${CMAKE_COMMAND} 
+  "-Din:STRING=${CMAKE_SOURCE_DIR}/transform/font/generate_glyphs.js" 
+  "-Dnargs:STRING=${CMAKE_BINARY_DIR}/assets"
+  "-Dlog:STRING=spider"
+  -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/node.cmake
+  WORKING_DIRECTORY ${WORK}
+  DEPENDS
+  ${WORK}/SpiderScrawl.js
+  ${CMAKE_SOURCE_DIR}/transform/font/glyphs_to_svg.sh
+  ${CMAKE_SOURCE_DIR}/transform/font/generate_glyphs.js)
+
+add_custom_target(spider DEPENDS ${CMAKE_BINARY_DIR}/assets/fonts/spider/cosmic_spider.ttf)
 
 ##############################################################################
 ##

@@ -14,5 +14,9 @@ which make || {
 
 mkdir -p build
 cd build
-cmake ..
-make "$@"
+if [ "$1" = "configure" ]; then
+  ccmake ..
+else
+  cmake ..
+  make "$@"
+fi
