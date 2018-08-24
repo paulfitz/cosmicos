@@ -24,97 +24,81 @@ the all-new action-packed sequel guaranteed to have you on the edge of your
 seat, which is a specific structure with a flat surface perpendicular to the 
 pull of gravity, which is a thing that, oh never mind.
 
-Goals of CosmicOS
------------------
+Building the message
+--------------------
 
- * To create a complete message which, if noticed by a non-human intelligence, stands some chance of being understood. The message should introduce the intelligence to a significant portion of the human world view.
- * To develop this message in a form that is easy to edit and extend, so that anyone interested can simply take it and make it better without having to track down out-of-print books.
- * To avoid making too many assumptions about the perceptual abilities of the non-human intelligence; for example that they make sense of 2D images in the same way we do. While some arguments can be made for this, as a machine vision guy I am very skeptical that we really understand the variability possible here.
- * To send Scheme into deep space.
- * To send the GPL into deep space.
+I recommend you use docker to build the message (if you don't want to, you can see
+all the steps needed in `docker/Dockerfile`).
 
-The "intelligence" reading the message could be extra-terrestrial, or artificial. It is this second possibility that motivates me -- I want this message as a challenge for AI -- but the ET possibility is also fun.
+Install docker (see https://docs.docker.com/install/), then do:
 
-Status
-------
+```
+./build_with_docker.sh
+```
 
-The current goal of development work on CosmicOS is to communicate enough structure to simulate a simple MUD (multi-user dungeon) and to use the interactions between locations, objects, and characters as an alternative to the clever "morality plays" in Lincos.
+You should find the message saved in your `build` directory 
+as `index.json` and `index.txt`.
 
-The message has a strong backbone of actual executable code. The results of executing code is fundamentally what gets talked about in most of the message so far. This has the advantage that it can be understood on two levels: working out what the code does by looking at its details, or just treating it as a black box and learning from examples what it does. It also gives the listener the ability to do experiments using the code that are not talked about in the message. At the level of the MUD, this means the listener is free to play around with the simulated world and understand its logic through experimentation.
+There wil be a simple console for playing with Fritz in:
+```
+node ./build/bin/cosh.js
+```
 
-A difficulty with using code is that it assumes the listener has a computer to run the code on, or is computer-like enough themselves to work through the code with excruciating patience. I'm okay with this assumption for now, since it is hard to imagine the message being detected in the first place without some good hardware.
+There is a tool for reading parts of the message in:
+```
+node ./build/bin/cosmsg.js
+```
 
-Links
------
+Message source code
+-------------------
 
- * http://cosmicos.sourceforge.net/
- * http://en.wikipedia.org/wiki/CosmicOS
+The CosmicOS message is assempled from a series of "chapters".
+Each chapter is written in one of several languages, which are
+then compiled into a standard language called "Fritz".  This
+is a low-level language that is suitable for further conversion
+into a number of forms.
 
-Dependencies
-------------
+Supported languages and how they are treated are:
 
-CosmicOS is a message that is put together from "chapters"
-written as programs.  To compile those chapters, you currently
-need:
+    *.scm:  These files are incorporated into the
+            message verbatim - they are written in Fritz.
 
- * A java compiler and runtime
- * perl, plus GD module for perl
- * BCEL
- * nodejs
- * haxe
- * CMake
+    *.js:   These scripts are executed using node, and their
+            output is incorporated into the message.
 
-Here are appropriate packages for Debian:
-
-    apt-get install libbcel-java openjdk-6-jdk libgd-gd2-perl nodejs haxe cmake
-
-If you end up with a version of haxe lower than 3, please uninstall and 
-visit http://haxe.org/download/
-
-Source code
------------
-
-CosmicOS arranges and compiles chapters into a complete,
-self-contained message.  Source code for the chapters is
-in the `src` directory.  Supported formats and how they
-are treated are:
-
-
-    *.scm:  These files are incorporated into the 
-            message verbatim.
-
-    *.pl:   Perl scripts are executed, and their output
-            is incorporated into the message verbatim.
+    *.pl:   These scripts are executed using perl, and their
+            output is incorporated into the message.  CosmicOS
+            is so old that quite a lot of its original source is
+            in perl.  I can feel you judging me, please stop.
 
     *.java: These files are compiled to bytecode, and that
             bytecode is then converted into a form that
             can be incorporated into the message.  Not all
-            Java constructs are supported, just enough for
-            the message.
+            Java constructs are supported - they are described
+            in terms of Fritz in the message.
 
     *.gate: These files are interpreted as a specification
-            for a kind of circuit.  The specifications
+            for a kind of circuit.  You can find a simulator
+            on the CosmicOS website.  The circuit specifications
             are converted into a form that can be incorporated
             into the message.
 
-If you wish to add a source file or reorder existing material,
-edit index.txt in that directory.
+To add a source file or reorder existing material, edit `src/README.cmake`.
 
-Compilation
------------
+Variant messages
+----------------
 
-To build the message, type:
+Perhaps you'd like to work on a somewhat different message without disturbing
+the main message.  You can do that.  If you run the cmake user interface:
+```
+./build_with_docker.sh configure
+```
+You will see a `COSMIC_VARIANT` option that is currently set to `default`.
+That tells the build to look for a message description starting at
+`variant/default.cmake`.  You can add a different file in `variant` such as
+`variant/my-version.cmake` and then set `COSMIC_VARIANT` to `my-version`.
 
-    mkdir build && cd build && cmake .. && make
-
-You should find the message saved in your build directory 
-as `index.json` and `index.txt`.
-
-Compilation options
--------------------
-
-There are options in how the message is built.  Run the cmake gui (`cmake-gui` or `ccmake` in Linux)
-and look for options starting with `COSMIC_`.
+Here are some existing options:
 
  * `COSMIC_VARIANT` set to `default` - this currently assumes that symbols like `$` and `|` can be
    somehow represented in the encoded message.
@@ -122,17 +106,15 @@ and look for options starting with `COSMIC_`.
  * `COSMIC_LINES` controls how many lines of the message are processed.  The default is 0, meaning
    unlimited.
 
-Troubleshooting
----------------
-If you have compilation issues with `nodejs` similar to `node returned No such file or directory`, this can be resolved by symlinking it to `node`.  Another workaround is to install `nodejs-legacy`.
+Code quality
+------------
+
+Oh my goodness what can I say except <s>you're welcome</s> sorry.
 
 License
 -------
 
-Copyright (C) 2014 Paul Fitzpatrick
+Copyright (C) 2018 Paul Fitzpatrick
 
 CosmicOS is released under the GNU General Public Licence --
 See COPYING.txt for license information.
-
-CosmicOS was started back in 2005/2006, neglected for a long time,
-and is being hacked on again since early 2014.
