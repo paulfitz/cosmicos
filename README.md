@@ -27,9 +27,7 @@ pull of gravity, which is a thing that, oh never mind.
 Building the message
 --------------------
 
-I recommend you use docker to build the message (if you don't want to, you can see
-all the steps needed in `docker/Dockerfile`).
-
+I recommend you use docker to build the message.
 Install docker (see https://docs.docker.com/install/), then do:
 
 ```
@@ -48,6 +46,9 @@ There will be a simple console for playing with Fritz in:
 ```
 node ./build/tiny/bin/cosh.js
 ```
+
+If you don't want to use docker, you can see all the steps needed in `docker/Dockerfile`
+and `tools/make_without_docker.sh`.
 
 Message source code
 -------------------
