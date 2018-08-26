@@ -33,20 +33,20 @@ all the steps needed in `docker/Dockerfile`).
 Install docker (see https://docs.docker.com/install/), then do:
 
 ```
-./build_with_docker.sh
+./make.sh default
 ```
 
-You should find the message saved in your `build` directory 
+You should find the message saved in your `build/default` directory 
 as `index.json` and `index.txt`.
 
 There wil be a simple console for playing with Fritz in:
 ```
-node ./build/bin/cosh.js
+node ./build/default/bin/cosh.js
 ```
 
 There is a tool for reading parts of the message in:
 ```
-node ./build/bin/cosmsg.js
+node ./build/default/bin/cosmsg.js
 ```
 
 Message source code
