@@ -95,6 +95,7 @@ set_property(CACHE COSMIC_VARIANT PROPERTY STRINGS ${VARIANTS})
 # We expect to get these variables:
 #   COSMIC_DEPENDS that lists all parts
 #   COSMIC_USE_FLATTENER that controls whether '|' can be encoded
+include(${CMAKE_SOURCE_DIR}/src/BASE.cmake)
 include(${CMAKE_SOURCE_DIR}/variant/${COSMIC_VARIANT}.cmake)
 
 get_target_property(UnlessDriverLoc UnlessDriver JAR_FILE)
@@ -145,7 +146,9 @@ add_custom_command(OUTPUT ${WORK}/assem.txt
   "-Dout:STRING=assem.txt"
   -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/assemble.cmake
   WORKING_DIRECTORY ${WORK}
-  DEPENDS ${ACTIVE_DEPENDS} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/assemble.cmake)
+  DEPENDS ${ACTIVE_DEPENDS}
+    ${WORK}/SpiderScrawl.js
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/assemble.cmake)
 
 # assem.json is a structured version of assem.txt, but still in original form
 add_custom_command(OUTPUT ${WORK}/assem.json

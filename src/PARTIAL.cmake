@@ -2,7 +2,6 @@
 # used for making http://cosmicos.github.io/next.html
 # (the larger message currently has all sorts of random stuff)
 
-include(${CMAKE_SOURCE_DIR}/src/BASE.cmake)
 set(COSMIC_DEPENDS
   COS_License
   COS_Intro

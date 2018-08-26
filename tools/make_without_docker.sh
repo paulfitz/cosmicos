@@ -40,6 +40,6 @@ cd build/$message
 if [ "$1" = "configure" ]; then
   ccmake ../..
 else
-  cmake ../..
+  cmake -DCOSMIC_VARIANT=$message ../..
   make "$@" && echo "Result in build/$message"
 fi

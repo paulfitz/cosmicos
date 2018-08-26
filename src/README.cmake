@@ -1,7 +1,6 @@
-# In this file, we list the active chapters to be included in the message,
+# In this file, we list the active chapters to be included in the default message,
 # in order.
 
-include(${CMAKE_SOURCE_DIR}/src/BASE.cmake)
 set(COSMIC_DEPENDS
   COS_License
   COS_Intro

@@ -33,20 +33,20 @@ all the steps needed in `docker/Dockerfile`).
 Install docker (see https://docs.docker.com/install/), then do:
 
 ```
-./make.sh default
+./make.sh tiny
 ```
 
-You should find the message saved in your `build/default` directory 
-as `index.json` and `index.txt`.
+You should find a message saved as `build/tiny/index.txt` and
+`build/tiny/index.json`.
 
-There wil be a simple console for playing with Fritz in:
+There is a tool for browsing parts of the message in:
 ```
-node ./build/default/bin/cosh.js
+node ./build/tiny/bin/cosmsg.js
 ```
 
-There is a tool for reading parts of the message in:
+There will be a simple console for playing with Fritz in:
 ```
-node ./build/default/bin/cosmsg.js
+node ./build/tiny/bin/cosh.js
 ```
 
 Message source code
@@ -89,22 +89,28 @@ Variant messages
 ----------------
 
 Perhaps you'd like to work on a somewhat different message without disturbing
-the main message.  You can do that.  If you run the cmake user interface:
-```
-./build_with_docker.sh configure
-```
-You will see a `COSMIC_VARIANT` option that is currently set to `default`.
-That tells the build to look for a message description starting at
-`variant/default.cmake`.  You can add a different file in `variant` such as
-`variant/my-version.cmake` and then set `COSMIC_VARIANT` to `my-version`.
+the main message.  You can do that.  Take a look in the `variant` directory.
+Each file there defines a different message.  For example, `variant/tiny.cmake`
+contains:
 
-Here are some existing options:
+```
+set(COSMIC_DEPENDS
+  COS_Intro
+  COS_Compare)
+```
 
- * `COSMIC_VARIANT` set to `default` - this currently assumes that symbols like `$` and `|` can be
-   somehow represented in the encoded message.
- * `COSMIC_VARIANT` set to `nested` - this converts the `$` and `|` symbols to parentheses.
- * `COSMIC_LINES` controls how many lines of the message are processed.  The default is 0, meaning
-   unlimited.
+This means to build the message by concatenating `src/COS_Intro.*` and `src/COS_Compare.*`.
+You can make your own file, `mine.cmake`, and then build it using:
+
+```
+./make.sh mine
+```
+
+You can optionally add this line:
+```
+set(COSMIC_USE_FLATTENER false)
+```
+If you think the `$` and `|` message symbols should be converted to parentheses in the message.
 
 Code quality
 ------------
