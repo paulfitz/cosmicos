@@ -1,4 +1,5 @@
 var fs = require('fs');
+var path = require('path');
 
 var msg = null;
 var stanza = -1;
@@ -114,7 +115,7 @@ function showText(root,src) {
     var render = new ev.ManuscriptStyle();
     var letters_src = {};
     if (vocab) {
-	letters_src = require(vocab);
+	letters_src = require(path.resolve(process.cwd(), vocab));
     }
     var letters = {};
     if (letters_src["vocab"]) {
