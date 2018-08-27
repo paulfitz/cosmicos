@@ -275,11 +275,16 @@ module.exports = function(root,src) {
 	var snd = new cos.Sound();
 	needStanza();
 	needOutput();
-	if (last_stanza!=stanza) {
-	    throw("audio cannot do multiple parts yet");
-	}
-	var code = msg[stanza].code;
-	if (!code) throw "code not found for part " + stanza;
+        var code = "";
+        for (var s=stanza; s<=last_stanza; s++) {
+	  var c = msg[s].code;
+	  if (!c) {
+            console.log("Skip stanza", s);
+            continue;
+          }
+          console.log("Stanza", s);
+          code += c;
+        }
 	var txt = snd.textToWav(code,false);
 	fs.writeFileSync(output,txt,"binary");
 	console.log("Wrote to " + output);
