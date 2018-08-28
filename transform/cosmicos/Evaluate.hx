@@ -173,8 +173,13 @@ class Evaluate {
         return evaluateExpression(statement.content);
     }
 
-    public function new(state : State = null) {
-        if (state == null) state = new State();
+    public function new(state : State = null, useIntVocab: Bool = false) {
+        if (state == null) {
+            state = new State();
+            if (useIntVocab) {
+                state.useIntVocab();
+            }
+        }
         this.state = state;
         mem = state.getMemory();
         vocab = state.getVocab();

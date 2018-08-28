@@ -1,5 +1,5 @@
-CosmicOS
-========
+CosmicOS: a next-generation Contact message
+===========================================
 
 Sending the lambda calculus into deep space.  http://cosmicos.github.io/
 
@@ -24,8 +24,63 @@ the all-new action-packed sequel guaranteed to have you on the edge of your
 seat, which is a specific structure with a flat surface perpendicular to the 
 pull of gravity, which is a thing that, oh never mind.
 
+Putting on a show
+-----------------
+
+Here's the idea behind CosmicOS:
+
+ * Communicate the usual math and logic basics ...
+ * ... then use that to show how to run programs ...
+ * ... then send interesting programs that demonstrate behaviors and interactions ...
+ * and start communicating ideas through "theater."
+
+This is inspired by Freudenthal's idea of staging written conversations between his imaginary characters __Ha__ and __Hb__.
+
+Of course we can also include any astrophysics or chemistry we'd like too - I haven't focused on that so far since other messages do it pretty well.
+
+What the message looks like
+---------------------------
+
+What would you like it to look like?  A string of numbers?
+
+<pre>
+20321001113223321001113023210101032032233210011130232101010321320322332100111302
+32101010321321320322332100111302321010103213213213203223321001113023210101032132
+13213213203223321001113023210101032132132132132132032233210011130232101010321321
+32132132132132032233210011130232101010321321321321321321321320322332100111302321
+01010321321321321321321321321320322332100111302321010103213213213213213213213213
+21320322332100111302321010103213213213213213213213213213213203223321001113023210
+...
+</pre>
+
+Some kind of spidery scrawl?
+
+![spidery scrawl](https://user-images.githubusercontent.com/118367/44754717-fee39200-aaf0-11e8-8c5e-e7f3ba71e89b.png)
+
+Vaguely understandable symbols?
+
+<pre>
+...
+✉ ᚋ (+) | ✉ ᚌ 3 | ☯ 4 (ᚋ 1 (ᚌ))
+☯ 2 | ✉ ᚋ 1 | + $ᚋ 1
+☯ 1 | ✉ ᚋ 1 $ᚋ
+☯ 14 | ✉ ᚋ 1 14
+☯ 4 | ✉ ᚋ (✉ ᚌ 3 | + 1 $ᚌ) $ᚋ
+☯ 4 | ✉ ᚋ (✉ ᚋ 3 | + 1 $ᚋ) $ᚋ
+✉ ᚋ 1 | ☯ (ᚋ) 1
+✉ ᚋ 1 | ☯ $ᚋ 1
+...
+</pre>
+
+Logic gates?
+
+![A D gate](https://user-images.githubusercontent.com/118367/44753787-4ff18700-aaed-11e8-8728-652006a3c447.gif)
+
+Audio?  You can listen to one rendering of the message at https://cosmicos.github.io/
+
 Building the message
 --------------------
+
 
 I recommend you use docker to build the message.
 Install docker (see https://docs.docker.com/install/), then do:
@@ -53,38 +108,86 @@ and `tools/make_without_docker.sh`.
 Message source code
 -------------------
 
-The CosmicOS message is assempled from a series of "chapters".
-Each chapter is written in one of several languages, which are
-then compiled into a standard language called "Fritz".  This
-is a low-level language that is suitable for further conversion
-into a number of forms.
+The CosmicOS message is assempled from a series of "chapters".  Each
+chapter is written in one of several languages, which are then
+compiled into a common language called `Fritz`.  This is a low-level
+language that is suitable for further conversion into a number of
+forms for transmission.
 
 Supported languages and how they are treated are:
 
-    *.scm:  These files are incorporated into the
-            message verbatim - they are written in Fritz.
+ * __*.scm__: These files are incorporated into the message verbatim.  They are written
+   in a lisp-like language called Fritz.
 
-    *.js:   These scripts are executed using node, and their
-            output is incorporated into the message.
+ * __*.js__:  These scripts are executed using node, and their output is incorporated
+   into the message.
 
-    *.pl:   These scripts are executed using perl, and their
-            output is incorporated into the message.  CosmicOS
-            is so old that quite a lot of its original source is
-            in perl.  I can feel you judging me, please stop.
+ * __*.java__: These files are compiled to bytecode, and that bytecode is then converted
+   into Fritz statements, using elements introduced in the message itself.  Not all
+   Java constructs are supported, don't get carried away here.
 
-    *.java: These files are compiled to bytecode, and that
-            bytecode is then converted into a form that
-            can be incorporated into the message.  Not all
-            Java constructs are supported - they are described
-            in terms of Fritz in the message.
+ * __*.pl__: These scripts are executed using perl, and their output is incorporated into
+   the message.  CosmicOS is so old that its original source is was written in perl, and
+   some of it is still lying around.  I can feel you judging me, please stop.
 
-    *.gate: These files are interpreted as a specification
-            for a kind of circuit.  You can find a simulator
-            on the CosmicOS website.  The circuit specifications
-            are converted into a form that can be incorporated
-            into the message.
+ * __*.gate__: These files are interpreted as a specification for a kind of circuit.
+   You can find a simulator on the CosmicOS website.  The circuit specifications
+   are converted into a form that can be incorporated into the message.  Rules for
+   evaluating a circuit are given in the message.
 
-To add a source file or reorder existing material, edit `src/README.cmake`.
+Fritz
+-----
+
+The core language of the message is a stripped-down Lisp called Fritz.  Here's an example statement:
+
+```
+= 42 (+ 20 22);
+```
+
+If you've coded in scheme or lisp, this should feel familiar, except we've stripped
+a pair of parentheses around the whole expression, and added a semicolon.  In general,
+Fritz takes every opportunity to reduce nesting, since it seems a cognitive burden.
+The above would typically be written as:
+
+```
+= 42 | + 20 22;
+```
+
+The `|` means: nest everything from here to the end of the current expression.
+
+We can define new symbols with `@ symbol value`, and create functions with `? symbol body`:
+```
+@ square | ? x | * (x) (x);
+= 100 | square 10;
+```
+
+Note the parentheses in `* (x) (x)`, which multiplies an argument stored in x by itself.
+To get the value of x, you evaluate it like an expression (this makes writing self-referential
+messages so much easier).  A shorthand for `(x)` is `$x`, so the above can be written as:
+```
+@ square | ? x | * $x $x;
+= 100 | square 10;
+```
+
+There's nothing special about symbols in Fritz, this code would work just as well
+with `square` and `x` replaced by arbitrary integers:
+```
+@ 9999 | ? 88 | * $88 $88;
+= 100 | 9999 10;
+```
+
+The message can be encoded in lots of ways.  Originally, CosmicOS was encoded
+in a four-symbol message, with symbols corresponding to:
+
+ * `0`: binary digit zero
+ * `1`: binary digit one
+ * `(`: open parenthesis
+ * `)`: close parenthesis
+
+Fritz messages can still be encoded this way by expanding out all references
+to `|` and `$`, ignoring `;`s, and replacing symbols with arbitrary integers.
+This does not seem very kind to the reader though, so other encodings are used
+today.  There is a lot of scope for imaginative renderings of the same message.
 
 Variant messages
 ----------------
