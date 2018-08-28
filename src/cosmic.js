@@ -4,6 +4,9 @@ function CosWrite() {
 }
 
 CosWrite.prototype.language = function(n) {
+  if (n !== 2) {
+    throw new Error("Only language version 2 is supported");
+  }
 }
 
 CosWrite.prototype.getPseudo = function() {

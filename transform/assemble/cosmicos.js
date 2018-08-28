@@ -8,6 +8,7 @@ var output = "";
 var vocab = "";
 var stop_phrase = "";
 var wrap = false;
+var comments = true;
 
 function needStanza() {
     if (stanza==-1) {
@@ -148,6 +149,7 @@ function showText(root,src) {
 	var parse = m["parse"];
 	if (!parse) {
 	    if (m["role"] == "comment") {
+                if (!comments) { continue; }
 		process.stdout.write("<pre>\n");
 		var lines = m["lines"];
 		for (var i=0; i<lines.length; i++) {
@@ -249,6 +251,9 @@ module.exports = function(root,src) {
 	if (argv[i]=="-w") {
 	    wrap = true;
 	}
+	if (argv[i]=="-nc") {
+	    comments = false;
+	}
     }
     if (last_stanza == -1) {
 	last_stanza = stanza;
@@ -295,7 +300,7 @@ module.exports = function(root,src) {
     console.log("  cosmsg show -p NNNN                  # show info about message part NNNN");
     console.log("  cosmsg hear -p NNNN -o audio.wav     # convert message part to audio");
     console.log("  cosmsg text -p NNNN -v vocab.json    # experimental text rendering of message part NNNN");
-    console.log("  cosmsg text -p NFIRST -P NLAST -s 'stop phrase' -v vocab.json -w");
+    console.log("  cosmsg text -p NFIRST -P NLAST -s 'stop phrase' -v vocab.json -w -nc");
     console.log("  cosmsg spider -p NFIRST -P NLAST -w  # spider font rendering of message");
 }
 
