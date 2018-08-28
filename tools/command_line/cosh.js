@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 var cosmicos = require('../lib/cosmicos').cosmicos;
-var cc = new cosmicos.Evaluate();
+var cc = new cosmicos.Evaluate(null,true);
 var cache = "";
 cc.applyOldOrder();
 cc.addStd();
