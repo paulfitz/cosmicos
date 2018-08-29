@@ -1,12 +1,12 @@
 CosmicOS: a next-generation Contact message
 ===========================================
 
-Sending the lambda calculus into deep space.  http://cosmicos.github.io/
+Communicating programs and simulations into deep space.  http://cosmicos.github.io/
 
 [![Build Status](https://travis-ci.org/paulfitz/cosmicos.svg?branch=master)](https://travis-ci.org/paulfitz/cosmicos)
 
-Long-distance relationships
-----------------------------
+Communication through theater
+-----------------------------
 
 It's a familiar problem. You've finally managed to contact that alien 
 civilization. Things are going great. You feel like your world will 
@@ -16,13 +16,26 @@ your relationship. You find that you don't really have all that much in
 common. Heck, sometimes it feels like you're not even in the same 
 galaxy. It's as if there is this vast gulf between you, making communication 
 almost impossible. You're not even sure you'd understand each other no matter 
-how physically close you become. What do you do?
+how physically close you became. What do you do?
 
 You design a language for cosmic intercourse. Hans Freudenthal made a start at 
-one in his book, Lincos, published in 1960. I think it's time for version II, 
-the all-new action-packed sequel guaranteed to have you on the edge of your 
-seat, which is a specific structure with a flat surface perpendicular to the 
-pull of gravity, which is a thing that, oh never mind.
+one in his book, Lincos, published in 1960.
+
+![Lincos](https://user-images.githubusercontent.com/118367/44816347-ff8f2d80-abaf-11e8-8066-4535e43f8b79.jpg)
+
+One of the most interesting ideas in Lincos is to bootstrap up from
+mathematics and logic to *conversations about* mathematics and logic
+between imaginary characters __Ha__ and __Hb__, and from there to
+statements about behavior of those characters.  That's a pretty rich universe
+of shared ideas already.
+
+In CosmicOS, we develop this idea of communicating through theater by
+introducting a new topic of conversation: programs and simulations.
+For example, if discussing logic circuits, we transmit a program for
+simulating the circuits, so the listener isn't restricted to the
+examples we show.  If discussing movement through space, we transmit a
+simulation of a small adventure game, and show navigation from room to
+room.  And so on.
 
 Putting on a show
 -----------------
@@ -32,11 +45,9 @@ Here's the idea behind CosmicOS:
  * Communicate the usual math and logic basics ...
  * ... then use that to show how to run programs ...
  * ... then send interesting programs that demonstrate behaviors and interactions ...
- * and start communicating ideas through "theater."
+ * and start communicating ideas through theater and theater commentary.
 
 This is inspired by Freudenthal's idea of staging written conversations between his imaginary characters __Ha__ and __Hb__.
-
-Of course we can also include any astrophysics or chemistry we'd like too - I haven't focused on that so far since other messages do it pretty well.
 
 What the message looks like
 ---------------------------
@@ -220,6 +231,12 @@ Code quality
 ------------
 
 Oh my goodness what can I say except <s>you're welcome</s> sorry.
+
+Chatter
+-------
+
+ * https://en.wikipedia.org/wiki/CosmicOS
+ * https://www.theatlantic.com/science/archive/2016/04/math-language-extraterrestrials/477051/
 
 License
 -------
