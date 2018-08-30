@@ -23,8 +23,8 @@ endif()
 ##
 
 set(WORK ${CMAKE_CURRENT_BINARY_DIR})
-set(SRC ${CMAKE_SOURCE_DIR}/transform)
-set(MSG ${CMAKE_SOURCE_DIR}/src)
+set(SRC ${CMAKE_SOURCE_DIR}/src)
+set(MSG ${CMAKE_SOURCE_DIR}/msg)
 
 add_custom_command(OUTPUT ${WORK}/CosmicAudio.js
   COMMAND ${HAXE} -js CosmicAudio.js -main cosmicos.Sound -cp ${SRC}
@@ -95,13 +95,13 @@ set_property(CACHE COSMIC_VARIANT PROPERTY STRINGS ${VARIANTS})
 # We expect to get these variables:
 #   COSMIC_DEPENDS that lists all parts
 #   COSMIC_USE_FLATTENER that controls whether '|' can be encoded
-include(${CMAKE_SOURCE_DIR}/src/BASE.cmake)
+include(${CMAKE_SOURCE_DIR}/msg/BASE.cmake)
 include(${CMAKE_SOURCE_DIR}/variant/${COSMIC_VARIANT}.cmake)
 
 get_target_property(UnlessDriverLoc UnlessDriver JAR_FILE)
 get_target_property(FritzifierLoc Fritzifier JAR_FILE)
 FILE(WRITE ${WORK}/setup.cmake "
-  set(base \"${CMAKE_SOURCE_DIR}/src\")
+  set(base \"${CMAKE_SOURCE_DIR}/msg\")
   set(out_dir \"${CMAKE_CURRENT_BINARY_DIR}\")
   set(JAVA_EXE \"${Java_JAVA_EXECUTABLE}\")
   set(JAVAC_EXE \"${Java_JAVAC_EXECUTABLE}\")
@@ -153,10 +153,10 @@ add_custom_command(OUTPUT ${WORK}/assem.txt
 # assem.json is a structured version of assem.txt, but still in original form
 add_custom_command(OUTPUT ${WORK}/assem.json
   COMMAND 
-    ${NODE} ${CMAKE_SOURCE_DIR}/transform/assemble/assemble2json.js ${WORK}/assem.txt
+    ${NODE} ${CMAKE_SOURCE_DIR}/src/assemble/assemble2json.js ${WORK}/assem.txt
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${WORK}/assem.txt
-  ${CMAKE_SOURCE_DIR}/transform/assemble/assemble2json.js)
+  ${CMAKE_SOURCE_DIR}/src/assemble/assemble2json.js)
 
 # primer.json is a numeric version of the message, for self-references.
 # Note that any lines relying on self-evaluation are inaccurate.
@@ -164,26 +164,26 @@ add_custom_command(OUTPUT ${WORK}/assem.json
 # circularity.  Ssh.
 add_custom_command(OUTPUT ${WORK}/primer.json
   COMMAND ${CMAKE_COMMAND} 
-  "-Din:STRING=${CMAKE_SOURCE_DIR}/transform/assemble/primer.js" 
+  "-Din:STRING=${CMAKE_SOURCE_DIR}/src/assemble/primer.js" 
   "-Dnargs:STRING=${WORK}/assem.json"
   "-Dlog:STRING=make-primer"
-  "-Dpath:STRING=${CMAKE_SOURCE_DIR}/transform/assemble"
+  "-Dpath:STRING=${CMAKE_SOURCE_DIR}/src/assemble"
   -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/node.cmake
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${WORK}/assem.json
   ${WORK}/CosmicEval.js
-  ${CMAKE_SOURCE_DIR}/transform/assemble/CosmicDrive.js
-  ${CMAKE_SOURCE_DIR}/transform/assemble/primer.js)
+  ${CMAKE_SOURCE_DIR}/src/assemble/CosmicDrive.js
+  ${CMAKE_SOURCE_DIR}/src/assemble/primer.js)
 add_custom_target(primer ALL DEPENDS ${WORK}/primer.json)
 
 # assem2.json is assem.json but marked up also with message fragments
 # in final form
 add_custom_command(OUTPUT ${WORK}/assem2.json ${CMAKE_BINARY_DIR}/index.txt ${CMAKE_BINARY_DIR}/index.json
   COMMAND ${CMAKE_COMMAND} 
-  "-Din:STRING=${CMAKE_SOURCE_DIR}/transform/assemble/evaluate.js" 
+  "-Din:STRING=${CMAKE_SOURCE_DIR}/src/assemble/evaluate.js" 
   "-Dnargs:STRING="
   "-Dlog:STRING=make-assem2" 
-  "-Dpath:STRING=${CMAKE_SOURCE_DIR}/transform/assemble"
+  "-Dpath:STRING=${CMAKE_SOURCE_DIR}/src/assemble"
   -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/node.cmake
   COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/assem2.json ${CMAKE_BINARY_DIR}/index.json
   COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/q.txt ${CMAKE_BINARY_DIR}/index.txt
@@ -191,8 +191,8 @@ add_custom_command(OUTPUT ${WORK}/assem2.json ${CMAKE_BINARY_DIR}/index.txt ${CM
   DEPENDS ${WORK}/assem.json
   ${WORK}/primer.json
   ${WORK}/CosmicEval.js
-  ${CMAKE_SOURCE_DIR}/transform/assemble/CosmicDrive.js
-  ${CMAKE_SOURCE_DIR}/transform/assemble/evaluate.js)
+  ${CMAKE_SOURCE_DIR}/src/assemble/CosmicDrive.js
+  ${CMAKE_SOURCE_DIR}/src/assemble/evaluate.js)
 
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/wrapped.txt ${CMAKE_BINARY_DIR}/entropy.txt
   COMMAND ${CMAKE_COMMAND} 
@@ -221,14 +221,14 @@ add_custom_target(assem ALL DEPENDS ${CMAKE_BINARY_DIR}/wrapped.txt)
 # scan the active vocabulary
 add_custom_command(OUTPUT ${WORK}/vocab.json
   COMMAND ${CMAKE_COMMAND} 
-  "-Din:STRING=${CMAKE_SOURCE_DIR}/transform/assemble/vocab.js" 
+  "-Din:STRING=${CMAKE_SOURCE_DIR}/src/assemble/vocab.js" 
   "-Dnargs:STRING=${WORK}/assem.json"
   "-Dlog:STRING=make-vocab"
   -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/node.cmake
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${WORK}/assem.json
   ${WORK}/CosmicEval.js
-  ${CMAKE_SOURCE_DIR}/transform/assemble/vocab.js)
+  ${CMAKE_SOURCE_DIR}/src/assemble/vocab.js)
 
 add_custom_target(vocab DEPENDS ${WORK}/vocab.json)
 
@@ -237,15 +237,15 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/assets/icons/spider)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/assets/fonts/spider)
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/assets/fonts/spider/cosmic_spider.ttf
   COMMAND ${CMAKE_COMMAND} 
-  "-Din:STRING=${CMAKE_SOURCE_DIR}/transform/font/generate_glyphs.js" 
+  "-Din:STRING=${CMAKE_SOURCE_DIR}/src/font/generate_glyphs.js" 
   "-Dnargs:STRING=${CMAKE_BINARY_DIR}/assets"
   "-Dlog:STRING=spider"
   -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/node.cmake
   WORKING_DIRECTORY ${WORK}
   DEPENDS
   ${WORK}/SpiderScrawl.js
-  ${CMAKE_SOURCE_DIR}/transform/font/glyphs_to_svg.sh
-  ${CMAKE_SOURCE_DIR}/transform/font/generate_glyphs.js)
+  ${CMAKE_SOURCE_DIR}/src/font/glyphs_to_svg.sh
+  ${CMAKE_SOURCE_DIR}/src/font/generate_glyphs.js)
 
 add_custom_target(spider DEPENDS ${CMAKE_BINARY_DIR}/assets/fonts/spider/cosmic_spider.ttf)
 

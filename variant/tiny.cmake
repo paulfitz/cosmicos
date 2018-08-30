@@ -1,5 +1,5 @@
 # A tiny message, just as an example.
-# Message is built from src/COS_Intro.* and src/COS_Compare.*.
+# Message is built from msg/COS_Intro.* and msg/COS_Compare.*.
 
 set(COSMIC_DEPENDS
   COS_Intro

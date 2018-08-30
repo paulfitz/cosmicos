@@ -23,7 +23,7 @@ function needOutput() {
 }
 
 function showSpider(root,src) {
-    var cos = require(root + "/transform/SpiderScrawl").cosmicos;
+    var cos = require(root + "/src/SpiderScrawl").cosmicos;
     var ss = new cos.SpiderScrawl(null,0,0);
     var path = root + "/assets/fonts/spider/";
     if (wrap) {
@@ -112,7 +112,7 @@ function showText(root,src) {
   <body>\
 ");
     }
-    var ev = require(root + "/transform/CosmicEval.js").cosmicos;
+    var ev = require(root + "/src/CosmicEval.js").cosmicos;
     var render = new ev.ManuscriptStyle();
     var letters_src = {};
     if (vocab) {
@@ -277,7 +277,7 @@ module.exports = function(root,src) {
 	return 0;
     }
     if (cmd == 'hear') {
-	var cos = require(root + "/transform/CosmicAudio.js").cosmicos;
+	var cos = require(root + "/src/CosmicAudio.js").cosmicos;
 	var snd = new cos.Sound();
 	needStanza();
 	needOutput();

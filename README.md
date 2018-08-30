@@ -214,7 +214,7 @@ set(COSMIC_DEPENDS
   COS_Compare)
 ```
 
-This means to build the message by concatenating `src/COS_Intro.*` and `src/COS_Compare.*`.
+This means to build the message by concatenating `msg/COS_Intro.*` and `msg/COS_Compare.*`.
 You can make your own file, `mine.cmake`, and then build it using:
 
 ```

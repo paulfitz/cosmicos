@@ -1,5 +1,5 @@
 set(WORK ${CMAKE_CURRENT_BINARY_DIR})
-set(SRC1 ${CMAKE_SOURCE_DIR}/transform)
+set(SRC1 ${CMAKE_SOURCE_DIR}/src)
 set(SRC2 ${CMAKE_SOURCE_DIR}/tests)
 
 add_custom_command(OUTPUT ${WORK}/test.js
@@ -13,7 +13,7 @@ add_custom_command(OUTPUT ${WORK}/test.js
     ${SRC2}/ParseTest.hx
     ${SRC2}/TranslateTest.hx
     ${SRC2}/UnflattenTest.hx
-    ${CMAKE_BINARY_DIR}/transform/CosmicEval.js)
+    ${CMAKE_BINARY_DIR}/src/CosmicEval.js)
 
 foreach(test ParseTest NormalizeTest UnflattenTest TranslateTest FourSymbolTest EvaluateTest)
   add_test(NAME ${test} COMMAND ${NODE} ${WORK}/test.js ${test})
