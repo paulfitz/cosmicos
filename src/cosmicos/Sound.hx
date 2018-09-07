@@ -7,6 +7,7 @@ import haxe.io.Bytes;
 
 @:expose
 class Sound {
+    public var units : Int = 0;
     public var txt : StringBuf;
 
     private function show(x: Int, n: Int) {
@@ -33,15 +34,17 @@ class Sound {
         show(sample_len,4);
     }
 
-    private function render(text : String) {
+    private function render(text : String, header : Bool) {
         var unit_len : Int = 4000;
         var char_len : Int = text.length;
-        var sample_len : Int = unit_len*char_len;
         var variation : Float = 0.5;
         var qraise : Float = Math.sqrt(Math.sqrt(2));
         var qminor : Float = 2;
         var base : Float = 2;
-        show_header(sample_len);
+        if (header) {
+            var sample_len : Int = unit_len*((units > char_len) ? units : char_len);
+            show_header(sample_len);
+        }
 
         var v : Float = 0;
         var n_prev : Float = 0;
@@ -108,14 +111,30 @@ class Sound {
             txt.addChar(10);
             txt.addChar(10);
         }
-        render(text);
+        render(text, true);
         var result : String = txt.toString();
         return result;
     }
 
+    // if addText is used, make sure to do a practice pass
+    public function addText(text: String) {
+        render(text, false);
+    }
+
+    public function practiceText(text: String) {
+        units += text.length;
+    }
+
+    public function drainWav() {
+        var result : String = txt.toString();
+        txt = new StringBuf();
+        return result;
+    }
+
+
     public function textToWavUrl(text: String) {
         txt = new StringBuf();
-        render(text);
+        render(text, true);
         var enc = new BaseCode(Bytes.ofString("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"));
         var str = txt.toString();
         var b = haxe.io.Bytes.alloc(str.length);

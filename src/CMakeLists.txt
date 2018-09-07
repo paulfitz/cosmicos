@@ -265,7 +265,7 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/bin/cosh.js
   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/command_line/cosh.js ${CMAKE_BINARY_DIR}/bin/cosh.js
   ${PERM_CMD}
   WORKING_DIRECTORY ${WORK}
-  DEPENDS ${WORK}/CosmicEval.js
+  DEPENDS ${WORK}/CosmicEval.js ${WORK}/CosmicAudio.js
   ${CMAKE_SOURCE_DIR}/tools/command_line/cosh.js)
 add_custom_target(cli ALL DEPENDS ${CMAKE_BINARY_DIR}/bin/cosh.js)
 
@@ -276,3 +276,19 @@ add_custom_target(cli ALL DEPENDS ${CMAKE_BINARY_DIR}/bin/cosh.js)
 ##
 
 configure_file(${CMAKE_SOURCE_DIR}/tools/command_line/cosmsg.js ${CMAKE_BINARY_DIR}/bin/cosmsg.js @ONLY)
+
+##############################################################################
+##
+## Convert message to a .wav
+##
+
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/index.wav
+  COMMAND ${CMAKE_BINARY_DIR}/bin/cosmsg.js hear -p 0 -P -2 -v ${COSMIC_VOCAB} -nc
+    -o ${CMAKE_BINARY_DIR}/index.wav > ${CMAKE_BINARY_DIR}/src/wav.txt
+  WORKING_DIRECTORY ${WORK}
+  DEPENDS
+  ${CMAKE_BINARY_DIR}/index.json
+  ${WORK}/CosmicAudio.js
+  ${CMAKE_SOURCE_DIR}/src/assemble/cosmicos.js)
+
+add_custom_target(wav DEPENDS ${CMAKE_BINARY_DIR}/index.wav)

@@ -236,6 +236,9 @@ module.exports = function(root,src) {
 	}
 	if (argv[i-1]=="-P") {
 	    last_stanza = parseInt(argv[i]);
+            if (last_stanza === -2 && msg.length > 0) {
+              last_stanza = msg[msg.length - 1].stanza;
+            }
 	}
 	if (argv[i-1]=="-o") {
 	    output = argv[i];
@@ -277,22 +280,25 @@ module.exports = function(root,src) {
 	return 0;
     }
     if (cmd == 'hear') {
+        var stream = fs.createWriteStream(output, {encoding: 'binary'});
 	var cos = require(root + "/src/CosmicAudio.js").cosmicos;
 	var snd = new cos.Sound();
 	needStanza();
 	needOutput();
-        var code = "";
+	snd.textToWav("",false);
+        stream.write(snd.drainWav());
         for (var s=stanza; s<=last_stanza; s++) {
+          if (!msg[s]) break;
 	  var c = msg[s].code;
 	  if (!c) {
             console.log("Skip stanza", s);
             continue;
           }
           console.log("Stanza", s);
-          code += c;
+          snd.addText(c);
+          stream.write(snd.drainWav());
         }
-	var txt = snd.textToWav(code,false);
-	fs.writeFileSync(output,txt,"binary");
+        stream.end();
 	console.log("Wrote to " + output);
 	return 0;
     }
