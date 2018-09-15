@@ -89,7 +89,7 @@ foreach(variant_file ${variant_files})
   get_filename_component(variant ${variant_file} NAME_WE)
   list(APPEND VARIANTS ${variant})
 endforeach()
-set(COSMIC_VARIANT "default" CACHE STRING "Version of message to build (${VARIANTS})")
+set(COSMIC_VARIANT "standard" CACHE STRING "Version of message to build (${VARIANTS})")
 set(COSMIC_LINES "0" CACHE INT "Number of lines to process (0 for unlimited)")
 set_property(CACHE COSMIC_VARIANT PROPERTY STRINGS ${VARIANTS})
 
