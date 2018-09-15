@@ -2,7 +2,7 @@
 
 set -e
 
-which docker || {
+hash docker 2>/dev/null || {
     echo "Docker not found.  Please install."
     exit 1
 }
@@ -22,4 +22,10 @@ if [[ -n "$UID" && -n "$USER" ]]; then
     args="-u=$UID:$(id -g $USER)"
 fi
 
-docker run -it --rm $args -v $PWD:/cosmicos paulfitz/cosmicos_builder tools/make_without_docker.sh "$@"
+# start a container in the background, just to make builds more responsive
+docker ps -f name=cosmicos_build | grep -q cosmicos || {
+  docker run -dit --rm $args --name cosmicos_build -v $PWD:/cosmicos paulfitz/cosmicos_builder /bin/bash
+}
+
+# run our actual build command, finally
+docker exec cosmicos_build tools/make_without_docker.sh "$@"

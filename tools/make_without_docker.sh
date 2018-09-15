@@ -2,12 +2,12 @@
 
 set -e
 
-which cmake || {
+hash cmake 2>/dev/null || {
     echo "CMake not found.  Please install."
     exit 1
 }
 
-which make || {
+hash make 2>/dev/null || {
     echo "make not found.  Please install."
     exit 1
 }
