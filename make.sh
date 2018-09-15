@@ -28,4 +28,4 @@ docker ps -f name=cosmicos_build | grep -q cosmicos || {
 }
 
 # run our actual build command, finally
-docker exec cosmicos_build tools/make_without_docker.sh "$@"
+docker exec -e VERBOSE=$VERBOSE cosmicos_build tools/make_without_docker.sh "$@"

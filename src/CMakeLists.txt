@@ -115,7 +115,7 @@ set(ACTIVE_DEPENDS)
 set(ACTIVE_DEPENDS_SHORT "")
 set(EXTRA_DEPEND_pl ${MSG}/cosmic.pm)
 set(EXTRA_DEPEND_js ${MSG}/cosmic.js)
-set(EXTRA_DEPEND_gate ${CMAKE_SOURCE_DIR}/bin/drawgate-ppm.pl ${CMAKE_SOURCE_DIR}/bin/drawgate-txt.pl UnlessDriver)
+set(EXTRA_DEPEND_gate ${CMAKE_SOURCE_DIR}/src/filter/drawgate-ppm.pl ${CMAKE_SOURCE_DIR}/src/filter/drawgate-txt.pl UnlessDriver)
 set(EXTRA_DEPEND_java Fritzifier)
 foreach(depend ${COSMIC_DEPENDS})
   foreach(ext pl scm gate java js)
@@ -206,7 +206,7 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/wrapped.txt ${CMAKE_BINARY_DIR}/en
   -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/wc.cmake
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${CMAKE_BINARY_DIR}/index.txt
-  ${CMAKE_SOURCE_DIR}/bin/wrap.pl
+  ${CMAKE_SOURCE_DIR}/src/filter/wrap.pl
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/wrap.cmake
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/wc.cmake)
 
@@ -262,11 +262,11 @@ if (UNIX)
 endif()
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/bin/cosh.js
   COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/CosmicEval.js ${CMAKE_BINARY_DIR}/lib/cosmicos.js
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/tools/command_line/cosh.js ${CMAKE_BINARY_DIR}/bin/cosh.js
+  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/cmd/cosh.js ${CMAKE_BINARY_DIR}/bin/cosh.js
   ${PERM_CMD}
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${WORK}/CosmicEval.js ${WORK}/CosmicAudio.js
-  ${CMAKE_SOURCE_DIR}/tools/command_line/cosh.js)
+  ${CMAKE_SOURCE_DIR}/src/cmd/cosh.js)
 add_custom_target(cli ALL DEPENDS ${CMAKE_BINARY_DIR}/bin/cosh.js)
 
 
@@ -275,7 +275,7 @@ add_custom_target(cli ALL DEPENDS ${CMAKE_BINARY_DIR}/bin/cosh.js)
 ## Add a little utility for scanning message called cosmsg
 ##
 
-configure_file(${CMAKE_SOURCE_DIR}/tools/command_line/cosmsg.js ${CMAKE_BINARY_DIR}/bin/cosmsg.js @ONLY)
+configure_file(${CMAKE_SOURCE_DIR}/src/cmd/cosmsg.js ${CMAKE_BINARY_DIR}/bin/cosmsg.js @ONLY)
 
 ##############################################################################
 ##
@@ -287,6 +287,7 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/index.wav
     -o ${CMAKE_BINARY_DIR}/index.wav > ${CMAKE_BINARY_DIR}/src/wav.txt
   WORKING_DIRECTORY ${WORK}
   DEPENDS
+  ${COSMIC_VOCAB}
   ${CMAKE_BINARY_DIR}/index.json
   ${WORK}/CosmicAudio.js
   ${CMAKE_SOURCE_DIR}/src/assemble/cosmicos.js)
