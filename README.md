@@ -30,7 +30,7 @@ statements about behavior of those characters.  That's a pretty rich universe
 of shared ideas already.
 
 In CosmicOS, we develop this idea of communicating through theater by
-introducting a new topic of conversation: programs and simulations.
+introducing a new topic of conversation: programs and simulations.
 For example, if discussing logic circuits, we transmit a program for
 simulating the circuits, so the listener isn't restricted to the
 examples we show.  If discussing movement through space, we transmit a
@@ -122,7 +122,7 @@ if you want other forms of the message.  Do `./make.sh help` to list all targets
 Message source code
 -------------------
 
-The CosmicOS message is assempled from a series of "chapters".  Each
+The CosmicOS message is assembled from a series of "chapters".  Each
 chapter is written in one of several languages, which are then
 compiled into a common language called `Fritz`.  This is a low-level
 language that is suitable for further conversion into a number of
