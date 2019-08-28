@@ -5,7 +5,7 @@ addons:
     packages:
     - cmake
     - libbcel-java
-    - openjdk-6-jdk
+    - openjdk-8-jdk
     - libgd-gd2-perl
     - nodejs
 script: 
