@@ -114,7 +114,7 @@ node ./build/tiny/bin/cosh.js
 ```
 
 If you don't want to use docker, you can see all the steps needed in `docker/Dockerfile`
-and `tools/make_without_docker.sh`.
+and `src/make_without_docker.sh`.
 
 By default, `./make.sh` will compile the message in json form.  There are specific targets
 if you want other forms of the message.  Do `./make.sh help` to list all targets.
