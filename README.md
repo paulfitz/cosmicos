@@ -85,7 +85,7 @@ Vaguely understandable symbols?
 
 Logic gates?
 
-![A D gate](https://user-images.githubusercontent.com/118367/44753787-4ff18700-aaed-11e8-8728-652006a3c447.gif)
+![A D latch](https://user-images.githubusercontent.com/118367/64082227-b9e0d580-ccd9-11e9-89db-dee9920a771f.gif)
 
 Audio?  You can listen to one rendering of the message at https://cosmicos.github.io/
 

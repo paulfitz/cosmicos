@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["es2015"]
+  },
+  "include": [
+    "src/gate/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

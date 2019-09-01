@@ -18,12 +18,22 @@
   },
   "author": {
     "name": "Paul Fitzpatrick",
-    "email": "paul@robotrebuilt.com",
-    "url": "http://paulfitz.github.io/"
+    "email": "paulfitz@alum.mit.edu",
+    "url": "https://paulfitz.github.io/"
+  },
+  "dependencies": {
+    "canvas": "^2.6.0",
+    "fs-extra": "^8.1.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^8.0.0",
+    "@types/node": "10.12.2",
+    "ts-node": "^8.3.0",
+    "typescript": "3.4.5"
   },
   "scripts": {
-    "prepublish": "mkdir -p build && mkdir -p lib && mkdir -p bin && cd build && cmake .. && make cli && cp lib/cosmicos.js ../lib && cp bin/cosmicos.js ../bin",
-    "test": "cd build && make"
+    "old-prepublish": "mkdir -p build && mkdir -p lib && mkdir -p bin && cd build && cmake .. && make cli && cp lib/cosmicos.js ../lib && cp bin/cosmicos.js ../bin",
+    "old-test": "cd build && make"
   },
   "main": "lib/cosmicos.js",
   "license": "GPL",
