@@ -6,8 +6,32 @@ var expecting = /:/;
 var role = "";
 var role_flush = "";
 var coding = false;
+var markdown = false;
 
 function emit(txt) {
+    // deal with markdown
+    if (txt.indexOf('[[[') === 0) {
+        markdown = true;
+        all.push({
+	  "role": role,
+	  "lines": cache
+        });
+        cache = [];
+        return;
+    }
+    if (txt.indexOf(']]]') === 0) {
+        markdown = false;
+        all.push({
+	  "role": "doc",
+	  "lines": cache
+        });
+        cache = [];
+        return;
+    }
+    if (markdown) {
+      cache.push(txt);
+      return;
+    }
     var need_flush = false;
     var blank = (!(/[^ \t]/.test(txt)));
     if (coding) blank = false;
@@ -27,8 +51,11 @@ function emit(txt) {
 	    role = "code";
 	}
 	if (ch=='#') { 
-	    expecting = /\#/;
-	    role = "comment";
+	  expecting = /\#/;
+	  role = "comment";
+        } else if (ch === '~') {
+	  expecting = /~/;
+	  role = "doc";
 	} else if (ch=='>' && txt.length>=3 && txt.charAt(1)=='>' && txt.charAt(2)=='>') {
 	    expecting = /[>0-9]/;
 	    role = "gate";
@@ -62,6 +89,17 @@ function emit(txt) {
 		    }
 		}
 	    }
+          if (role_flush === 'doc') {
+            if (cache.length >= 1) {
+              if (cache[0].indexOf('~ ') === 0) {
+                // markdown comment
+                role_flush = "doc";
+                for (var i=0; i<cache.length; i++) {
+                  cache[i] = cache[i].slice(2);
+                }
+              }
+            }
+          }
 	    all.push({
 		"role": role_flush,
 		"lines": cache

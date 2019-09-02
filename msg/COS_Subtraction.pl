@@ -5,7 +5,6 @@ use cosmic;
 
 sub ShowSubtractionLesson {
   my $txt = "";
-  $txt .= "# MATH introduce subtraction\n";
   $txt .= ShowLine(Op("intro","-"));
   for (my $i=0; $i<10; $i++)
     {

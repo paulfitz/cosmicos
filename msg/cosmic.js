@@ -109,6 +109,13 @@ CosWrite.prototype.section = function(txt,tag) {
     console.log("# " + tag + " " + txt);
 }
 
+CosWrite.prototype.doc = function(txt) {
+  var lines = txt.split('\n');
+  for (var i=0; i<lines.length; i++) {
+    console.log('~ ' + lines[i]);
+  }
+}
+
 CosWrite.prototype.comment = function(txt) {
     var len = 74;
     while (txt!="") {

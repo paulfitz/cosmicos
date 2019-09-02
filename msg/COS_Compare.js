@@ -4,8 +4,6 @@ var cos = require("./cosmic");
 cos.language(2);
 cos.seed(42);
 
-cos.section("introduce equality for unary numbers","MATH");
-cos.comment("The intro operator does nothing essential, and could be omitted - it just tags the first use of a new operator. The = operator is introduced alongside a duplication of unary numbers.  The meaning will not quite by nailed down until we see other relational operators.");
 cos.add(["intro","="]);
 
 var examples = [1, 2, 3, 4, 5, 6, 7, 8, 1, 6, 2];
@@ -15,8 +13,12 @@ for (var i=0; i<examples.length; i++) {
     cos.add("= " + cos.unary(r) + " " + cos.unary(r));
 }
 
-cos.section("now introduce other relational operators","MATH");
-cos.comment("After this lesson, it should be clear what contexts < > and = are appropriate in.");
+cos.doc("Now introduce symbols for 'greater than' and 'less than,' and contrast with equality.");
+cos.doc("Hopefully the listener will start to understand what part of the sentences are numbers, " +
+        "what part is a function of the relationship between the numbers, " +
+        "and what parts are just meaningless (for now) scaffolding around all that.");
+cos.doc("There's an ambiguity between the 'greater than' and 'less than' symbols, depending " +
+        "on how you interpret the sentences, but it doesn't matter yet.");
 
 cos.add(["intro",">"]);
 cos.add(["intro","<"]);
@@ -38,7 +40,7 @@ for (var i=1; i<=4; i++) {
     }
 }
 
-cos.comment("Some random examples");
+cos.doc("Add some random examples.");
 
 prev = {};
 for (var i=0; i<=10; i++) {
@@ -70,14 +72,17 @@ for (var i=0; i<=10; i++) {
     }
 }
 
-cos.comment("A few more random examples");
+cos.doc("Even more random examples.  We shouldn't be shy about piling on examples " +
+        "at this early stage of the message.  Even just the repetition of the sentence " +
+        "structure with many small variations could help guide the listener at a more " +
+        "fundamental level than what we're ostensibly trying to communicate here.");
 
 prev = "";
-for (var i=0; i<=10; i++) {
+for (var i=0; i<=20; i++) {
     var done = false;
     while (!done) {
-	var r = cos.irand(6);
-	var r2 = cos.irand(6);
+	var r = cos.irand(5);
+	var r2 = cos.irand(5);
 	var idx = r*100+r2;
 	if (!prev[idx]) {
 	    var cmp = "=";

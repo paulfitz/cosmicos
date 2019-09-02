@@ -240,6 +240,7 @@ Chatter
 
  * https://en.wikipedia.org/wiki/CosmicOS
  * https://www.theatlantic.com/science/archive/2016/04/math-language-extraterrestrials/477051/
+ * https://www.vice.com/en_asia/article/53gvvq/2017-will-be-the-year-we-decide-whether-to-put-a-call-out-to-aliens
 
 License
 -------

@@ -343,6 +343,10 @@ sub ShowLine {
   return ShowTerm(@_) . ";\n";
 };
 
+sub ShowDoc {
+  return "~ " . ShowTerm(@_) . "\n";
+};
+
 
 sub Op1 {
   if (!($#_==1)) { die "broken Op1 " . join(" ", @_) . "\n"; }

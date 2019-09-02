@@ -5,7 +5,6 @@ use cosmic;
 
 sub ShowMultiplicationLesson {
   my $txt = "";
-  $txt .= "# MATH introduce multiplication\n";
   $txt .= ShowLine(Op("intro","*"));
   for (my $i=0; $i<=3; $i++)
     {

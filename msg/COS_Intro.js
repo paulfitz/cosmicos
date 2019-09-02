@@ -4,8 +4,6 @@ var cos = require("./cosmic");
 
 cos.language(2);
 
-cos.section("introduce numbers (in unary notation)","MATH")
-cos.comment("Here we count up from zero, go through some primes, etc. There is some syntax around the numbers, but that doesn't need to be understood at this point. We give numbers in a tweaked unary format, rather than the encoding used in the main body of the message.");
 cos.add("intro unary");
 cos.add("intro is:int");
 for (var i=0; i<16; i++) {

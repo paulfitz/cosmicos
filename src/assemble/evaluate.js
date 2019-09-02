@@ -50,13 +50,14 @@ var ct = 0;
 for (var i=0; i<all.length; i++) {
     var splitter = /^# ([A-Z][A-Z]+) (.*)/;
     var part = all[i];
-    if (part.role != "comment") continue;
+    if (part.role !== "comment" && part.role !== "doc") continue;
     if (part.lines.length==0) continue;
     var match = splitter.exec(part.lines[0]);
     if (match == null) continue;
     part["section_description"] = match[2];
     part["section_category"] = match[1];
     part["section_index"] = ct;
+    part["lines"] = part["lines"].slice(1);
     ct++;
 }
 

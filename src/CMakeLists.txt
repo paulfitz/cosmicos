@@ -119,19 +119,25 @@ set(EXTRA_DEPEND_js ${MSG}/cosmic.js)
 set(EXTRA_DEPEND_gate ${CMAKE_SOURCE_DIR}/src/filter/drawgate-ppm.pl ${CMAKE_SOURCE_DIR}/src/filter/drawgate-txt.pl UnlessDriver)
 set(EXTRA_DEPEND_java Fritzifier)
 foreach(depend ${COSMIC_DEPENDS})
-  foreach(ext pl scm gate java js)
+  foreach(ext md pl scm gate java js)
     if(EXISTS ${MSG}/${depend}.${ext})
-      add_custom_command(OUTPUT ${WORK}/${depend}.ftz
+      set(POSTFIX "")
+      if (${ext} STREQUAL "md")
+        set(POSTFIX "_md")
+      endif()
+      add_custom_command(OUTPUT ${WORK}/${depend}${POSTFIX}.ftz
 	COMMAND ${CMAKE_COMMAND} 
 	"-Din:STRING=${depend}.${ext}" 
-	"-Dout:STRING=${depend}.ftz"
+	"-Dout:STRING=${depend}${POSTFIX}.ftz"
 	"-Dname:STRING=${depend}"
 	-P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/convert_${ext}.cmake
 	WORKING_DIRECTORY ${WORK}
 	DEPENDS ${MSG}/${depend}.${ext} ${EXTRA_DEPEND_${ext}}
 	${CMAKE_CURRENT_SOURCE_DIR}/cmake/convert_${ext}.cmake)
-      list(APPEND ACTIVE_DEPENDS ${WORK}/${depend}.ftz)
-      set(ACTIVE_DEPENDS_SHORT "${ACTIVE_DEPENDS_SHORT} ${depend}")
+      list(APPEND ACTIVE_DEPENDS ${WORK}/${depend}${POSTFIX}.ftz)
+      if (NOT ${ext} STREQUAL "md")
+        set(ACTIVE_DEPENDS_SHORT "${ACTIVE_DEPENDS_SHORT} ${depend}")
+      endif()
     endif()
   endforeach()
 endforeach()

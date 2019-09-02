@@ -3,9 +3,6 @@ var cos = require("./cosmic");
 cos.language(2);
 cos.seed(42);
 
-cos.section("introduce non-unary representation of numbers","MATH");
-cos.comment("Switch from unary numbers to another representation. The representation of numbers is now medium-specific (it used to be specified as binary), and can be fiddled with without affecting the rest of the message.");
-
 var lst = [];
 for (var i=0; i<16; i++) {
     cos.add(["=",i,cos.unary(i)]);
