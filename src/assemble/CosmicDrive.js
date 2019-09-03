@@ -91,7 +91,7 @@ CosmicDrive.prototype.complete_stanza = function(stanza, can_run) {
 
     console.log("====================================================");
 
-    var statement = this.complete_stanza_core(op, part, can_run);
+    var statement = this.complete_stanza_core(null, part, can_run);
     var v = statement.content[0];
 
     if (op.indexOf("demo ")==0) {
@@ -100,9 +100,10 @@ CosmicDrive.prototype.complete_stanza = function(stanza, can_run) {
         unparse.decode(backtrack);
         preprocess.decode(backtrack);
 	var r = backtrack.content[0];
-	op = "equal " + r + " " + op.substr(5,op.length);
-	part["lines_original"] = part["lines"];
-        this.complete_stanza_core(op,part,false);  // have to skip because of a demo of operation with side-effects
+        op = "equal " + r + " " + op.substr(5,op.length);
+        part["lines_original"] = part["lines"];
+        part["lines"] = [op];
+        this.complete_stanza_core(op,part,false);
 	v = 1;
     }
 
@@ -111,7 +112,7 @@ CosmicDrive.prototype.complete_stanza = function(stanza, can_run) {
 
 CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
     var part = stanza;
-    var op = part.lines.join("\n");
+    var op = op || part.lines.join("\n");
     console.log("Working on {" + op + "}");
     var statement = new this.cosmicos.Statement(op);
 
