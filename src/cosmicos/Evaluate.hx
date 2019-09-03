@@ -225,7 +225,7 @@ class Evaluate {
     public function applyOldOrder() {
         if (mem == null) mem = new Memory(null);
         vocab.clear();
-        vocab.check("intro",0);
+        vocab.check("false",0);
         vocab.check("true",1);
         vocab.check("<",2);
         explain("<", "is one integer less than another", "< 41 42");
@@ -243,7 +243,7 @@ class Evaluate {
         vocab.check("+",10);
         explain("+", "add two integers", "+ 22 20");
         vocab.check("-",11);
-        explain("+", "subtract one integer from another", "- 44 2");
+        explain("-", "subtract one integer from another", "- 44 2");
 
         id_lambda = vocab.check("?",12);
         explain("?", "create an anonymous function", "? x | - $x 1");
@@ -254,8 +254,8 @@ class Evaluate {
         id_if = vocab.check("if",15);
         explain("if", "conditional evaluation", "if (> $x 1) (dec $x) $x");
         vocab.check("vector",16);
-        vocab.check("unused1",17);
-        vocab.check("unused2",18);
+        vocab.check("unused",17);
+        vocab.check("intro",18);
         vocab.check("forall",19);
         vocab.check("exists",20);
         vocab.check("cons",21);

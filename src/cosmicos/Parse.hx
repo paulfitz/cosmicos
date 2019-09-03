@@ -6,7 +6,6 @@ package cosmicos;
 class Parse {
 
     public static function removePipes(x: String, bracketlevel: Int) : String {
-    //trace(x);
 
         var res : String = "";
 
@@ -72,14 +71,6 @@ class Parse {
 
             res += appendstr;
 
-            /*trace("ch: " + ch +
-            " oldch: " + oldch +
-            " lev: " + level +
-            " delta " + delta_level +
-            " sub " + substring +
-            " bracketlevel: " + bracketlevel +
-            " append \'" + appendstr + "\'");*/
-
             oldch = ch; // for removing spaces directly after | or /
         }
 
@@ -126,7 +117,6 @@ class Parse {
                 }
                 else
                     res += ch; // if non dollar string is found just copy old string
-        //trace("ch: " + ch + " i " + i + "  founddollar " + founddollar + " ds " + dollarstring + " len " + x.length);
         }
         return res;
     }
@@ -152,7 +142,6 @@ class Parse {
         }
         if (level!=0) return null;
         var result = stringToListCore(x,vocab);
-        //trace(""+result);
         return result;
     }
 
@@ -319,6 +308,10 @@ class Parse {
         var first : Int = 0;
         if (e.length>0) {
             if (e[0] == -1) {
+                txt += "123";
+                need_paren = false;
+                first++;
+            } else if (e[0] == -2) {
                 txt += "023";
                 need_paren = false;
                 first++;

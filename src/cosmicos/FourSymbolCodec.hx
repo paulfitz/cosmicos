@@ -63,12 +63,16 @@ class FourSymbolCodec implements Codec {
                 }
             }
         }
-        var r = ~/[.][|]/g;
+        var r = ~/:[|]/g;
         out = r.replace(out, "|");
+        r = ~/[.][|]/g;
+        out = r.replace(out, "$");
         r = ~/\(\]/g;
         out = r.replace(out, " ");
         r = ~/\[\)/g;
         out = r.replace(out, " ");
+        r = ~/\$ +/g;
+        out = r.replace(out, "$");
         var codec = new cosmicos.ChainCodec([
                                              new cosmicos.ParseCodec(vocab),
                                              new cosmicos.NormalizeCodec(vocab)

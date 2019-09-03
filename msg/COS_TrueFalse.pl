@@ -5,9 +5,6 @@ use cosmic;
 
 sub ShowTrueFalseLesson {
   my $txt = "";
-  $txt .= "# MATH use equality for truth values\n";
-
-  $txt .= "# Not quite committing to a *type* for truth values in the message, side-stepping that issue until we really need to decide it.\n";
   $txt .= ShowLine(Op("define","true",Op2("=",0,0)));
   $txt .= ShowLine(Op("define","false",Op2("=",0,1)));
   for (my $i=0; $i<5; $i++)
@@ -53,8 +50,6 @@ sub ShowTrueFalseLesson {
 			       ShowTrueComparisonBin(),
 			       ShowFalseComparisonBin())));
     }
-#  $txt .= ShowLine(Op("intro","true"));
-#  $txt .= ShowLine(Op("intro","false"));
 
   return $txt;
 };

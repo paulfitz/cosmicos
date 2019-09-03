@@ -14,10 +14,20 @@ class FourSymbolTest extends haxe.unit.TestCase {
                                              new cosmicos.NormalizeCodec(vocab),
                                              new cosmicos.FourSymbolCodec(vocab),
                                              ]);
-        var statement = new cosmicos.Statement("+ 1 | * 2 3;");
-        codec.encode(statement);
-        codec.decode(statement);
-        var result = eval.evaluateLine(statement.content[0]);
-        assertEquals(7, result);
+        var tests: Array<Array<Dynamic>> = [
+                                            ["+ 1 | * 2 3;", 7],
+                                            ["assign x 2 | + 2 | * (x) 3;", 8],
+                                            ["assign x 2 | + 3 | * $x 3;", 9],
+                                            ];
+
+        for (item in tests) {
+            var input = item[0];
+            var output = item[1];
+            var statement = new cosmicos.Statement(input);
+            codec.encode(statement);
+            codec.decode(statement);
+            var result = eval.evaluateLine(statement.content[0]);
+            assertEquals(output, result);
+        }
     }
 }
