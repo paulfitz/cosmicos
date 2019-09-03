@@ -2,8 +2,6 @@ var cos = require("./cosmic");
 cos.language(2);
 cos.seed(42);
 
-cos.section("show some syntax variants","MATH");
-
 cos.add(["=", 6, 6]);
 cos.add(["=", 6, ["+", 1, 5]]);
 cos.add(["=", 6, [-1, "+", 1, 5]]);
@@ -16,6 +14,13 @@ cos.add(["=", ["+", 3, [-1, "-", 5, 2]], ["+", 1, 5]]);
 cos.add(["=", ["+", 3, [-1, "-", 5, 2]], [-1, "+", 1, 5]]);
 
 cos.section("show local assignment","MATH");
+
+cos.doc("An expression starting with `assign` is a way to name values for use " +
+        "within that expression. " +
+        "To use the assigned value, simply place its name at the beginning " +
+        "of an expression.  For example, a value assigned to `x` can be used by " +
+        "writing `(x)`. " +
+        "The name is entirely arbitrary, and can be just an integer.");
 
 cos.add("assign x 1 | = (x) 1");
 cos.add("assign x 2 | = (x) 2");
@@ -37,21 +42,27 @@ cos.add("assign x 1 | assign y 2 | = 3 (+ (x) (y))");
 cos.add("assign x 2 | assign y 7 | = 5 (- (y) (x))");
 cos.add("assign x (+) | assign y 3 | = 4 (x 1 (y))");
 
-cos.comment("Scoping and other odd corners.");
-cos.add("= 2 | assign x 1 | + $x 1");
-cos.add("= 1 | assign x 1 $x");
-cos.add("= 14 | assign x 1 14");
-cos.add("= 4 | assign x (assign y 3 | + 1 $y) $x");
-cos.add("= 4 | assign x (assign x 3 | + 1 $x) $x");
+cos.doc("We are pretty ruthless about adding syntax to reduce parentheses.  So let's " +
+        "allow writing `(x)` as `$x` (or equivalent in other renderings).  This and `|` are " +
+        "in fact global options for the message that you can turn off if they are not to " +
+        "your taste.");
 
-cos.comment("Show alternate lookup syntax.");
 cos.add("assign x 1 | = (x) 1");
 cos.add("assign x 1 | = $x 1");
 cos.add("assign x 4 | = 16 (* (x) (x))");
 cos.add("assign x 4 | = 16 (* $x $x)");
 cos.add("assign x 4 | = 16 | * $x $x");
 
-cos.comment("Now for functions.");
+cos.doc("Add more examples to give hints about scoping and other odd corners.");
+
+cos.add("= 2 | assign x 1 | + $x 1");
+cos.add("= 1 | assign x 1 $x");
+cos.add("= 14 | assign x 1 14");
+cos.add("= 4 | assign x (assign y 3 | + 1 $y) $x");
+cos.add("= 4 | assign x (assign x 3 | + 1 $x) $x");
+
+cos.doc("We're ready for functions.  `?` starts a lambda function.  Now we can have fun!");
+
 var top = 6;
 for (var i=0; i<top; i++) {
     cos.add("= " + i +" | (? x $x) " + i);
@@ -65,7 +76,9 @@ for (var i=0; i<top; i++) {
 for (var i=0; i<top; i++) {
     cos.add("= " + (i*i) +" | (? y | * $y $y) " + i);
 }
-cos.comment("Throw in a little mind-boggle.");
+cos.doc("Emphasize the arbitrary nature of names, and hint that things we've learned already " +
+        "like addition could possibly be re-imagined as a named value.");
+
 for (var i=0; i<top; i++) {
     cos.add("= " + (i*i) +" | (? + | * $+ $+) " + i);
 }
@@ -73,13 +86,14 @@ for (var i=0; i<top; i++) {
     cos.add("= " + (i*i) +" | (? 5 | * $5 $5) " + i);
 }
 
-cos.comment("Functions in a box.");
+cos.doc("Show that we can name functions and use them later - still within a single expression " +
+        "for now.");
 cos.add("assign x (? y | * $y $y) | = 25 | x 5");
 cos.add("assign x (? y | + $y 1) | = 6 | x 5");
 cos.add("assign x (? x | + $x 1) | = 6 | x 5");
 cos.add("assign y (? x | + $x 1) | = 6 | y 5");
 
-cos.comment("Serve some curry.");
+cos.doc("Show that we can nest functions to take multiple values.");
 cos.add("= 52 | * 4 13");
 cos.add("= 52 | (? x | * $x 4) 13");
 cos.add("= 52 | (? x | ? y | * $x $y) 13 4");
