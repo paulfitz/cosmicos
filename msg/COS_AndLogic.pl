@@ -5,7 +5,6 @@ use cosmic;
 
 sub ShowAndLogicLesson {
   my $txt = "";
-  $txt .= "# MATH introduce the AND logical operator\n";
   
   $txt .= ShowLine(Op("intro","and"));
 

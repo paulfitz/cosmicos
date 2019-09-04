@@ -5,7 +5,6 @@ use cosmic;
 
 sub ShowOrLogicLesson {
   my $txt = "";
-  $txt .= "# MATH introduce the OR logical operator\n";
   
   $txt .= ShowLine(Op("intro","or"));
   $txt .= 'define or | ? x | ? y | if $x $true $y' . "\n";
@@ -73,7 +72,8 @@ sub ShowOrLogicLesson {
       $txt .= ShowLine($c);
     }
 
-  $txt .= "# Now is an opportune moment for '<=' and '>='\n";
+  $txt .= "~ Now is an opportune moment to add `<=` and `>=` definitions.\n";
+  $txt .= "~ There are shorter definitions, like just negating `>` and `<`, but this feels more natural?\n";
   $txt .= 'define >= | ? x | ? y | or (> $x $y) (= $x $y);' . "\n";
   $txt .= 'define <= | ? x | ? y | or (< $x $y) (= $x $y);' . "\n";
   for (my $i=0; $i<3; $i++) {
