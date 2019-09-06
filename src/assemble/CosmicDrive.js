@@ -16,6 +16,7 @@ var CosmicDrive = function(options) {
     this.primer = null;
     if (options['primer']) {
         this.primer = JSON.parse(fs.readFileSync("primer.json", 'utf8'));
+        this.primer2 = JSON.parse(fs.readFileSync("primer2.json", 'utf8'));
     }
     this.txt = null;
     if (options['txt']) {
@@ -23,6 +24,28 @@ var CosmicDrive = function(options) {
     }
     this.codecs = {};
     this.options = options;
+
+    // Add an extra Evaluate instance for checking messages recovered from 4-symbol codes.
+    // This makes sure nothing functional is being lost in translation.
+    var state2 = new this.cosmicos.State();
+    state2.useIntVocab();
+    var eval2 = new this.cosmicos.Evaluate(state2);
+    eval2.applyOldOrder();
+    eval2.addStdMin();
+    var vocab = eval2.getVocab();
+    var codec = new this.cosmicos.ChainCodec([
+      new this.cosmicos.ParseCodec(vocab),
+      new this.cosmicos.NormalizeCodec(vocab),
+      new this.cosmicos.FourSymbolCodec(vocab),
+    ]);
+    this.rawEval = eval2;
+    if (this.primer2) {
+      this.rawEval.addPrimer(this.primer2);
+    }
+  this.stateInt = state2;
+  this.vocabInt = vocab;
+  this.rawRun = codec;
+  
 }
 
 CosmicDrive.prototype.get_codec = function(key, fn) {
@@ -55,6 +78,21 @@ CosmicDrive.prototype.text_to_list = function(op) {
     return statement.content;
 }
 
+CosmicDrive.prototype.text_to_list_int = function(op) {
+    var statement = new this.cosmicos.Statement(op);
+    var prep = this.get_codec('prep_int',
+                              function(self) {
+                                  return new self.cosmicos.ChainCodec([
+                                      new self.cosmicos.PreprocessCodec(self.stateInt),
+                                      new self.cosmicos.ParseCodec(self.vocabInt),
+                                      new self.cosmicos.NormalizeCodec(self.vocabInt),
+                                      new self.cosmicos.UnflattenCodec()
+                                  ]);
+                              });
+    prep.encode(statement);
+    return statement.content;
+}
+
 CosmicDrive.prototype.complete_stanza = function(stanza, can_run) {
     var part = stanza;
     var op = part.lines.join("\n");
@@ -74,6 +112,10 @@ CosmicDrive.prototype.complete_stanza = function(stanza, can_run) {
     var symbol = this.get_codec('symbol',
                                  function(self) { 
                                      return new self.cosmicos.FourSymbolCodec(self.vocab);
+                                 });
+    var norm = this.get_codec('norm',
+                                 function(self) { 
+                                     return new self.cosmicos.NormalizeCodec(self.vocab);
                                  });
     var run = this.get_codec('run',
                              function(self) { 
@@ -113,13 +155,13 @@ CosmicDrive.prototype.complete_stanza = function(stanza, can_run) {
 CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
     var part = stanza;
     var op = op || part.lines.join("\n");
-    console.log("Working on {" + op + "}");
     var statement = new this.cosmicos.Statement(op);
 
     var preprocess = this.get_codec('preprocess', null);
     var parse = this.get_codec('parse', null);
     var unparse = this.get_codec('unparse', null);
     var symbol = this.get_codec('symbol', null);
+    var norm = this.get_codec('norm', null);
     var run = this.get_codec('run', null);
 
     preprocess.encode(statement);
@@ -127,6 +169,7 @@ CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
     parse.encode(statement);
     var parsed = statement.copy();
     var encoded = statement.copy();
+    norm.encode(encoded);
     symbol.encode(encoded);
     var code = encoded.content[0];
     if (part!=null) {
@@ -142,8 +185,20 @@ CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
         this.txt += "\n";
     }
     if (!can_run) return new this.cosmicos.Statement(1);
-    run.encode(statement);
-    return statement;
+    // to make sure we don't have a bug in the message, recover it from low-level
+    // coding before evaluating.
+    var parsed2 = parsed.copy();
+    this.cosmicos.Parse.encodeSymbols(parsed2.content, this.state.getVocab(), true);
+    var recoveredStatement = new this.cosmicos.Statement(code);
+    this.rawRun.decode(recoveredStatement);
+    var zing = recoveredStatement.copy();
+    parse.encode(zing);
+    this.cosmicos.Parse.encodeSymbols(zing.content, this.state.getVocab(), true);
+    if (!this.cosmicos.Parse.softCompare(zing.content, parsed2.content)) {
+      throw new Error('code fails round-trip test');
+    }
+    var result = this.rawEval.evaluateLine(recoveredStatement.content[0]);
+    return new this.cosmicos.Statement(result);
 }
 
 CosmicDrive.prototype.add_line_numbers = function() {

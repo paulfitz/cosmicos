@@ -18,7 +18,7 @@ try {
 	var op = part.lines.join("\n");
 	var skippy = false;
 	// skip the most time consuming parts of message for now
-      if (true) {
+        if (true) {
 	    if (op.indexOf("distill-circuit")>=0) {
 		process.stderr.write("Skipping distill-circuit\n");
 		skippy = true;
@@ -41,8 +41,9 @@ try {
 	}
     }
 } catch (e) {
-    process.stderr.write("* evaluate.js failed on " + err_i + ": " + JSON.stringify(err_part) + "\n");
-    throw(e);
+  process.stderr.write("* evaluate.js failed on " + err_i + ": " + JSON.stringify(err_part) + "\n");
+  console.error("Error", e);
+  throw(e);
 }
 
 

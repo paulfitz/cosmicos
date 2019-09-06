@@ -153,6 +153,8 @@
 	(number? | o2)
 	(= (o1 unique-id) (o2 unique-id)))));
 
+(define minus-one | - 0 1);
+
 (define jvm-maker
   (lambda (vars stack pc ret)
     (? op
@@ -305,13 +307,13 @@
 		  0)))
 	   ((= (op) return)
 	    (begin (ret set (hash-ref (vars get) 0))
-		   (pc set -1)))
+		   (pc set $minus-one)))
 	   ((= (op) ireturn)
 	    (begin (ret set (stack-pop (stack)))
-		   (pc set -1)))
+		   (pc set $minus-one)))
 	   ((= (op) areturn)
 	    (begin (ret set (stack-pop (stack)))
-		   (pc set -1)))
+		   (pc set $minus-one)))
 	   ((= (op) goto)
 	    (lambda (target)
 	      (pc set (target))))
@@ -462,7 +464,7 @@
   let ((jvm (jvm-maker (vars) (stack) (pc) (ret))))
   (begin
     (machine (jvm) (pc get))
-    (if (= (pc get) -1)
+    (if (= (pc get) $minus-one)
 	(ret get)
 	(state-machine-helper (pc get) (vars) (stack) (machine)))));
 

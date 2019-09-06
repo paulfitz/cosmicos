@@ -200,7 +200,7 @@ class Evaluate {
         return Std.is(x,BigInteger)||Std.is(y,BigInteger);
     }
 
-    static private function bi(x:Dynamic) : BigInteger {
+    static public function bi(x:Dynamic) : BigInteger {
         if (Std.is(x,BigInteger)) return x;
         return BigInteger.ofInt(x);
     }

@@ -41,6 +41,12 @@ class Vocab {
         return useInt ? code : name;
     }
 
+    public function getInt(name: String) : Dynamic {
+        if (name=="define") name = "@";
+        var code = getBase(name); // keep allocating ints for now
+        return code;
+    }
+
     public function exists(name: String) : Bool {
         return nameToCode.exists(name);
     }

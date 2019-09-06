@@ -47,6 +47,7 @@ add_custom_command(OUTPUT ${WORK}/CosmicEval.js
   ${SRC}/cosmicos/FourSymbolCodec.hx
   ${SRC}/cosmicos/ManuscriptStyle.hx
   ${SRC}/cosmicos/Memory.hx
+  ${SRC}/cosmicos/NormalizeCodec.hx
   ${SRC}/cosmicos/Parse.hx
   ${SRC}/cosmicos/ParseCodec.hx
   ${SRC}/cosmicos/PreprocessCodec.hx

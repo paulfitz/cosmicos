@@ -227,12 +227,12 @@ class Parse {
     }
 
     public static function encodeSymbols(e: Array<Dynamic>,
-                                         vocab: Vocab) {
+                                         vocab: Vocab, numeric: Bool = false) {
         for (i in 0...e.length) {
             var v : Dynamic = e[i];
             if (Std.is(v,Array)) {
                 var ei : Array<Dynamic> = cast v;
-                encodeSymbols(ei,vocab);
+                encodeSymbols(ei,vocab,numeric);
             } else if (v==-1 || v==-2) {
                 continue; // marks source of nesting (/|$)
             } else {
@@ -259,7 +259,11 @@ class Parse {
                         v = str;
                         // make any renames that haven't yet happened across codebase
                         if (v=="define") v = "@";
-                        v = vocab.get(v);
+                        if (numeric) {
+                            v = vocab.getInt(v);
+                        } else {
+                            v = vocab.get(v);
+                        }
                     }
                 } else {
                     v = Std.parseInt(str);
@@ -267,6 +271,39 @@ class Parse {
                 e[i] = v;
             }
         }
+    }
+
+    // Check a round-tripped sentence for plausibility
+    public static function softCompare(x: Array<Dynamic>, y: Array<Dynamic>): Bool {
+        if (x.length != y.length) {
+            return false;
+        }
+        for (i in 0...x.length) {
+            var xi : Dynamic = x[i];
+            var yi : Dynamic = y[i];
+            if (Std.is(xi,Array) != Std.is(yi,Array)) {
+                if (Std.is(xi,Array)) {
+                    var xia : Array<Dynamic> = cast xi;
+                    if (xia.length != 1) { return false; }
+                    if (xia[0].asBigInteger().compare(Evaluate.bi(yi))!=0) { return false; }
+                } else {
+                    var yia : Array<Dynamic> = cast yi;
+                    if (yia.length != 1) { return false; }
+                    if (yia[0].asBigInteger().compare(Evaluate.bi(xi))!=0) { return false; }
+                }
+            } else if (Std.is(xi,Array)) {
+                var xia : Array<Dynamic> = cast xi;
+                var yia : Array<Dynamic> = cast yi;
+                if (!softCompare(xia, yia)) { return false; }
+            } else if (Std.is(xi,BitString) && Std.is(yi,BitString)) {
+                if (xi.txt != yi.txt) {
+                    return false;
+                }
+            } else if (xi != yi) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public static function removeSlashMarker(e: Array<Dynamic>) {
@@ -350,6 +387,16 @@ class Parse {
                     b = ((rem%2!=0)?"1":"0") + b;
                     rem = Std.int(rem/2);
                 } while (rem!=0);
+                txt += "2" + b + "3";
+            } else if (Std.is(v,BigInteger)) {
+                var b = "";
+                var rem : BigInteger = cast v;
+                var two = BigInteger.ONE.add(BigInteger.ONE);
+                do {
+                    var d = rem.divideAndRemainder(two);
+                    b = d[1].toString() + b;
+                    rem = d[0];
+                } while (!rem.eq(BigInteger.ZERO));
                 txt += "2" + b + "3";
             } else {
                 var b = "";

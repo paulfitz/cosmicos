@@ -21,29 +21,16 @@ class FourSymbolCodec implements Codec {
         var out = "";
         var len = txt.length;
         var unit = "";
-        var wrap = "";
         for (i in 0...len) {
             var ch = txt.charAt(i);
             if (ch == '0') {
                 unit += ".";
-                out += wrap;
-                wrap = "";
             } else if (ch == '1') {
                 unit += ":";
-                out += wrap;
-                wrap = "";
             } else if (ch == '2') {
-                if (wrap == ')') {
-                    out += ")";
-                    wrap = "";
-                }
-                if (wrap == '()') {
-                    out += "|";
-                    wrap = "";
-                }
-                wrap += "(";
                 out += unit;
                 unit = "";
+                out += "(";
             } else if (ch == '3') {
                 if (unit != "") {
                     var bs = new BitString(unit);
@@ -52,27 +39,28 @@ class FourSymbolCodec implements Codec {
                         out += bs.asInteger();
                         out += "[";
                         unit = "";
+                    } else {
+                        out += " ";
+                        out += unit;
+                        out += " ";
+                        unit = "";
                     }
                 }
-                wrap += ")";
-                out += unit;
-                unit = "";
-                if (wrap == '(())') {
-                    wrap = "";
-                    out += ";";
-                }
+                out += ")";
             }
         }
-        var r = ~/:[|]/g;
-        out = r.replace(out, "|");
-        r = ~/[.][|]/g;
-        out = r.replace(out, "$");
-        r = ~/\(\]/g;
-        out = r.replace(out, " ");
+        var r = ~/\(\]/g;
+        var out = r.replace(out, " ");
         r = ~/\[\)/g;
         out = r.replace(out, " ");
-        r = ~/\$ +/g;
-        out = r.replace(out, "$");
+        r = ~/:\(\)/g;
+        out = r.replace(out, " | ");
+        r = ~/\.\(\) */g;
+        out = r.replace(out, " $");
+        r = ~/ *\(\(\)\)/g;
+        out = r.replace(out, ";");
+        r = ~/   */g;
+        out = r.replace(out, " ");
         var codec = new cosmicos.ChainCodec([
                                              new cosmicos.ParseCodec(vocab),
                                              new cosmicos.NormalizeCodec(vocab)

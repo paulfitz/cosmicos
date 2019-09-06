@@ -21,7 +21,6 @@ class ParseCodec implements Codec {
     public function decode(src: Statement) : Bool {
         // Decoded version may not match encoded version, but should
         // evaluate to same thing.
-        trace("]]]" + src.content);
         if (top) {
             src.content = [flatten(src.content, 0) + ";"];
         } else {
@@ -36,16 +35,18 @@ class ParseCodec implements Codec {
             var txts : Array<String> = [];
             var len : Int = ei.length;
             var has_flattener : Bool = false;
+            var flattener : Int = 0;
             for (i in 0...len) {
                 if (i == 0 && ei[i] < 0) {
                     has_flattener = true;
+                    flattener = ei[i];
                     continue;
                 }
                 txts.push(flatten(ei[i], level + 1));
             }
             var result : String = txts.join(" ");
             if (has_flattener) {
-                if (len == 2) {
+                if (flattener == -2) {
                     result = "$" + result;
                 } else {
                     result = "| " + result;
