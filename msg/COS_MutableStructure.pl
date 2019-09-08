@@ -20,9 +20,7 @@ sub ShowMutableStructureLesson {
 				       Ref("data"),
 				       Op("list-find",
 					  Ref("lst"),
-					  Ref("key"),
-					  Proc("x",
-					       0))))))));
+					  Ref("key"))))))));
 
   
 

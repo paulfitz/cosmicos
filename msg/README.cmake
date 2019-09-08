@@ -26,7 +26,7 @@ set(COSMIC_DEPENDS
   COS_MultipleParameter
   COS_Map
   COS_CommentBase
-  COS_Recursion
+#  COS_Recursion  # this seems unnecessary?
   COS_Pure
   COS_Quantifier
   COS_Implication

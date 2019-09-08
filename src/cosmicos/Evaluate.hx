@@ -200,11 +200,23 @@ class Evaluate {
         return Std.is(x,BigInteger)||Std.is(y,BigInteger);
     }
 
+    static private function isFloat2(x:Dynamic,y:Dynamic) : Bool {
+        return Std.is(x,Float)||Std.is(y,Float);
+    }
+
+    static private function isComplex2(x: Dynamic, y:Dynamic) : Bool {
+        return Std.is(x,Complex)||Std.is(y,Complex);
+    }
+
     static public function bi(x:Dynamic) : BigInteger {
         if (Std.is(x,BigInteger)) return x;
         return BigInteger.ofInt(x);
     }
 
+    static public function complex(x:Dynamic) : Complex {
+        if (Std.is(x, Int)) return new Complex(x);
+        return x;
+    }
 
     public function getVocab() : Vocab {
         return vocab;
@@ -254,7 +266,7 @@ class Evaluate {
         id_if = vocab.check("if",15);
         explain("if", "conditional evaluation", "if (> $x 1) (dec $x) $x");
         vocab.check("vector",16);
-        vocab.check("unused",17);
+        vocab.check("solve",17);
         vocab.check("intro",18);
         vocab.check("forall",19);
         vocab.check("exists",20);
@@ -296,7 +308,11 @@ class Evaluate {
                 }; } );
         mem.add(vocab.get("number?"), function(x){ return Std.is(x,Int)||Std.is(x,BigInteger); } );
         mem.add(vocab.get("symbol?"), function(x){ return Std.is(x,String); } );
-        mem.add(vocab.get("single?"), function(x){ return Std.is(x,Int)||Std.is(x,BigInteger)||Std.is(x,String)||Std.is(x,BitString); } );
+        mem.add(vocab.get("single?"), function(x){ return Std.is(x,Int)||Std.is(x,Float)||Std.is(x,BigInteger)||Std.is(x,String)||Std.is(x,BitString)||Std.is(x,Bool); } );
+        // it is a little awkward to test for a function, so we just eliminate all other
+        // types in the message - this is a bit dodgy.
+        mem.add(vocab.get("function?"), function(x){ return !(Std.is(x,Int)||Std.is(x,Float)||Std.is(x,BigInteger)||Std.is(x,String)||Std.is(x,BitString)||Std.is(x,Bool)); });
+        mem.add(vocab.get("type?"), function(x) { return "type " + Std.is(x,Int) + " " + Std.is(x,Float) + " " + Std.is(x,Bool); });
         mem.add(vocab.get("translate"), function(x){ 
                 if (Std.is(x,Int)||Std.is(x,BigInteger)||Std.is(x,String)||Std.is(x,BitString)) return x;
                 var rep = function(x) {
@@ -326,6 +342,15 @@ class Evaluate {
                 }
                 return 0;
             });
+        mem.add(vocab.get("solve"), function(f) {
+                var samples = [-10, -9, -8, -7, -6, -5, -4, -3, -2, -1, 0,
+                               1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
+                               Math.sqrt(2)];
+                for (i in samples ) {
+                    if (f(i)!=0) return i;
+                }
+                return 0;
+            });
         mem.add(vocab.get("all"), function(f) {
                 var lst : Array<Int> = [];
                 for (i in -50...50) {
@@ -335,6 +360,10 @@ class Evaluate {
                 }
                 return Cons.consify(lst);
             });
+        mem.add(vocab.get("sqrt"),
+                function(x) {
+                    return Math.sqrt(x);
+                });
         mem.add(vocab.get("natural-set"), 
                 mem.get(vocab.get("all"))(function (x) { return x>=0; }));
         mem.add(vocab.get("div"), function(x:Dynamic){ 
@@ -343,9 +372,18 @@ class Evaluate {
                     return Std.int(x/y); 
                 }}
             );
+        mem.add(vocab.get("frac"), function(x:Dynamic){ 
+                return function(y:Dynamic) : Dynamic { 
+                    if (isBi2(x,y)) throw("real division cannot deal with bigints yet");
+                    return x/y; 
+                }}
+            );
         mem.add(vocab.get("demo"), function(x:Dynamic) {
                 return x;
             });
+        mem.add(vocab.get("e"), Math.exp(1.0));
+        mem.add(vocab.get("pi"), Math.PI);
+        mem.add(vocab.get("i"), new Complex(0, 1));
 
         // Transition vocabulary
         evaluateLine("@ is:int $number?");
@@ -357,7 +395,7 @@ class Evaluate {
         // very very inefficient!        
         evaluateLine("@ has-square-divisor-within | ? top | ? x | if (< $top 0) 0 | if (= $x | * $top $top) 1 | has-square-divisor-within (- $top 1) $x");
         evaluateLine("@ is:square | ? x | has-square-divisor-within $x $x");
-        evaluateLine("@ undefined 999");
+        evaluateLine("@ undefined 999");  // this should be a special value, not 999 :-)
 
         // meta-lambda-function
         id_lambda0 = vocab.get("??");
@@ -377,11 +415,16 @@ class Evaluate {
         mem.add(vocab.get("="), 
                 function(x:Dynamic){ return function(y:Dynamic):Dynamic{ 
                         if (isBi2(x,y)) return (bi(x).compare(bi(y))==0)?1:0;
+                        if (isComplex2(x,y)) return (complex(x).equals(complex(y)));
+                        if (isFloat2(x,y)) {
+                            return Math.abs(x - y) < 0.0001;
+                        }
                         return (x==y)?1:0; 
                     }});
         mem.add(vocab.get("*"), 
                 function(x:Dynamic){ return function(y:Dynamic):Dynamic{ 
                         if (isBi2(x,y)) return bi(x).mul(bi(y));
+                        if (isComplex2(x,y)) return complex(x).mul(complex(y));
                         return x*y; 
                     }});
         mem.add(vocab.get("<"), function(x){ return function(y){ 

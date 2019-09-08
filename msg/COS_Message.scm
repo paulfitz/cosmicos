@@ -26,7 +26,7 @@
 (equal (list-ref (primer) 1) (vector intro is:int));
 (equal (list-ref (primer) 2) (vector is:int (vector unary 0)));
 (equal (list-ref (primer) 3) (vector is:int (vector unary 1 0)));
-(assign idx (list-find (primer) (vector intro primer) (? x 0))
+(assign idx (list-find (primer) (vector intro primer))
 	(equal (list-ref (primer) (+ (idx) 1))
 	       (vector equal
 		       (vector list-ref (vector primer) 0)

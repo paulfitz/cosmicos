@@ -5,7 +5,6 @@ use cosmic;
 
 sub ShowMutableLesson {
   my $txt = "";
-  $txt .= "# MATH introduce mutable objects, and side-effects\n";
   $txt .= ShowLine(Op("intro","make-cell"));
   $txt .= ShowLine(Op("intro","set!"));
   $txt .= ShowLine(Op("intro","get!"));
