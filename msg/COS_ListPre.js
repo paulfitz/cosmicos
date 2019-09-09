@@ -8,9 +8,10 @@ function listVerbose(lst,wrap) {
     return result.concat([["list", lst.length]].concat(lst));
 }
 
-cos.add("define list-add | ? n | ? ret | ? x | list-i $n | ? y | ? z | ret (+ 1 $y) | cons $x $z");
-
-cos.add("define list-i | ? n | ? ret | if (= $n 1) (? x | ret 1 $x) | list-add (- $n 1) $ret");
+cos.add(`
+define list-i | ? n | ? ret |
+  if (= $n 1) (? x | ret 1 $x) |
+  ? x | list-i (- $n 1) | ? y | ? z | ret (+ 1 $y) | cons $x $z`);
 
 // (list 0)  =>  (cons 0 0)
 // (list 1 x) => (cons 1 x)
@@ -24,9 +25,17 @@ cos.add("not | = $undefined 0");
 cos.add("not | = $undefined 1");
 cos.add("not | = $undefined 2");
 
-cos.add("define safe | ? f | ? v | if (= (car $v) 0) $undefined | f $v");
-cos.add("define head | safe | ? v | if (= (car $v) 1) (cdr $v) | car | cdr $v");
-cos.add("define tail | safe | ? v | if (= (car $v) 1) (cons 0 0) | cons (- (car $v) 1) (cdr | cdr $v)");
+cos.add(`
+define head | ? v |
+  if (= 0 | car $v) $undefined |
+  if (= 1 | car $v) (cdr $v) |
+  car | cdr $v`);
+
+cos.add(`
+define tail | ? v |
+  if (= 0 | car $v) $undefined |
+  if (= 1 | car $v) (cons 0 0) |
+  cons (- (car $v) 1) | cdr | cdr $v`);
 
 for (var i=0; i<5; i++) {
     var len = cos.irand(10)+1;
@@ -66,7 +75,11 @@ for (var i=0; i<examples.length; i++) {
 }
 
 
-cos.add("define list-ref | safe | ? lst | ? n | if (= $n 0) (head $lst) | list-ref (tail $lst) | - $n 1");
+cos.add(`
+define list-ref | ? v | ? n |
+  if (= 0 | car $v) $undefined |
+  if (= $n 0) (head $v) |
+  list-ref (tail $v) | - $n 1`);
 
 for (var i=0; i<10; i++) {
     var len = cos.irand(10)+1;
