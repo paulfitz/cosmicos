@@ -20,13 +20,13 @@ set(COSMIC_DEPENDS
   COS_Cons
   COS_Mutable
   COS_ListPre
+  COS_Map
+  COS_Series
   COS_Translate
   COS_List
   COS_Let
   COS_MultipleParameter
-  COS_Map
   COS_CommentBase
-#  COS_Recursion  # this seems unnecessary?
   COS_Pure
   COS_Quantifier
   COS_Implication

@@ -2,12 +2,6 @@ var cos = require("./cosmic");
 cos.language(2);
 cos.seed(42);
 
-function listVerbose(lst,wrap) {
-    var result = [];
-    if (!wrap) result = result.concat(-1);
-    return result.concat([["list", lst.length]].concat(lst));
-}
-
 cos.add(`
 define list-i | ? n | ? ret |
   if (= $n 1) (? x | ret 1 $x) |
@@ -44,7 +38,7 @@ for (var i=0; i<5; i++) {
 	lst.push(cos.irand(20));
     }
     var head = lst[0];
-    cos.add(["=",head,[-1, "head", listVerbose(lst)]]);
+    cos.add(["=",head,[-1, "head", cos.listVerbose(lst)]]);
 }
 
 for (var i=0; i<5; i++) {
@@ -53,7 +47,7 @@ for (var i=0; i<5; i++) {
     for (var j=0; j<len; j++) {
 	lst.push(cos.irand(20));
     }
-    cos.add(["=",lst[1],[-1, "head", "|", "tail", listVerbose(lst)]]);
+    cos.add(["=",lst[1],[-1, "head", "|", "tail", cos.listVerbose(lst)]]);
 }
 
 for (var i=0; i<5; i++) {
@@ -62,7 +56,7 @@ for (var i=0; i<5; i++) {
     for (var j=0; j<len; j++) {
 	lst.push(cos.irand(20));
     }
-    cos.add(["=",lst[2],[-1, "head", "|", "tail", "|", "tail", listVerbose(lst)]]);
+    cos.add(["=",lst[2],[-1, "head", "|", "tail", "|", "tail", cos.listVerbose(lst)]]);
 }
 
 cos.add("define list-length $car");
@@ -71,7 +65,7 @@ var examples = cos.prand(10,5);
 
 for (var i=0; i<examples.length; i++) {
     var r = examples[i];
-    cos.add(["=", r, [-1, "list-length", listVerbose(cos.prand(10,r))]]);
+    cos.add(["=", r, [-1, "list-length", cos.listVerbose(cos.prand(10,r))]]);
 }
 
 
@@ -89,7 +83,7 @@ for (var i=0; i<10; i++) {
     }
     var idx = cos.irand(len);
     var val = lst[idx];
-    cos.add(["=",val, [-1, "list-ref",listVerbose(lst,true),idx]]);
+    cos.add(["=",val, [-1, "list-ref",cos.listVerbose(lst,true),idx]]);
 }
 
 cos.add("intro function?");
@@ -131,13 +125,15 @@ for (var i=0; i<10; i++) {
     }
     var head = lst[0];
     var tail = lst.slice(1);
-    cos.add(["=",["head", listVerbose(lst)],head]);
-    cos.add(["list=",["tail", listVerbose(lst)],listVerbose(tail,true)]);
+    cos.add(["=",["head", cos.listVerbose(lst)],head]);
+    cos.add(["list=",["tail", cos.listVerbose(lst)], cos.listVerbose(tail,true)]);
 }
 
 cos.add("intro prepend");
 
-cos.add("define prepend | ? x | ? v | cons (+ (car $v) 1) | if (= (car $v) 0) $x | cons $x | cdr $v");
+cos.add(`define prepend | ? x | ? v |
+  cons (+ (car $v) 1)
+       (if (= (car $v) 0) $x | cons $x | cdr $v)`);
 
 for (var i=0; i<8; i++) {
     var len = i;
@@ -147,12 +143,12 @@ for (var i=0; i<8; i++) {
     }
     var val = cos.irand(20);
     cos.add(["list=",
-	     ["prepend", val, listVerbose(lst)],
-	     listVerbose([val].concat(lst),true)]);
+	     ["prepend", val, cos.listVerbose(lst)],
+	     cos.listVerbose([val].concat(lst),true)]);
 }
 
 
-cos.add("define pair | ? x | ? y | (list 2) $x $y");
+cos.add("define pair | list 2");
 cos.add("define first | ? lst | head $lst");
 cos.add("define second | ? lst | head | tail $lst");
 
@@ -162,50 +158,8 @@ var examples2 = cos.prand(10,examples.length);
 for (var i=0; i<examples.length; i++) {
     var r = examples[i];
     var r2 = examples2[i];
-    cos.add(["list=",["pair",r,r2],listVerbose([r,r2])]);
+    cos.add(["list=",["pair",r,r2],cos.listVerbose([r,r2])]);
     cos.add(["=",["first", [-1,"pair",r,r2]],r]);
     cos.add(["=",["second", [-1,"pair",r,r2]],r2]);
 }
 
-cos.add(`
-define list-find-helper | ? lst | ? key | ? idx |
-  if (= (list-length $lst) 0) $undefined |
-  if (equal (head $lst) $key) $idx |
-  list-find-helper (tail $lst) $key (+ $idx 1)`);
-
-cos.add("define list-find | ? lst | ? key | list-find-helper $lst $key 0");
-
-for (var i=0; i<10; i++) {
-    var len = cos.irand(10)+1;
-    var lst = [];
-    for (var j=0; j<len; j++) {
-	lst.push(cos.irand(20));
-    }
-    var idx = cos.irand(len);
-    var val = lst[idx];
-    var idx2 = -1;
-    for (var j=0; j<len; j++) {
-	if (lst[j] == val) {
-	    if (idx2<0) {
-		idx2 = j;
-	    }
-	}
-    }
-      
-    cos.add(["=",
-	     ["list-find",
-	      listVerbose(lst,true),
-	      val],
-	     idx2]);
-}
-
-for (var i=0; i<3; i++) {
-    var lst = cos.prand(20,5+i*2);
-    var head = lst[0];
-    var tail = lst.slice(1);
-    cos.add(["=",
-	     ["list-find",
-	      listVerbose(tail,true),
-	      head],
-	     "$undefined"]);
-}

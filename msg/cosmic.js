@@ -158,4 +158,15 @@ CosWrite.prototype.tail = function(lst) {
     return [ -1 ].concat(lst);
 }
 
+CosWrite.prototype.listVerbose = function(lst,wrap) {
+    var result = [];
+    if (!wrap) result = result.concat(-1);
+    return result.concat([["list", lst.length]].concat(lst));
+}
+
+CosWrite.prototype.listExpression = function(lst) {
+  return this.stringify(this.listVerbose(lst, true));
+}
+
+
 module.exports = new CosWrite();

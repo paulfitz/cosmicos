@@ -6,6 +6,7 @@ use cosmic;
 sub ShowTranslateLesson {
   my $txt = "";
   $txt .= "# HACK describe changes to the implicit interpreter to allow new special forms\n";
+  $txt .= "intro translate\n";
   $txt .= ShowLine(Op2("define",
 		       "base-translate",
 		       Ref("translate")));
