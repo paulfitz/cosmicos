@@ -24,6 +24,14 @@ class Complex  {
         return new Complex(re * alt.re - im * alt.im,  re * alt.im + alt.re * im);
     }
 	
+    public function add(alt: Complex) {
+        return new Complex(re + alt.re, im + alt.im);
+    }
+	
+    public function sub(alt: Complex) {
+        return new Complex(re - alt.re, im - alt.im);
+    }
+	
 	public inline function equals(c2:Complex) {
 		return floatEquals(c2.re, re) && floatEquals(c2.im, im);
     }

@@ -24,6 +24,7 @@ set(COSMIC_DEPENDS
   COS_Series
   COS_Translate
   COS_List
+  COS_Complex
   COS_Let
   COS_MultipleParameter
   COS_CommentBase

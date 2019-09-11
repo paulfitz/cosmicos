@@ -405,11 +405,13 @@ class Evaluate {
         mem.add(vocab.get("+"), 
                 function(x:Dynamic){ return function(y:Dynamic):Dynamic{ 
                         if (isBi2(x,y)) return bi(x).add(bi(y));
+                        if (isComplex2(x,y)) return complex(x).add(complex(y));
                         return x+y; 
                     }});
         mem.add(vocab.get("-"), 
                 function(x:Dynamic){ return function(y:Dynamic):Dynamic{ 
                         if (isBi2(x,y)) return bi(x).sub(bi(y));
+                        if (isComplex2(x,y)) return complex(x).sub(complex(y));
                         return x-y; 
                     }});
         mem.add(vocab.get("="), 
