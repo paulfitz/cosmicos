@@ -4,6 +4,7 @@ var cos = require("./cosmic");
 cos.language(2);
 cos.seed(42);
 
+cos.comment("MATH some more list functions");
 cos.add(`
 define list-find-helper | ? lst | ? key | ? idx |
   if (= (list-length $lst) 0) $undefined |
@@ -46,3 +47,13 @@ for (var i=0; i<3; i++) {
 	      head],
 	     "$undefined"]);
 }
+
+cos.add("intro last");
+cos.add("define last | ? x | list-ref $x | - (list-length $x) 1");
+cos.add("intro except-last");
+cos.add(`
+define except-last | ? x |
+  if (>= 1 | list-length $x) (vector) |
+  prepend (head $x) | except-last | tail $x`);
+cos.add("= 15 | last | vector 4 5 15");
+cos.add("list= (vector 4 5) | except-last | vector 4 5 15");
