@@ -226,8 +226,24 @@ class Parse {
         return result;
     }
 
+    // heuristic for whether statement changes global state
+    public static function looksLikeMutation(v: Dynamic) {
+        if (Std.is(v,Array)) {
+            var e : Array<Dynamic> = cast v;
+            for (i in 0...e.length) {
+                var v : Dynamic = e[i];
+                if (looksLikeMutation(v)) { return true; }
+            }
+        } else {
+            // very approximate and message-dependent, but this is just an optimization
+            // for website, not something fundamental.
+            if (v == 'define' || v == 'set!' || v == 'class' || v == 'act') { return true; }
+        }
+        return false;
+    }
+
     public static function encodeSymbols(e: Array<Dynamic>,
-                                         vocab: Vocab, numeric: Bool = false) {
+                                          vocab: Vocab, numeric: Bool = false) {
         for (i in 0...e.length) {
             var v : Dynamic = e[i];
             if (Std.is(v,Array)) {

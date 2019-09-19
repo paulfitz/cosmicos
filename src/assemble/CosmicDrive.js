@@ -177,6 +177,7 @@ CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
 	part["code"] = code;
 	part["parse"] = parsed.content;
         part["spider"] = this.spider.addString(code);
+        part["dt"] = this.cosmicos.Parse.looksLikeMutation(parsed.content);
     }
     var cline = 999;
     console.log(cline + ": " + op + "  -->  " + code);

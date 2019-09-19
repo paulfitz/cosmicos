@@ -502,5 +502,6 @@ class Evaluate {
         new FourSymbolCodec(null);
         new EvaluateCodec(null);
         new PreprocessCodec(null);
+        new Sound();
     }
 }
