@@ -16,7 +16,6 @@ if(NOT NODE)
   MESSAGE(FATAL_ERROR "Could not find node, please install it")
 endif()
 
-
 ##############################################################################
 ##
 ## Compile some basic tools for processing the message
@@ -99,6 +98,10 @@ set_property(CACHE COSMIC_VARIANT PROPERTY STRINGS ${VARIANTS})
 #   COSMIC_USE_FLATTENER that controls whether '|' can be encoded
 include(${CMAKE_SOURCE_DIR}/msg/BASE.cmake)
 include(${CMAKE_SOURCE_DIR}/variant/${COSMIC_VARIANT}.cmake)
+
+if(NOT COSMIC_VOCAB)
+  SET(COSMIC_VOCAB ${CMAKE_SOURCE_DIR}/variant/iconic/vocab.json)
+endif()
 
 get_target_property(UnlessDriverLoc UnlessDriver JAR_FILE)
 get_target_property(FritzifierLoc Fritzifier JAR_FILE)
@@ -301,3 +304,20 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/index.wav
   ${CMAKE_SOURCE_DIR}/src/assemble/cosmicos.js)
 
 add_custom_target(wav DEPENDS ${CMAKE_BINARY_DIR}/index.wav)
+
+##############################################################################
+##
+## Convert message to an iconic .html
+##
+
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/index.html
+  COMMAND ${CMAKE_BINARY_DIR}/bin/cosmsg.js text -p 0 -P -2 -v ${COSMIC_VOCAB} -w -nc
+    > ${CMAKE_BINARY_DIR}/index.html
+  WORKING_DIRECTORY ${WORK}
+  DEPENDS
+  ${COSMIC_VOCAB}
+  ${CMAKE_BINARY_DIR}/index.json
+  ${WORK}/CosmicAudio.js
+  ${CMAKE_SOURCE_DIR}/src/assemble/cosmicos.js)
+
+add_custom_target(html DEPENDS ${CMAKE_BINARY_DIR}/index.html)

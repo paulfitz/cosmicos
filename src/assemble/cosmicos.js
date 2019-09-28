@@ -22,6 +22,37 @@ function needOutput() {
     }
 }
 
+function expand(e, letters, acks) {
+  var letter = letters[e];
+  if (letter && letter.media) {
+    acks[letter.media] = letter;
+    return {v: "<img src='" + letter.media + "'/>"};
+  }
+  var vs = e.split(":");
+  var afterPlain = false;
+  var txt = "";
+  if (vs.length > 1) {
+    for (var j=0; j<vs.length; j++) {
+      var v = vs[j];
+      var ri = expand(v, letters, acks);
+      if (afterPlain) { txt += ':'; }
+      txt += ri.v;
+      afterPlain = ri.plain;
+    }
+    return {v: txt, plain: afterPlain};
+  }
+  if (e === ' ') {
+    return {v: "&emsp;"};
+  }
+  if (!letter) {
+    return {v: e, plain: true};
+  }
+  if (letter.text) {
+    return {v: letter.text};
+  }
+  return expand(letter.alias, letters, acks);
+}
+
 function showSpider(root,src) {
     var cos = require(root + "/src/SpiderScrawl").cosmicos;
     var ss = new cos.SpiderScrawl(null,0,0);
@@ -162,44 +193,10 @@ function showText(root,src) {
 	}
 	process.stdout.write("<div class='koan' data-id='" + s + "'>\n  ");
 	var txt = render.render(parse);
-	var nb = false;
 	for (var i=0; i<txt.length; i++) {
-	    var e = txt[i];
-	    var letter = letters[e];
-	    if (letter) {
-		if (letter.media) {
-		    process.stdout.write("<img src='" + letter.media + "'/>");
-		    acks[letter.media] = letter;
-		} else {
-		    var vs = letter.alias.split(":");
-		    for (var j=0; j<vs.length; j++) {
-			var v = vs[j];
-			var letterv = letters[v];
-			if (letterv && letterv.media) {
-			    process.stdout.write("<img src='" + letterv.media + "'/>");
-			    acks[letter.media] = letter;
-			} else if (letterv && letterv.alias) {
-			    process.stdout.write("" + letterv.alias);
-			} else {
-			    process.stdout.write("" + v);
-			}
-		    }
-		}
-	    } else {
-		var t = "" + e;
-		if (t.length>1) {
-		    if (nb) {
-			process.stdout.write(":");
-		    }
-		    nb = true;
-		} else {
-		    nb = false;
-		}
-		//if (t == " ") {
-		//    t = "<span class='s'>_</span>";
-		//}
-		process.stdout.write(t);
-	    }
+	  var e = txt[i];
+          var v = expand("" + e, letters, acks);
+          process.stdout.write(v.v);
 	}
 	process.stdout.write("&nbsp;&nbsp;<span class='s'>~</span>\n</div>\n");
     }

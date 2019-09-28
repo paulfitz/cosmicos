@@ -5,7 +5,7 @@
 
 (define make-table
   (lambda (lst)
-    (crunch (? x | ? h | 
+    (reduce (? x | ? h | 
 	       assign name (car | x) |
 	       assign obj (cdr | x) |
 	       hash-add (h) (name) (obj))

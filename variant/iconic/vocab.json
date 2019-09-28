@@ -1,56 +1,92 @@
 {
   "vocab": [
     {
-      "title": "is",
-      "alias": "&#9728;"
+      "title": "<",
+      "text": "<"
     },
     {
-      "title": "int",
-      "alias": "&#8258;"
+      "title": ">",
+      "text": ">"
     },
     {
-      "title": "unary",
-      "alias": "&#9856;"
+      "title": "*",
+      "text": "*"
+    },
+    {
+      "title": "+",
+      "text": "+"
+    },
+    {
+      "title": "-",
+      "text": "-"
+    },
+    {
+      "title": "0",
+      "text": "0"
+    },
+    {
+      "title": "1",
+      "text": "1"
     },
     {
       "title": "=",
-      "alias": "&#9775;"
+      "text": "="
     },
     {
-      "title": "prime",
-      "alias": "&#10083;"
+      "title": "?",
+      "text": "&#955;"
     },
     {
-      "title": "square",
-      "alias": "&#9633;"
+      "title": "is",
+      "text": "&#9728;"
     },
     {
       "title": "not",
-      "alias": "&#9851;"
-    },
-    {
-      "title": "intro",
-      "alias": "&#9776;"
-    },
-    {
-      "title": "assign",
-      "alias": "&#9993;"
-    },
-    {
-      "title": "?-SKIP",
-      "alias": "&#9992;"
+      "text": "&#9851;"
     },
     {
       "title": "x",
-      "alias": "&#5771;"
+      "text": "&#5771;"
     },
     {
       "title": "y",
-      "alias": "&#5772;"
+      "text": "&#5772;"
     },
     {
       "title": "z",
-      "alias": "&#5773;"
+      "text": "&#5773;"
+    },
+    {
+      "title": "n",
+      "text": "&#x1686;"
+    },
+    {
+      "title": "int",
+      "text": "&#8258;"
+    },
+    {
+      "title": "unary",
+      "text": "&#9856;"
+    },
+    {
+      "title": "prime",
+      "text": "&#0632;"
+    },
+    {
+      "title": "square",
+      "text": "&#9633;"
+    },
+    {
+      "title": "intro",
+      "text": "&#9776;"
+    },
+    {
+      "title": "assign",
+      "text": "&#9993;"
+    },
+    {
+      "title": "?-SKIP",
+      "text": "&#9992;"
     },
     {
       "title": "define",
@@ -58,39 +94,39 @@
     },
     {
       "title": "meaning-of-life-universe-everything",
-      "alias": "&#10052;"
+      "text": "&#10052;"
     },
     {
       "title": "false",
-      "alias": "&#9785;"
+      "text": "&#9178;"
     },
     {
       "title": "true",
-      "alias": "&#9786;"
-    },
-    {
-      "title": "pair",
-      "alias": "&#9803;"
+      "text": "&#9786;"
     },
     {
       "title": "begin",
-      "alias": "&#8712;"
+      "text": "&#8712;"
     },
     {
       "title": "end",
-      "alias": "&#8715;"
+      "text": "&#8715;"
+    },
+    {
+      "title": "remainder",
+      "text": "&#9655;"
     },
     {
       "title": "make-cell",
-      "alias": "&#9734;"
+      "text": "&#9734;"
     },
     {
       "title": "emerge",
-      "alias": "&#8738;"
+      "text": "&#8738;"
     },
     {
       "title": "demo",
-      "alias": "&#9732;"
+      "text": "&#8984;"
     },
     {
       "title": "if",
@@ -126,15 +162,15 @@
     },
     {
       "title": "cons",
-      "alias": "pair"
+      "text": "&#8225;"
     },
     {
       "title": "car",
-      "alias": "pair:begin"
+      "alias": "cons:begin"
     },
     {
       "title": "cdr",
-      "alias": "pair:end"
+      "alias": "cons:end"
     },
     {
       "title": "set!",
@@ -143,6 +179,134 @@
     {
       "title": "get!",
       "alias": "make-cell:emerge"
+    },
+    {
+      "title": "list",
+      "alias": "cons:cons"
+    },
+    {
+      "title": "pair",
+      "alias": "cons:2"
+    },
+    {
+      "title": "ret",
+      "text": "&#8635;"
+    },
+    {
+      "title": "undefined",
+      "text": "&#216;"
+    },
+    {
+      "title": "head",
+      "alias": "list:begin"
+    },
+    {
+      "title": "tail",
+      "alias": "list:remainder"
+    },
+    {
+      "title": "list-length",
+      "alias": "list:int"
+    },
+    {
+      "title": "list-ref",
+      "alias": "list:emerge"
+    },
+    {
+      "title": "function?",
+      "alias": "is:?"
+    },
+    {
+      "title": "equal",
+      "alias": "=:="
+    },
+    {
+      "title": "list=",
+      "alias": "list:="
+    },
+    {
+      "title": "prepend",
+      "alias": "list:begin:+"
+    },
+    {
+      "title": "first",
+      "alias": "list-ref:0"
+    },
+    {
+      "title": "second",
+      "alias": "list-ref:1"
+    },
+    {
+      "title": "map",
+      "alias": "list:?"
+    },
+    {
+      "title": "reduce",
+      "alias": "list:?:1"
+    },
+    {
+      "title": "minus",
+      "alias": "-:0"
+    },
+    {
+      "title": "frac",
+      "text": "/"
+    },
+    {
+      "title": "abs",
+      "alias": "+:+"
+    },
+    {
+      "title": "in",
+      "text": "&#9179;"
+    },
+    {
+      "title": "epsilon",
+      "text": "&#603;"
+    },
+    {
+      "title": "within",
+      "alias": "in:epsilon"
+    },
+    {
+      "title": "range",
+      "alias": "in:int:list"
+    },
+    {
+      "title": "even",
+      "alias": "*:int:2"
+    },
+    {
+      "title": "odd",
+      "alias": "+:1:*:int:2"
+    },
+    {
+      "title": "decimal",
+      "alias": "frac:10"
+    },
+    {
+      "title": "10",
+      "text": "10"
+    },
+    {
+      "title": "float",
+      "alias": "+:frac"
+    },
+    {
+      "title": "e",
+      "text": "e"
+    },
+    {
+      "title": "pi",
+      "text": "&#960;"
+    },
+    {
+      "title": "hat",
+      "text": "&#8776;"
+    },
+    {
+      "title": "part",
+      "text": "&#8747;"
     }
   ]
 }

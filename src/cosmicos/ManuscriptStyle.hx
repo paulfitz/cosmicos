@@ -41,10 +41,13 @@ class ManuscriptStyle {
             out.push("");
             return;
         }
+        /*
         var lst = x.split(":");
         for (e in lst) {
             out.push(e);
         }
+        */
+        out.push(x);
         nws();
     }
 

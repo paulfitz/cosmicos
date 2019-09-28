@@ -15,7 +15,7 @@ cos.add("not | all-equal | vector 2 2 1");
 cos.add("not | all-equal | vector 2 1 2");
 cos.add("not | all-equal | vector 1 2 2");
 
-cos.add("define sum | crunch $+");
+cos.add("define sum | reduce $+");
 
 cos.add("intro i");
 cos.add("= (minus 1) | * $i $i");

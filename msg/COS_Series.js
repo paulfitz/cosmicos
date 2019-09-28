@@ -22,24 +22,23 @@ cos.add("= 4 | abs 4")
 cos.add("= 4 | abs | minus 4");
 
 cos.add("intro within");
-cos.add("define epsilon | frac 1 10000");
-cos.add("define within | ? t | ? x | ? y | < (abs | - $x $y) $t");
-cos.add("not | within $epsilon 1 2");
-cos.add("not | within $epsilon 2 1");
-cos.add("within $epsilon 2 2");
-cos.add("within $epsilon 2 | + 2 (frac $epsilon 2)");
-cos.add("not | within $epsilon 2 | + 2 (* $epsilon 2)");
+cos.add("define demo:epsilon | frac 1 10000");
+cos.add("define within | ? epsilon | ? x | ? y | < (abs | - $x $y) $epsilon");
+cos.add("not | within $demo:epsilon 1 2");
+cos.add("not | within $demo:epsilon 2 1");
+cos.add("within $demo:epsilon 2 2");
+cos.add("within $demo:epsilon 2 | + 2 (frac $demo:epsilon 2)");
+cos.add("not | within $demo:epsilon 2 | + 2 (* $demo:epsilon 2)");
 
 cos.add("intro range");
 cos.add(`
-define range | ? lo | ? hi |
-  if (<= $hi $lo) (list 0) |
-  prepend $lo | range (+ 1 $lo) $hi`);
-cos.add("= 6 | crunch $+ | range 0 4");
-cos.add("= 12 | crunch $+ | map (? x | * $x 2) | range 0 4");
+define range | ? x:- | ? x:+ |
+  if (<= $x:+ $x:-) (list 0) |
+  prepend $x:- | range (+ 1 $x:-) $x:+`);
+cos.add("= 6 | reduce $+ | range 0 4");
+cos.add("= 12 | reduce $+ | map (? x | * $x 2) | range 0 4");
 
 cos.add("intro even");
-cos.add("define even | ? x | = 0 | - $x | * 2 | div $x 2");
 cos.add("not | even 1");
 cos.add("even 2");
 cos.add("not | even 3");
@@ -55,21 +54,21 @@ cos.add("odd 5");
 
 cos.add("intro decimal");
 cos.add(`
-define float | ? lst | ? f | ? v |
-  if (= 0 | list-length | $lst ) 0 |
-  + (* $v | head $lst) |
-  float (tail $lst) $f (* $f $v)`);
-cos.add("define decimal | ? i | ? lst | + $i | float $lst (frac 1 10) (frac 1 10)");
-cos.add("within $epsilon (frac 1 3) | decimal 0 | (list 6) 3 3 3 3 3 3");
-cos.add("within $epsilon (frac 9 7) | decimal 1 | (list 6) 2 8 5 7 1 4");
+define float | ? x:list | ? y | ? z |
+  if (= 0 | list-length | $x:list) 0 |
+  + (* $z | head $x:list) |
+  float (tail $x:list) $y (* $y $z)`);
+cos.add("define decimal | ? x | ? x:list | + $x | float $x:list (frac 1 10) (frac 1 10)");
+cos.add("within $demo:epsilon (frac 1 3) | decimal 0 | (list 6) 3 3 3 3 3 3");
+cos.add("within $demo:epsilon (frac 9 7) | decimal 1 | (list 6) 2 8 5 7 1 4");
 
 cos.add("intro e");
-cos.add("define e-hat | crunch $+ | map (? x | frac 1 | factorial $x) | range 0 100");
-cos.add("within $epsilon $e $e-hat");
-cos.add("within $epsilon $e | decimal 2 | (list 5) 7 1 8 2 8")
+cos.add("define e:hat | reduce $+ | map (? x | frac 1 | factorial $x) | range 0 100");
+cos.add("within $demo:epsilon $e $e:hat");
+cos.add("within $demo:epsilon $e | decimal 2 | (list 5) 7 1 8 2 8")
 
 cos.add("intro pi");
-cos.add("define pi-term | ? x | frac (if (even $x) (minus 1) 1) | * (* $x 2) | * (+ 1 | * $x 2) (+ 2 | * $x 2)");
-cos.add("define pi-hat | + 3 | * 4 | crunch $+ | map $pi-term | range 1 100");
-cos.add("within $epsilon $pi $pi-hat");
-cos.add("within $epsilon $pi | decimal 3 | (list 10) 1 4 1 5 9 2 6 5 3 5");
+cos.add("define pi:part | ? x | frac (if (even $x) (minus 1) 1) | * (* $x 2) | * (+ 1 | * $x 2) (+ 2 | * $x 2)");
+cos.add("define pi:hat | + 3 | * 4 | reduce $+ | map $pi:part | range 1 100");
+cos.add("within $demo:epsilon $pi $pi:hat");
+cos.add("within $demo:epsilon $pi | decimal 3 | (list 10) 1 4 1 5 9 2 6 5 3 5");

@@ -3,15 +3,15 @@ cos.language(2);
 cos.seed(42);
 
 cos.add(`
-define list-i | ? n | ? ret |
+define list:n | ? n | ? ret |
   if (= $n 1) (? x | ret 1 $x) |
-  ? x | list-i (- $n 1) | ? y | ? z | ret (+ 1 $y) | cons $x $z`);
+  ? x | list:n (- $n 1) | ? y | ? z | ret (+ 1 $y) | cons $x $z`);
 
 // (list 0)  =>  (cons 0 0)
 // (list 1 x) => (cons 1 x)
 // (list 2 x y) => (cons 2 (cons x y))
 
-cos.add("define list | ? n | if (= $n 0) (cons 0 0) (list-i $n $cons)");
+cos.add("define list | ? n | if (= $n 0) (cons 0 0) (list:n $n $cons)");
 
 cos.add("intro undefined");
 cos.add("= $undefined $undefined");
@@ -20,16 +20,16 @@ cos.add("not | = $undefined 1");
 cos.add("not | = $undefined 2");
 
 cos.add(`
-define head | ? v |
-  if (= 0 | car $v) $undefined |
-  if (= 1 | car $v) (cdr $v) |
-  car | cdr $v`);
+define head | ? x:list |
+  if (= 0 | car $x:list) $undefined |
+  if (= 1 | car $x:list) (cdr $x:list) |
+  car | cdr $x:list`);
 
 cos.add(`
-define tail | ? v |
-  if (= 0 | car $v) $undefined |
-  if (= 1 | car $v) (cons 0 0) |
-  cons (- (car $v) 1) | cdr | cdr $v`);
+define tail | ? x:list |
+  if (= 0 | car $x:list) $undefined |
+  if (= 1 | car $x:list) (cons 0 0) |
+  cons (- (car $x:list) 1) | cdr | cdr $x:list`);
 
 for (var i=0; i<5; i++) {
     var len = cos.irand(10)+1;
@@ -70,10 +70,10 @@ for (var i=0; i<examples.length; i++) {
 
 
 cos.add(`
-define list-ref | ? v | ? n |
-  if (= 0 | car $v) $undefined |
-  if (= $n 0) (head $v) |
-  list-ref (tail $v) | - $n 1`);
+define list-ref | ? x:list | ? n |
+  if (= 0 | car $x:list) $undefined |
+  if (= $n 0) (head $x:list) |
+  list-ref (tail $x:list) | - $n 1`);
 
 for (var i=0; i<10; i++) {
     var len = cos.irand(10)+1;
@@ -131,9 +131,9 @@ for (var i=0; i<10; i++) {
 
 cos.add("intro prepend");
 
-cos.add(`define prepend | ? x | ? v |
-  cons (+ (car $v) 1)
-       (if (= (car $v) 0) $x | cons $x | cdr $v)`);
+cos.add(`define prepend | ? x | ? x:list |
+  cons (+ (car $x:list) 1)
+       (if (= (car $x:list) 0) $x | cons $x | cdr $x:list)`);
 
 for (var i=0; i<8; i++) {
     var len = i;
