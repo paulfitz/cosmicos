@@ -213,8 +213,12 @@
       "alias": "list:emerge"
     },
     {
+      "title": "function",
+      "alias": "?"
+    },
+    {
       "title": "function?",
-      "alias": "is:?"
+      "alias": "is:function"
     },
     {
       "title": "equal",
@@ -307,6 +311,58 @@
     {
       "title": "part",
       "text": "&#8747;"
+    },
+    {
+      "title": "translate",
+      "alias": "assign:function"
+    },
+    {
+      "title": "vector",
+      "text": "&#8858;"
+    },
+    {
+      "title": "find",
+      "text": "&#8240;"
+    },
+    {
+      "title": "last",
+      "alias": "list-ref:end"
+    },
+    {
+      "title": "except-last",
+      "alias": "list:not:end"
+    },
+    {
+      "title": "all",
+      "text": "&#8499;"
+    },
+    {
+      "title": "all-equal",
+      "alias": "=:all"
+    },
+    {
+      "title": "sum",
+      "alias": "reduce:+"
+    },
+    {
+      "title": "i",
+      "text": "i"
+    },
+    {
+      "title": "complex",
+      "alias": "i:contained"
+    },
+    {
+      "title": "contained",
+      "text": "&#2144;"
+    },
+    {
+      "title": "let",
+      "alias": "assign:list"
+    },
+    {
+      "title": "lambda",
+      "alias": "function:let"
     }
   ]
 }

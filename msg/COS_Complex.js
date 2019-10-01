@@ -6,10 +6,10 @@ cos.doc("# MATH introduce i");
 cos.doc("A very very abbreviated introduction of complex numbers");
 
 cos.add(`
-define all-equal | ? lst |
-  if (>= 1 | list-length $lst) $true |
-  and (= (list-ref $lst 0) (list-ref $lst 1))
-      (all-equal | tail $lst)`);
+define all-equal | ? x:list |
+  if (>= 1 | list-length $x:list) $true |
+  and (= (list-ref $x:list 0) (list-ref $x:list 1))
+      (all-equal | tail $x:list)`);
 cos.add("all-equal | vector 2 2 2");
 cos.add("not | all-equal | vector 2 2 1");
 cos.add("not | all-equal | vector 2 1 2");

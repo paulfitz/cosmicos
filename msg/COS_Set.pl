@@ -14,10 +14,9 @@ sub ShowSetLesson {
 			    Proc("lst",
 				 Op1("not",
 				     Op2("=",
-					 Op("list-find-helper",
+					 Op("list:find",
 					    Ref("lst"),
-					    Ref("x"),
-					    "1"),
+					    Ref("x")),
 					 "\$undefined"))))));
 
   for (my $i=0; $i<5; $i++)

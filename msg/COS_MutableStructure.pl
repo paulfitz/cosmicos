@@ -18,7 +18,7 @@ sub ShowMutableStructureLesson {
 			       Proc("key",
 				    Op("list-ref",
 				       Ref("data"),
-				       Op("list-find",
+				       Op("list:find",
 					  Ref("lst"),
 					  Ref("key"))))))));
 

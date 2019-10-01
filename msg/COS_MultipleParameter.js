@@ -3,18 +3,18 @@ const cos = require('./cosmic');
 
 cos.comment("SYNTAX lambda functions");
 cos.add("intro lambda");
-cos.add("define prev-translate $translate");
+cos.add("define translate:lambda:begin $translate");
 cos.add(`
 define translate |
-  let ((prev $prev-translate)) |
+  let ((x:translate $translate:lambda:begin)) |
   ? x |
-    if (single? $x) (prev $x) |
-    if (not | = lambda | head $x) (prev $x) |
-    let ((formals | head | tail $x)
-         (body | head | tail | tail $x)) |
-      if (= 0 | list-length $formals) (translate $body) |
-      translate | vector lambda (except-last $formals) |
-        vector ? (last $formals) $body`);
+    if (not | function? $x) (x:translate $x) |
+    if (not | = lambda | head $x) (x:translate $x) |
+    let ((x:list | head | tail $x)
+         (y | head | tail | tail $x)) |
+      if (= 0 | list-length $x:list) (translate $y) |
+      translate | vector lambda (except-last $x:list) |
+        vector ? (last $x:list) $y`);
 
 for (let i = 0; i < 5; i++) {
   const r2 = cos.irand(10);

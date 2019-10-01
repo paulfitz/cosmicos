@@ -6,12 +6,12 @@ cos.seed(42);
 
 cos.comment("MATH some more list functions");
 cos.add(`
-define list-find-helper | ? lst | ? key | ? idx |
-  if (= (list-length $lst) 0) $undefined |
-  if (equal (head $lst) $key) $idx |
-  list-find-helper (tail $lst) $key (+ $idx 1)`);
+define list:find:0 | ? x:list | ? y | ? n |
+  if (= (list-length $x:list) 0) $undefined |
+  if (equal (head $x:list) $y) $n |
+  list:find:0 (tail $x:list) $y (+ $n 1)`);
 
-cos.add("define list-find | ? lst | ? key | list-find-helper $lst $key 0");
+cos.add("define list:find | ? x:list | ? y | list:find:0 $x:list $y 0");
 
 for (var i=0; i<10; i++) {
     var len = cos.irand(10)+1;
@@ -31,7 +31,7 @@ for (var i=0; i<10; i++) {
     }
       
     cos.add(["=",
-	     ["list-find",
+	     ["list:find",
 	      cos.listVerbose(lst,true),
 	      val],
 	     idx2]);
@@ -42,7 +42,7 @@ for (var i=0; i<3; i++) {
     var head = lst[0];
     var tail = lst.slice(1);
     cos.add(["=",
-	     ["list-find",
+	     ["list:find",
 	      cos.listVerbose(tail,true),
 	      head],
 	     "$undefined"]);
