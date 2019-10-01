@@ -11,7 +11,7 @@ sub ShowPureLesson {
   $txt .= "# it would be better to use these as a parallel means of evaluation\n";
   $txt .= "# ... for expressions\n";
   $txt .= ShowLine(Op2("define",
-		       "pure-if",
+		       "pure:if",
 		       Proc(Lit("x"),
 			    Proc(Lit("y"),
 				 Proc(Lit("z"),
@@ -19,132 +19,132 @@ sub ShowPureLesson {
 					    Ref("y"),
 					    Ref("z")))))));
   $txt .= ShowLine(Op2("define",
-		       "pure-true",
+		       "pure:true",
 		       Proc(Lit("y"),
 			    Proc(Lit("z"),
 				 Apply("y")))));
   $txt .= ShowLine(Op2("define",
-		       "pure-false",
+		       "pure:false",
 		       Proc(Lit("y"),
 			    Proc(Lit("z"),
 				 Apply("z")))));
   $txt .= ShowLine(Op2("define",
-		       "pure-cons",
+		       "pure:cons",
 		       Proc(Lit("x"),
 			    Proc(Lit("y"),
 				 Proc(Lit("z"),
-				      Op("pure-if",
+				      Op("pure:if",
 					 Ref("z"),
 					 Ref("x"),
 					 Ref("y")))))));
   $txt .= ShowLine(Op2("define",
-		       "pure-car",
+		       "pure:car",
 		       Proc(Lit("x"),
 			    Apply(Lit("x"),
-				  Ref("pure-true")))));
+				  Ref("pure:true")))));
   $txt .= ShowLine(Op2("define",
-		       "pure-cdr",
+		       "pure:cdr",
 		       Proc(Lit("x"),
 			    Apply(Lit("x"),
-				  Ref("pure-false")))));
+				  Ref("pure:false")))));
   $txt .= ShowLine(Op2("define",
-		       "zero",
-		       Proc("f",
+		       "pure:0",
+		       Proc("y",
 			    Proc("x",Ref("x")))));
   $txt .= ShowLine(Op2("define",
-		       "one",
-		       Proc("f",
+		       "pure:1",
+		       Proc("y",
 			    Proc("x",
-				 Apply("f",
+				 Apply("y",
 				       Ref("x"))))));
   $txt .= ShowLine(Op2("define",
-		       "two",
-		       Proc("f",
+		       "pure:2",
+		       Proc("y",
 			    Proc("x",
-				 Apply("f",
-				       Apply("f",
+				 Apply("y",
+				       Apply("y",
 					     Ref("x")))))));
   $txt .= ShowLine(Op2("define",
-		       "succ",
+		       "pure:next",
 		       Proc(Lit("n"),
-			    Proc("f",
+			    Proc("y",
 				 Proc("x",
-				      Apply("f",
-					    Apply(Apply("n", Ref("f")),
+				      Apply("y",
+					    Apply(Apply("n", Ref("y")),
 						  Ref("x"))))))));
 
   $txt .= ShowLine(Op2("define",
-		       "add",
-		       Proc("a",
-			    Proc("b",
-				 Apply(Apply("a", Ref("succ")),
-				       Ref("b"))))));
+		       "pure:+",
+		       Proc("x",
+			    Proc("y",
+				 Apply(Apply("x", Ref("pure:next")),
+				       Ref("y"))))));
   $txt .= ShowLine(Op2("define",
-		       "mult",
-		       Proc("a",
-			    Proc("b",
-				 Apply(Apply("a", Op1("add", Ref("b"))),
-				       Ref("zero"))))));
+		       "pure:*",
+		       Proc("x",
+			    Proc("y",
+				 Apply(Apply("x", Op1("pure:+", Ref("y"))),
+				       Ref("pure:0"))))));
   $txt .= ShowLine(Op2("define",
-		       "pred",
-		       Proc("n",
-			    Op1("pure-cdr",
-				Apply(Apply("n",
-					    Proc("p",
-						 Op2("pure-cons",
-						     Op1("succ", 
-							 Op1("pure-car", Ref("p"))),
-						     Op1("pure-car", Ref("p"))))),
-				      Op2("pure-cons", Ref("zero"), Ref("zero")))))));
+		       "pure:prev",
+		       Proc("x:pure",
+			    Op1("pure:cdr",
+				Apply(Apply("x:pure",
+					    Proc("x:?",
+						 Op2("pure:cons",
+						     Op1("pure:next", 
+							 Op1("pure:car", Ref("x:?"))),
+						     Op1("pure:car", Ref("x:?"))))),
+				      Op2("pure:cons", Ref("pure:0"), Ref("pure:0")))))));
   $txt .= ShowLine(Op2("define",
-		       "is-zero",
-		       Proc("n",
-			    Apply(Apply("n",
-					Proc("dummy",
-					     Ref("pure-false")),
-					Ref("pure-true"))))));
+		       "pure:=:0",
+		       Proc("x:pure",
+			    Apply(Apply("x:pure",
+					Proc("y",
+					     Ref("pure:false")),
+					Ref("pure:true"))))));
 					
 
   $txt .= ShowLine(Op2("define",
 		       "fixed-point",
-		       Proc("f",
-			    Apply(Proc(Lit("x"),
-				       Apply("f",
-					     Apply("x",
-						   Ref("x")))),
-				  Proc(Lit("x"),
-				       Apply("f",
-					     Apply("x",
-						   Ref("x"))))))));
+		       Proc("x",
+			    Apply(Proc(Lit("y"),
+				       Apply("x",
+					     Apply("y",
+						   Ref("y")))),
+				  Proc(Lit("y"),
+				       Apply("x",
+					     Apply("y",
+						   Ref("y"))))))));
 
   $txt .= "# .. but for rest of message will assume that define does fixed-point for us\n";
 
   $txt .= "# now build a link between numbers and church number functions\n";
   $txt .= ShowLine(Op2("define",
-		       "unchurch",
-		       Proc("c",
-			    Op("c",
+		       "pure:int:get",
+		       Proc("y",
+			    Op("y",
 			       Proc("x", Op2("+", Ref("x"), 1)),
 			       0))));
   $txt .= ShowLine(Op2("=",
 		       0,
-		       Op1("unchurch", Ref("zero"))));
+		       Op1("pure:int:get", Ref("pure:0"))));
   $txt .= ShowLine(Op2("=",
 		       1,
-		       Op1("unchurch", Ref("one"))));
+		       Op1("pure:int:get", Ref("pure:1"))));
   $txt .= ShowLine(Op2("=",
 		       2,
-		       Op1("unchurch", Ref("two"))));
+		       Op1("pure:int:get", Ref("pure:2"))));
   $txt .= ShowLine(Op2("define",
-		       "church",
+		       "int:pure:get",
 		       Proc("x",
 			    Op("if",
 			       Op2("=",
 				   0,
 				   Ref("x")),
-			       Ref("zero"),
-			       Op1("succ",
-				   Op1("church",
+			       Ref("pure:0"),
+			       Op1("pure:next",
+				   Op1("int:pure:get",
 				       Op2("-", Ref("x"), 1)))))));
 
 

@@ -98,11 +98,11 @@
     },
     {
       "title": "false",
-      "text": "&#9178;"
+      "text": "&#9178;&#xFE0E;"
     },
     {
       "title": "true",
-      "text": "&#9786;"
+      "text": "&#9786;&#xFE0E;"
     },
     {
       "title": "begin",
@@ -179,6 +179,10 @@
     {
       "title": "get!",
       "alias": "make-cell:emerge"
+    },
+    {
+      "title": "get",
+      "alias": "emerge"
     },
     {
       "title": "list",
@@ -363,6 +367,30 @@
     {
       "title": "lambda",
       "alias": "function:let"
+    },
+    {
+      "title": "pure",
+      "text": "&#8905;"
+    },
+    {
+      "title": "next",
+      "text": "&#8724;"
+    },
+    {
+      "title": "prev",
+      "text": "&#8723;"
+    },
+    {
+      "title": "fixed-point",
+      "alias": "function:function:function:function"
+    },
+    {
+      "title": "forall",
+      "text": "&#8704;"
+    },
+    {
+      "title": "exists",
+      "text": "&#8707;"
     }
   ]
 }
