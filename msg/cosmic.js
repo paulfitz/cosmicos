@@ -168,5 +168,11 @@ CosWrite.prototype.listExpression = function(lst) {
   return this.stringify(this.listVerbose(lst, true));
 }
 
+CosWrite.prototype.vector = function(lst,wrap) {
+  const result = "vector " + lst.map(x => String(x)).join(" ");
+  if (wrap) { return `(${result})`; }
+  return result;
+}
+
 
 module.exports = new CosWrite();

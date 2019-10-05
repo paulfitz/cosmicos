@@ -187,7 +187,7 @@
 		  (set! (contents) (remove-element (x) (get! (contents))))))
 	       ((= (msg) =)
 		(lambda ((c container))
-		  (set= (self inventory) (c inventory))))
+		  (set:= (self inventory) (c inventory))))
 	       0))))));
 
 # Can pass anything to container function to create an object
@@ -198,9 +198,9 @@
 (pocket add 77);
 (pocket add 88);
 (pocket add 99);
-(set= (pocket inventory) (vector 77 88 99));
+(set:= (pocket inventory) (vector 77 88 99));
 (pocket remove 88);
-(set= (pocket inventory) (vector 77 99));
+(set:= (pocket inventory) (vector 77 99));
 
 (define pocket2 (container new));
 (pocket2 add 77);

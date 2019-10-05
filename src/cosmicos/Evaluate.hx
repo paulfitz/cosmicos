@@ -280,7 +280,7 @@ class Evaluate {
         vocab.check("set!",28);
         vocab.check("get!",29);
         vocab.check("all",30);
-        vocab.check("natural-set",31);
+        vocab.check("set:int:+",31);
         vocab.check("undefined",32);
         vocab.check("!",33);
         vocab.check("div",34);
@@ -364,7 +364,7 @@ class Evaluate {
                 function(x) {
                     return Math.sqrt(x);
                 });
-        mem.add(vocab.get("natural-set"), 
+        mem.add(vocab.get("set:int:+"), 
                 mem.get(vocab.get("all"))(function (x) { return x>=0; }));
         mem.add(vocab.get("div"), function(x:Dynamic){ 
                 return function(y:Dynamic) : Dynamic { 

@@ -391,6 +391,14 @@
     {
       "title": "exists",
       "text": "&#8707;"
+    },
+    {
+      "title": "element",
+      "alias": "list:in"
+    },
+    {
+      "title": "set",
+      "text": "&#936;"
     }
   ]
 }

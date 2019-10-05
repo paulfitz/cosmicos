@@ -149,8 +149,8 @@ for (var i=0; i<8; i++) {
 
 
 cos.add("define pair | list 2");
-cos.add("define first | ? lst | head $lst");
-cos.add("define second | ? lst | head | tail $lst");
+cos.add("define first | ? x:list | head $x:list");
+cos.add("define second | ? x:list | head | tail $x:list");
 
 
 var examples = cos.prand(10,3);
