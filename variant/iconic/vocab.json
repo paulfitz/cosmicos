@@ -447,6 +447,10 @@
     {
       "title": "make-hash",
       "alias": "hash:make"
+    },
+    {
+      "title": "mutable-struct",
+      "alias": "cell:hash"
     }
   ]
 }

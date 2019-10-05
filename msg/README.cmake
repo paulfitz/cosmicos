@@ -36,7 +36,6 @@ set(COSMIC_DEPENDS
   COS_Begin
   COS_Hash
   COS_MutableStructure
-  COS_Method
   COS_Turing
   COS_NewType
   COS_CommentBase2
