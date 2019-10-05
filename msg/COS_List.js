@@ -57,3 +57,11 @@ define except-last | ? x |
   prepend (head $x) | except-last | tail $x`);
 cos.add("= 15 | last | vector 4 5 15");
 cos.add("list= (vector 4 5) | except-last | vector 4 5 15");
+
+cos.add(`intro list:reverse`);
+cos.add(`define list:reverse | ? x:list |
+  if (<= (list-length $x:list) 1) $x:list |
+  prepend (last $x:list) | list:reverse | except-last $x:list`);
+
+cos.add(`list= (list:reverse | vector 1 2 3) (vector 3 2 1)`);
+cos.add(`list= (list:reverse | vector 50 1 33 99) (vector 99 33 1 50)`);

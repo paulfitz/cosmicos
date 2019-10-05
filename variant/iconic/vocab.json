@@ -117,8 +117,16 @@
       "text": "&#9655;"
     },
     {
-      "title": "make-cell",
+      "title": "make",
       "text": "&#9734;"
+    },
+    {
+      "title": "cell",
+      "text": "&#952;"
+    },
+    {
+      "title": "make-cell",
+      "alias": "cell:make"
     },
     {
       "title": "emerge",
@@ -174,11 +182,11 @@
     },
     {
       "title": "set!",
-      "alias": "make-cell:assign"
+      "alias": "cell:assign"
     },
     {
       "title": "get!",
-      "alias": "make-cell:emerge"
+      "alias": "cell:emerge"
     },
     {
       "title": "get",
@@ -399,6 +407,46 @@
     {
       "title": "set",
       "text": "&#936;"
+    },
+    {
+      "title": "graph",
+      "text": "&#8362;"
+    },
+    {
+      "title": "linked",
+      "text": "&#8645;"
+    },
+    {
+      "title": "reverse",
+      "text": "&#8979;"
+    },
+    {
+      "title": "hash",
+      "text": "&#9618;"
+    },
+    {
+      "title": "hash-add",
+      "alias": "hash:+"
+    },
+    {
+      "title": "hash-ref",
+      "alias": "hash:get"
+    },
+    {
+      "title": "hash-null",
+      "alias": "hash:0"
+    },
+    {
+      "title": "default",
+      "text": "&#9688;"
+    },
+    {
+      "title": "hash-default",
+      "alias": "hash:default"
+    },
+    {
+      "title": "make-hash",
+      "alias": "hash:make"
     }
   ]
 }

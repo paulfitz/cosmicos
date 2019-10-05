@@ -174,5 +174,8 @@ CosWrite.prototype.vector = function(lst,wrap) {
   return result;
 }
 
+CosWrite.prototype.header = function(section, header) {
+    console.log(`# ${section} ${header}`);  
+}
 
 module.exports = new CosWrite();

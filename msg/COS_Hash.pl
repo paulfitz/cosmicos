@@ -10,15 +10,15 @@ sub ShowHashLesson {
   $txt .= "# note that at the time of writing (h 1 2) is same as ((h) 1 2)\n";
   $txt .= ShowLine(Op2("define",
 		       "hash-add",
-		       ProcMultiple(["h","x","y","z"],
+		       ProcMultiple(["x:hash","x","y","z"],
 				    Op("if",
 				       Op2("equal",Ref("z"),Ref("x")),
 				       Ref("y"),
-				       Op("h", Ref("z"))))));
+				       Op("x:hash", Ref("z"))))));
   $txt .= ShowLine(Op2("define",
 		       "hash-ref",
-		       ProcMultiple(["h","x"],
-				    Op("h", Ref("x")))));
+		       ProcMultiple(["x:hash","x"],
+				    Op("x:hash", Ref("x")))));
 
   $txt .= ShowLine(Op2("define",
 		       "hash-null",
@@ -30,7 +30,7 @@ sub ShowHashLesson {
 			    Proc("x",Ref("default")))));
   
   $txt .= ShowLine(Op2("define",
-		       "test-hash",
+		       "demo:hash",
 		       Op("hash-add",
 			  Op("hash-add",
 			     Ref("hash-null"),
@@ -40,32 +40,32 @@ sub ShowHashLesson {
 
   $txt .= ShowLine(Op2("=",
 		       Op("hash-ref",
-			  Ref("test-hash"),
+			  Ref("demo:hash"),
 			  4),
 		       9));
 			
   $txt .= ShowLine(Op2("=",
 		       Op("hash-ref",
-			  Ref("test-hash"),
+			  Ref("demo:hash"),
 			  3),
 		       2));
 			
   $txt .= ShowLine(Op2("=",
 		       Op("hash-ref",
-			  Ref("test-hash"),
+			  Ref("demo:hash"),
 			  8),
 		       Ref("undefined")));
 			
   $txt .= ShowLine(Op2("=",
 		       Op("hash-ref",
-			  Ref("test-hash"),
+			  Ref("demo:hash"),
 			  15),
 		       Ref("undefined")));
 			
   $txt .= ShowLine(Op2("=",
 		       Op("hash-ref",
 			  Op("hash-add",
-			     Ref("test-hash"),
+			     Ref("demo:hash"),
 			     15,
 			     33),
 			  15),
@@ -73,7 +73,7 @@ sub ShowHashLesson {
 			
   $txt .= ShowLine(Op2("=",
 		       Op("hash-ref",
-			  Ref("test-hash"),
+			  Ref("demo:hash"),
 			  15),
 		       Ref("undefined")));
 
