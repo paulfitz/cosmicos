@@ -451,6 +451,22 @@
     {
       "title": "mutable-struct",
       "alias": "cell:hash"
+    },
+    {
+      "title": "tape",
+      "text": "&#10228;"
+    },
+    {
+      "title": "do",
+      "text": "&#9876;"
+    },
+    {
+      "title": "result",
+      "text": "&#10085;"
+    },
+    {
+      "title": "current",
+      "text": "&#10573;"
     }
   ]
 }
