@@ -207,8 +207,6 @@ cos.add(`define class-cond | lambda (name args fields) | prepend cond | list-app
   (custom-class-methods $name $args $fields)
   (standard-class-methods $name)`);
 
-cos.add(`= 1 1`);
-
 cos.add(`define translate | assign prev $translate | ? x |
   if (not | function? $x) (prev $x) |
   if (not | = class | head $x) (prev $x) |
@@ -233,8 +231,6 @@ cos.add(`define translate-google | assign prev $translate | ? xx |
        (args | list-ref $xx 2)
        (fields | tail | tail | tail $xx)) |
     translate | quote @@ | + 1 1`);
-
-cos.add(`= 1 1`);
 
 cos.add(`class point (x y)
   (method x $x)

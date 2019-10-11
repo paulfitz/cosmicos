@@ -112,7 +112,7 @@ foreach my $l (@line) {
 	my $y1 = $ymid-$dy;
 	my $x2 = $xmid+$dx;
 	my $y2 = $ymid+$dy;
-	my $v2 = $v?"(true)":"(false)";
+	my $v2 = $v?"\$true":"\$false";
 	print "\n  (vector $x1 $y1 $x2 $y2 $v2)";
     }
 }
@@ -138,6 +138,6 @@ for (my $y=0; $y<$d1; $y++) {
 print ");\n";
 
 
-print "(equal (CIRCUIT_NAME_gate) (distill-circuit (CIRCUIT_NAME_image)));\n";
+print "(equal \$CIRCUIT_NAME_gate | distill-circuit \$CIRCUIT_NAME_image);\n";
 
 #print "(distill-circuit (CIRCUIT_NAME_image));\n";

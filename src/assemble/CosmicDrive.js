@@ -135,7 +135,8 @@ CosmicDrive.prototype.complete_stanza = function(stanza, can_run) {
 
     var statement = this.complete_stanza_core(null, part, can_run);
     var v = statement.content[0];
-
+    console.log("  ", v);
+  
     if (op.indexOf("demo ")==0) {
         var backtrack = statement.copy();
         run.decode(backtrack);
