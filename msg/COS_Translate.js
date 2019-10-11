@@ -19,4 +19,3 @@ define translate | ? x |
   if (not | = vector | head $x) (translate:begin $x) |
   translate | prepend ((list 2) list | list-length | tail $x) | tail $x`);
 cos.add("list= (vector 1 2 3) | (list 3) 1 2 3");
-

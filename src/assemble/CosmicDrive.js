@@ -198,8 +198,14 @@ CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
     if (!this.cosmicos.Parse.softCompare(zing.content, parsed2.content)) {
       throw new Error('code fails round-trip test');
     }
-    var result = this.rawEval.evaluateLine(recoveredStatement.content[0]);
-    return new this.cosmicos.Statement(result);
+    try {
+      run.encode(statement);
+      return statement;
+      // var result = this.rawEval.evaluateLine(recoveredStatement.content[0]);
+      // return new this.cosmicos.Statement(result);
+    } catch(e) {
+      throw e;
+    }
 }
 
 CosmicDrive.prototype.add_line_numbers = function() {
