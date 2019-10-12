@@ -219,18 +219,9 @@ cos.add(`define translate | assign prev $translate | ? x |
                        (map $tail | select-match (? x | = field | first $x) $fields)) |
           let ((self | reflective | lambda (self) |
             let ((this | setup-this $ext-this $self)) |
-              let ((ignore-this 1)) |
-                lambda (method) |
-                   @@ class-cond $name $args $fields)) |
+              lambda (method) |
+                 @@ class-cond $name $args $fields)) |
             begin (self new) $self`);
-
-cos.add(`define translate-google | assign prev $translate | ? xx |
-  if (not | function? $xx) (prev $xx) |
-  if (not | = class | head $xx) (prev $xx) |
-  let ((name | list-ref $xx 1)
-       (args | list-ref $xx 2)
-       (fields | tail | tail | tail $xx)) |
-    translate | quote @@ | + 1 1`);
 
 cos.add(`class point (x y)
   (method x $x)
@@ -255,25 +246,6 @@ cos.add(`instanceof point $point1`);
 cos.add(`not | instanceof int $point1`);
 cos.add(`instanceof int 5`);
 cos.add(`not | instanceof point 5`);
-
-if (false) {
-  cos.doc(`For some reason I fool around with making virtual calls here.  I don't remember why,
-and I don't understand the code any more.`);
-
-  cos.add(`class c1 ()
-  (method getid 100)
-  (method altid | this getid)`);
-
-  cos.add(`class c2 ()
-  (field super-ref | make-cell 0)
-  (method new | set! $super-ref | c1 $this)
-  (method super | ? x | (get! $super-ref) $x)
-  (method unknown | ? x | self super $x)
-  (method getid 200)`);
-
-  cos.add(`= 100 | c1 new altid`);
-  cos.add(`= 200 | c2 new altid`);
-}
 
 cos.header('OBJECT', 'wrapper class for cells');
 
