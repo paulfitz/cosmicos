@@ -2,7 +2,7 @@
 # JAVA check that automatic conversion is workable
 
 
-(define test1 (COS_JavaTest new));
+(define test1 | COS_JavaTest new);
 
 # Note that the names of methods include type information.
 # This could easily be removed, but is retained so that overloading

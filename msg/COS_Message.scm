@@ -17,20 +17,18 @@
 # form as "translate" functions expect.
 # This means that there is, for now, no
 # distinction between unary or binary,
-# and the "/" structure is expanded.
+# and the "|" structure is expanded.
 
 (intro primer);
 
 # this line is referred to later - change/move carefully
-(equal (list-ref (primer) 0) (vector intro unary));
-(equal (list-ref (primer) 1) (vector intro is:int));
-(equal (list-ref (primer) 2) (vector is:int (vector unary 0)));
-(equal (list-ref (primer) 3) (vector is:int (vector unary 1 0)));
-(assign idx (list:find (primer) (vector intro primer))
-	(equal (list-ref (primer) (+ (idx) 1))
-	       (vector equal
-		       (vector list-ref (vector primer) 0)
-		       (vector vector intro unary))));
+(equal (list-ref $primer 0) | vector intro unary);
+(equal (list-ref $primer 1) | vector intro is:int);
+(equal (list-ref $primer 2) | vector is:int | vector unary 0);
+(equal (list-ref $primer 3) | vector is:int | vector unary 1 0);
+(assign idx (list:find $primer | vector intro primer) |
+  equal (list-ref $primer | + $idx 1) |
+    quote @@ | equal (list-ref $primer 0) | vector intro unary);
 
 # Now, we could return to the MUD, simulate an agent A
 # transferring a copy of the primer to another agent B,

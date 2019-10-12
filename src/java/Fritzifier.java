@@ -50,11 +50,6 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
     }
 
     private static String fritzMethodName(String param) {
-	//param = param.replace('(','-');
-	//param = param.replace(')','-');
-	//if (param.equals("--V")) {
-	//  param = "";
-	//}
 	StringBuffer result = new StringBuffer("");
 	StringBuffer type = new StringBuffer("");
 	int mode = 0;
@@ -108,20 +103,12 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 	Pattern p = Pattern.compile("(.+)\\/([^\\/]+)\\((.*)\\)(.*)");
 	Matcher m = p.matcher(sig);
 	if (m.find()) {
-	    if (false) { // old style
-		minimal.append(m.group(2));
-		minimal.append(" ");
-		minimal.append(fritzCountParam(m.group(3)));
-		minimal.append(" ");
-		minimal.append((m.group(4).toString().equals("V"))?"0":"1");
-	    } else {
-		minimal.append(m.group(2));
-		minimal.append(fritzMethodName("(" + m.group(3).toString() + ")" + m.group(4).toString()));
-		minimal.append(" ");
-		minimal.append(fritzCountParam(m.group(3)));
-		minimal.append(" ");
-		minimal.append((m.group(4).toString().equals("V"))?"0":"1");
-	    }
+            minimal.append(m.group(2));
+            minimal.append(fritzMethodName("(" + m.group(3).toString() + ")" + m.group(4).toString()));
+            minimal.append(" ");
+            minimal.append(fritzCountParam(m.group(3)));
+            minimal.append(" ");
+            minimal.append((m.group(4).toString().equals("V"))?"0":"1");
 	}
 	return minimal.toString();
     }
@@ -189,7 +176,6 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 	for (int i=1; i<desc.length(); i++) {
 	    if (desc.charAt(i)==' ') {
 		String item = desc.substring(first,i);
-		//item = item.replaceAll("/",".");
 		String result = item;
 		if (op) {
 		    opcode = item;
@@ -235,11 +221,9 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 		s2.append(new Integer((int)(s.charAt(i))).toString());
 	    }
 	    m.appendReplacement(sb,"(String new int-init \"" + s.toString() + "\")");
-	    //m.appendReplacement(sb,"(string / vector" + s2.toString() + ")");
 	}
 	m.appendTail(sb);
 	out = sb;
-	//out.append("["+name+"]");
 	return out.toString();
     }
 
@@ -253,7 +237,6 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 
     public void visitJavaClass(JavaClass clazz) {
 	out.println("# JAVA class translation '" + clazz.getClassName() + "'");
-	//out.println("# " + new Date());
 	out.println("# Produced by Fritzifier, based on JasminVisitor");
 	out.println("# Using BCEL library to read Java bytecode");
 	out.println("# Here is the original code:");
@@ -267,12 +250,10 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 	    out.println("   (implement " + fritzName(interfaces[i].toString()) + ")");
 	}
 
-	//out.println("   (field super (" + fritzName(clazz.getSuperclassName()) + " new))");
-	//out.println("   (method unknown (lambda (x) (super (x))))");
-	out.println("   (field super-ref (make-cell 0))");
-	out.println("   (method new (set! (super-ref) (" + fritzName(clazz.getSuperclassName()) + " | this)))");
-	out.println("   (method super (? x | (get! | super-ref) | x))");
-	out.println("   (method unknown (? x | self super | x))");
+	out.println("   (field super-ref | make-cell 0)");
+	out.println("   (method new | set! $super-ref | " + fritzName(clazz.getSuperclassName()) + " $this)");
+	out.println("   (method super | ? x | (get! $super-ref) $x)");
+	out.println("   (method unknown | ? x | self super $x)");
     }
 
     public void visitField(Field field) {
@@ -281,12 +262,10 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 	// This should just condition on
 	// whether we're dealing with a reference or a primitive
 	if (name.indexOf("COS_")==0||fname.equals("(java lang String)")) {
-	    out.println("   (field " + field.getName() + " (cell new 0))");
-	    //out.println("   (field " + field.getName() + " (cell new / " + 
-	    //	fritzName(field.getType().toString()) +" new))");
+	    out.println("   (field " + field.getName() + " | cell new 0)");
 	} else {
-	    out.println("   (field " + field.getName() + " (" + 
-			fritzName(field.getType().toString()) +" new))");
+	    out.println("   (field " + field.getName() + " | " + 
+			fritzName(field.getType().toString()) +" new)");
 	}
     }
 
@@ -298,7 +277,7 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
     
     private void altMethodName() {
 	if (!methods.containsKey(method.getName())) {
-	    out.println("   (method " + method.getName() + " (self " + method.getName() + fritzMethodName(method.getSignature()) + "))\n");
+	    out.println("   (method " + method.getName() + " | self " + method.getName() + fritzMethodName(method.getSignature()) + ")\n");
 	    methods.put(method.getName(),"done");
 	}
     }
@@ -324,7 +303,6 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 
     public void visitMethod(Method method) {
 	out.println("   (method " + method.getName() + fritzMethodName(method.getSignature()));
-	//out.println("   (method " + method.getName() + "[" + method.getSignature() + ":" + fritzMethodName(method.getSignature()) + "]");
 	this.method = method; // Remember for use in subsequent visitXXX calls
 	Attribute[] attributes = method.getAttributes();
 	if((attributes == null) || (attributes.length == 0)) {
@@ -347,9 +325,6 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 
     public void visitCode(Code code) {
 	int label_counter = 0;
-
-	//out.println("      (limit stack " + code.getMaxStack() + ")");
-	//out.println("      (limit locals " + code.getMaxLocals() + ")");
 
 	MethodGen           mg  = new MethodGen(method, class_name, cp);
 	InstructionList     il  = mg.getInstructionList();
@@ -402,14 +377,6 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 	    put(ih, "Label" + label_counter++ + ":");	
 	}
 
-	/*
-	  LineNumberGen[] lns = mg.getLineNumbers();
-	  for(int i=0; i < lns.length; i++) {
-	  InstructionHandle ih = lns[i].getInstruction();
-	  put(ih, ".line " + lns[i].getSourceLine());
-	  }
-	*/
- 
 	/* Pass 2: Output code.
 	 */
 	out.print("     (lambda (");
@@ -418,11 +385,6 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 
 	    if (i>1) { out.print(" "); }
 	    out.print(l.getName());
-	    //out.print("(" + l.getName() + " " +
-	    //	fritzName(l.getType().toString()) +  ")");
-
-	    //out.println("      (var " + l.getIndex() + " " + l.getName() + " " +
-			//fritzName(l.getType().toString()) +  ")");
 	}
 	out.println(") |");
 	out.println("      let ((vars | cell new | make-hash | vector");
@@ -433,31 +395,20 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 	    if (s.equals("this")) {
 		s = "self";
 	    }
-	    out.print(" (pair " + l.getIndex() + " (" + s + "))");
-	    //out.println("      (var " + l.getIndex() + " " + l.getName() + " " +
-	    //	fritzName(l.getType().toString()) +  ")");
-	    //out.println("      (var " + l.getIndex() + " " + l.getName() + " " +
-			//fritzName(l.getType().toString()) +  ")");
+	    out.print(" (pair " + l.getIndex() + " $" + s + ")");
 	}
 	out.println(")");
 	out.println("           (stack | cell new | vector)) |");
 
-	out.println("      state-machine (vars) (stack) | ? jvm | ? x | cond");
+	out.println("      state-machine $vars $stack | ? jvm | ? x | cond");
 
 	for(int i=0; i < ihs.length; i++) {
 	    InstructionHandle ih   = ihs[i];
 	    Instruction       inst = ih.getInstruction();
 	    String            str  = (String)map.get(ih);
 
-	    String pre = "((= (x) " + i + ") ";
+	    String pre = "((= $x " + i + ") ";
 	    String post = ")";
-
-	    /*
-	    if(str != null) {
-		out.println("         " + pre + "(label " + str.replaceAll(":","") + ")" + post);
-		//out.println(str);
-	    }
-	    */
 
 	    if(inst instanceof BranchInstruction) {
 		String desc = "";
@@ -491,9 +442,7 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 	    }
 	    else {
 		String desc = inst.toString(cp.getConstantPool());
-		//foo = foo.replaceAll(" ([^ ]*)\\(([^ ]*)\\)([^ ]*)", " :$1:$2:$3");
 		desc = fritzInstruction(desc);
-		//out.println("         (" + inst.toString(cp.getConstantPool()) + ")");	  
 		out.println("         "+pre+"(jvm " + desc + ")"+post);
 	    }
 	}
