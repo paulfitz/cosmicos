@@ -59,7 +59,7 @@ add_custom_command(OUTPUT ${WORK}/CosmicEval.js
 add_custom_command(OUTPUT ${WORK}/SpiderScrawl.js
   COMMAND ${HAXE} -js SpiderScrawl.js -main cosmicos.SpiderScrawl -cp ${SRC}
   WORKING_DIRECTORY ${WORK}
-  DEPENDS ${SRC}/cosmicos/SpiderScrawl.hx)
+  DEPENDS ${SRC}/cosmicos/SpiderScrawl.hx ${SRC}/cosmicos/GlyphCode.hx)
 
 add_custom_command(OUTPUT ${WORK}/OghamStyle.js
   COMMAND ${HAXE} -js OghamStyle.js -main cosmicos.OghamStyle -cp ${SRC}
@@ -70,8 +70,7 @@ add_custom_target(jshelpers ALL DEPENDS
   ${WORK}/CosmicAudio.js
   ${WORK}/CosmicEval.js
   ${WORK}/SpiderScrawl.js
-  ${WORK}/OghamStyle.js
-)
+  ${WORK}/OghamStyle.js)
 
 
 
@@ -114,6 +113,7 @@ FILE(WRITE ${WORK}/setup.cmake "
   set(ENCODER \"${FritzifierLoc}\")
   set(BCEL \"${BCEL_JAR}\")
   set(NODE \"${NODE}\")
+  set(TSNODE \"${CMAKE_SOURCE_DIR}/node_modules/.bin/ts-node\")
 ")
 
 set(ACTIVE_DEPENDS)
@@ -248,15 +248,16 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/assets/icons/spider)
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/assets/fonts/spider)
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/assets/fonts/spider/cosmic_spider.ttf
   COMMAND ${CMAKE_COMMAND} 
-  "-Din:STRING=${CMAKE_SOURCE_DIR}/src/font/generate_glyphs.js" 
+  "-Din:STRING=${CMAKE_SOURCE_DIR}/src/font/generate_glyphs.ts" 
   "-Dnargs:STRING=${CMAKE_BINARY_DIR}/assets"
   "-Dlog:STRING=spider"
-  -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/node.cmake
+  -P ${CMAKE_CURRENT_SOURCE_DIR}/cmake/typescript.cmake
   WORKING_DIRECTORY ${WORK}
   DEPENDS
   ${WORK}/SpiderScrawl.js
   ${CMAKE_SOURCE_DIR}/src/font/glyphs_to_svg.sh
-  ${CMAKE_SOURCE_DIR}/src/font/generate_glyphs.js)
+  ${CMAKE_SOURCE_DIR}/src/font/OctoGlyph.ts
+  ${CMAKE_SOURCE_DIR}/src/font/generate_glyphs.ts)
 
 add_custom_target(spider DEPENDS ${CMAKE_BINARY_DIR}/assets/fonts/spider/cosmic_spider.ttf)
 

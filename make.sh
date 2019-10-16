@@ -24,7 +24,8 @@ fi
 
 # start a container in the background, just to make builds more responsive
 docker ps -f name=cosmicos_build | grep -q cosmicos || {
-  docker run -dit --rm $args --name cosmicos_build -v $PWD:/cosmicos paulfitz/cosmicos_builder /bin/bash
+  docker run --rm --name cosmicos_build -v $PWD:/cosmicos paulfitz/cosmicos_builder src/prepare_node.sh
+  docker run -dit --rm $args --name cosmicos_build -v $PWD:/cosmicos -v $PWD/node_modules_docker:/cosmicos/node_modules paulfitz/cosmicos_builder /bin/bash
 }
 
 # run our actual build command, finally

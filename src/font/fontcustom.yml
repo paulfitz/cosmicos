@@ -20,7 +20,6 @@ quiet: false
 
 input:
   vectors: ../vectors
-#  templates: app/assets/fonts/fontcustom/templates
 
 
 # --------------------------------------------------------------------------- #
@@ -31,7 +30,6 @@ output:
   fonts: app/assets/fonts                              # required
   css: app/assets/stylesheets
   preview: app/views/styleguide
-  #my-custom-template.yml: path/to/template/output
 
 
 # --------------------------------------------------------------------------- #
@@ -44,4 +42,3 @@ output:
 templates:
  - scss
  - preview
- #- my-custom-template.yml

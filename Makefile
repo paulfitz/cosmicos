@@ -5,7 +5,7 @@ help:
 	./make.sh help
 
 dock:
-	cd docker && docker build -t paulfitz/cosmicos_builder .
+	cd docker && cp ../package.json . && docker build -t paulfitz/cosmicos_builder .
 
 %:
 	./make.sh $*

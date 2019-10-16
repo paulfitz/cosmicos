@@ -10,6 +10,9 @@ var stop_phrase = "";
 var wrap = false;
 var comments = true;
 
+const vowels = ['a', 'i', 'o', 'e'];
+const consonants = ['t', 's', 'p', 'k', 'd', 'z', 'b', 'g'];
+
 function needStanza() {
     if (stanza==-1) {
 	throw "Please specify a message part with -p NNNN";
@@ -54,8 +57,9 @@ function expand(e, letters, acks) {
 }
 
 function showSpider(root,src) {
-    var cos = require(root + "/src/SpiderScrawl").cosmicos;
-    var ss = new cos.SpiderScrawl(null,0,0);
+  var cos = require(root + "/src/SpiderScrawl").cosmicos;
+  var mode = 'octo';
+    var ss = new cos.GlyphCode(mode);
     var path = root + "/assets/fonts/spider/";
     if (wrap) {
 	process.stdout.write("<!DOCTYPE html>\
@@ -91,17 +95,45 @@ function showSpider(root,src) {
   word-break: break-all; \
   background: white; \
   color: blue; \
+  width: 100vw; \
 } \
  p { \
   margin: 0; \
-  padding: 0; \
   padding: 5px; \
+  display: block; \
+} \
+ p, .scrawl { \
+  overflow-wrap: break-word; \
+  word-wrap: break-word; \
+  word-break: break-word; \
+  letter-spacing: 2px; \
 } \
 </style>\
   </head>\
   <body>\
 ");
     }
+  if (mode === 'octo') {
+    const mappings = [];
+    for (let i=0; i<64; i++) {
+      ss.reset();
+      const txt = ss.addString("2" + i.toString(2) + "3");
+      const vowel = vowels[i & 0x3];
+      const consonant = consonants[(i & 0x38) >> 3];
+      const nasal = (i & 0x4) ? 'n' : '';
+      const latin = consonant + vowel + nasal;
+      mappings.push({i, txt, latin});
+    }
+    mappings.push({i: '(1)', txt: ss.addString('22133'), latin: 'du ti bu'});
+    mappings.push({i: '(1|0)', txt: ss.addString('22131232033'), latin: 'du ti gu ta bu'});
+    mappings.push({i: '($1)', txt: ss.addString('20232133'), latin: 'du suti bu'});
+    mappings.push({i: '1~', txt: ss.addString('2132233'), latin: 'ti zun'});
+    process.stdout.write("<table>\n");
+    for (const {i, latin, txt} of mappings) {
+      process.stdout.write(`<tr><td>${i}</td><td>${latin}</td><td class=scrawl>${txt}</td></tr>\n`);
+    }
+    process.stdout.write("</table>\n");
+  }
     for (var s=stanza; s<=last_stanza; s++) {
       var m = msg[s];
       if (!m) continue;

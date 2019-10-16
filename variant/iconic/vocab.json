@@ -2,15 +2,18 @@
   "vocab": [
     {
       "title": "<",
-      "text": "<"
+      "text": "<",
+      "flat": "komgo"
     },
     {
       "title": ">",
-      "text": ">"
+      "text": ">",
+      "flat": "kompa"
     },
     {
       "title": "*",
-      "text": "*"
+      "text": "*",
+      "flat": ""
     },
     {
       "title": "+",

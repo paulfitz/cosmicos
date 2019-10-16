@@ -20,8 +20,17 @@ class SpiderScrawl {
     private var q : String;
     private var last4 : String;
 
-    public function new(im : SpiderImage, ww: Int, hh: Int,
+    public function new(im : SpiderImage = null, ww: Int = 32, hh: Int = 32,
                         w: Int = 32, h: Int = 32) {
+        if (im != null || ww != 32) {
+            this.attach(im, ww, hh, w, h);
+        }
+    }
+
+    public function attach(im : SpiderImage, ww: Int, hh: Int,
+                        w: Int = 0, h: Int = 0) {
+        if (w == 0) { w = ww; }
+        if (h == 0) { h = hh; }
         this.im = im;
         this.ww = ww;
         this.hh = hh;
@@ -34,6 +43,10 @@ class SpiderScrawl {
         paren = 0;
         q = "";
         last4 = "";
+    }
+
+    public function getGlyphCode() {
+        return new GlyphCode("spider");
     }
 
     public function line(x0: Float, y0: Float, x1: Float, y1: Float, color: Array<Int>) {
@@ -189,6 +202,18 @@ class SpiderScrawl {
         return "&#x" + StringTools.hex(idx) + ";";
     }
 
+    public function count() {
+        return 16;
+    }
+
+    public function defaultWidth() {
+        return 32;
+    }
+
+    public function defaultHeight() {
+        return 32;
+    }
+
     public function addChar(ch: String) {
         var txt : String = "";
         if (ch == "2") {
@@ -243,7 +268,7 @@ class SpiderScrawl {
         return txt;
     }
 
-    private function addString(txt: String) {
+    public function addString_DEPRECATED(txt: String) {
         var s = "";
         for (i in 0...txt.length) {
             var ch = txt.substr(i,1);

@@ -3,7 +3,7 @@ var CosmicDrive = function(options) {
     var fs = require('fs');
     this.cosmicos = require("CosmicEval").cosmicos;
     this.spiders = require("SpiderScrawl").cosmicos;
-    this.spider = new this.spiders.SpiderScrawl(null,0,0);
+    this.spider = new this.spiders.GlyphCode('octo');
 
     this.all = JSON.parse(fs.readFileSync("assem.json", 'utf8'));
     this.config = new this.cosmicos.Config(fs.readFileSync("config.json", 'utf8'));
