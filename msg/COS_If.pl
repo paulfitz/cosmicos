@@ -41,6 +41,7 @@ sub ShowIfLesson {
     }
 
   $txt .= "~ We can now define more interesting functions.  Here's the maximum of two integers:\n";
+  $txt .= "(intro max);\n";
   $txt .= "(define max | ? x | ? y | if (> \$x \$y) \$x \$y);\n";
   for (my $r1=0; $r1<3; $r1++) {
       for (my $r2=0; $r2<3; $r2++) {
@@ -49,6 +50,7 @@ sub ShowIfLesson {
       }  
   }
   $txt .= "~ Now the minimum of two integers:\n";
+  $txt .= "(intro min);\n";
   $txt .= "(define min | ? x | ? y | if (< \$x \$y) \$x \$y);\n";
   for (my $r1=0; $r1<3; $r1++) {
       for (my $r2=0; $r2<3; $r2++) {
@@ -57,6 +59,7 @@ sub ShowIfLesson {
       }  
   }
   $txt .= "~ Why should human CS students be the only ones the factorial example is inflicted on...\n";
+  $txt .= "(intro factorial);\n";
   $txt .= "(define factorial | ? x | if (< \$x 1) 1 | * \$x | factorial | - \$x 1);\n";
   my $v = 1;
   for (my $i=1; $i<=5; $i++) {

@@ -4,6 +4,7 @@ const cos = require('./cosmic');
 
 cos.header('OBJECT', 'introduce simple mutable structures');
 
+cos.intro("mutable-struct");
 cos.add(`define mutable-struct | ? x:list |
   let ((cell:list | map (? x | make-cell 0) $x:list)) |
   ? x:find | list-ref $cell:list | list:find $x:list $x:find`);

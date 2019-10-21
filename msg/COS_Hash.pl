@@ -8,6 +8,7 @@ sub ShowHashLesson {
   $txt .= "# MATH introduce environment/hashmap structure\n";
   $txt .= "# this section needs a LOT more examples :-)\n";
   $txt .= "# note that at the time of writing (h 1 2) is same as ((h) 1 2)\n";
+  $txt .= "intro hash-add;\n";
   $txt .= ShowLine(Op2("define",
 		       "hash-add",
 		       ProcMultiple(["x:hash","x","y","z"],
@@ -15,15 +16,18 @@ sub ShowHashLesson {
 				       Op2("equal",Ref("z"),Ref("x")),
 				       Ref("y"),
 				       Op("x:hash", Ref("z"))))));
+  $txt .= "intro hash-ref;\n";
   $txt .= ShowLine(Op2("define",
 		       "hash-ref",
 		       ProcMultiple(["x:hash","x"],
 				    Op("x:hash", Ref("x")))));
 
+  $txt .= "intro hash-null;\n";
   $txt .= ShowLine(Op2("define",
 		       "hash-null",
 		       Proc("x",Ref("undefined"))));
   
+  $txt .= "intro hash-default;\n";
   $txt .= ShowLine(Op2("define",
 		       "hash-default",
 		       Proc("default",
@@ -77,6 +81,7 @@ sub ShowHashLesson {
 			  15),
 		       Ref("undefined")));
 
+  $txt .= "intro make-hash;\n";
   $txt .= ShowLine(Op2("define",
 		       "make-hash",
 		       Proc("x",

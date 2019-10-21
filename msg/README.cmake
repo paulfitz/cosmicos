@@ -6,7 +6,6 @@ set(COSMIC_DEPENDS
   COS_Intro
   COS_Compare
   COS_NotLogic 
-  COS_Unary
   COS_Addition
   COS_Subtraction
   COS_Multiplication

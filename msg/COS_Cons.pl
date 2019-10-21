@@ -6,6 +6,9 @@ use cosmic;
 sub ShowTheLesson {
   my $txt = "";
 
+  $txt .= "intro cons;\n";
+  $txt .= "intro car;\n";
+  $txt .= "intro cdr;\n";
   $txt .= "define cons | ? x | ? y | ? z | z \$x \$y;\n";
   $txt .= "define car | ? z | z | ? x | ? y \$x;\n";
   $txt .= "define cdr | ? z | z | ? x | ? y \$y;\n";

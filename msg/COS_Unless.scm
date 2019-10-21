@@ -5,6 +5,7 @@
 # practice with pure logic gate
 
 # X unless Y = (X if Y=0, otherwise 0)
+(intro unless);
 (define unless | ? x | ? y | and $x | not $y);
 
 # if second input is true, output is blocked (false)
@@ -23,12 +24,15 @@
 # On to a grid-based logic simulation
 # first, need unbounded, mutable matrices
 
+(intro make-matrix);
 (define make-matrix | ? default |
    make-cell | hash-default $default);
 
+(intro matrix-set);
 (define matrix-set | ? m | ? x | ? addr |
   set! $m | hash-add (get! $m) $addr $x);
 
+(intro matrix-get);
 (define matrix-get | ? m | ? addr |
   hash-ref (get! $m) $addr);
 
@@ -101,6 +105,7 @@
 
 # wrap up both phases of simulation
 
+(intro simulate-unless);
 (define simulate-unless | ? circuit |
   assign state (unless-phase-1 $circuit) |
   unless-phase-2 $circuit $state);
@@ -141,6 +146,7 @@
 # obvious in the raw, uninterpreted message
 # TODO: introduce div somewhere!
 
+(intro bit-get);
 (define bit-get | lambda (n offset) |
   assign div2 (div $n 2) |
   if (= 0 | offset) (not | = $n | * 2 $div2) |
@@ -157,9 +163,11 @@
 (= 0 | bit-get 8 2);
 (= 1 | bit-get 8 3);
 
+(intro make-image);
 (define make-image | lambda (h w lst) |
   vector $h $w $lst);
 
+(intro image-get);
 (define image-get | lambda (image row col) |
   assign h (list-ref $image 0) |
   assign w (list-ref $image 1) |
@@ -167,9 +175,11 @@
   assign bits (list-ref $lst $row) |
   bit-get $bits | - (- $w $col) 1);
 
+(intro image-height);
 (define image-height | ? image |
   list-ref $image 0);
 
+(intro image-width);
 (define image-width | ? image |
   list-ref $image 1);
 
@@ -261,6 +271,7 @@
 
 # full circuit...
 
+(intro distill-circuit);
 (define distill-circuit | ? image |
   assign h (div (image-height $image) 8) |
   assign w (div (image-width $image) 8)  |

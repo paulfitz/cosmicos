@@ -89,6 +89,8 @@ print "# GATE testing alternate primer based on gates: CIRCUIT_NAME circuit\n";
 print "# This section contains one or more representations of a circuit\n";
 print "# constructed using UNLESS gates.\n";
 
+print "(intro CIRCUIT_NAME_gate);\n";
+print "(intro CIRCUIT_NAME_image);\n";
 print "(define CIRCUIT_NAME_gate | vector ";
 
 @line = sort {

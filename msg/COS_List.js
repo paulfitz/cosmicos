@@ -5,6 +5,7 @@ cos.language(2);
 cos.seed(42);
 
 cos.comment("MATH some more list functions");
+cos.intro("list:find");
 cos.add(`
 define list:find:0 | ? x:list | ? y | ? n |
   if (= (list-length $x:list) 0) $undefined |

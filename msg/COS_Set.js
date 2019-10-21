@@ -38,11 +38,13 @@ for (let i=0; i<5; i++) {
 
 cos.doc('Set some rules for set equality.');
 
+cos.intro("set:<=");
 cos.add(`define set:<= | ? x | ? y |
   if (= 0 | list-length $x) $true |
   and (element (head $x) $y) |
     set:<= (tail $x) $y`);
 
+cos.intro("set:=");
 cos.add(`define set:= | ? x | ? y |
   and (set:<= $x $y) (set:<= $y $x)`);
 
@@ -57,6 +59,7 @@ cos.doc(`let's go leave ourselves wide open to Russell's paradox
 cos.add(`element 5 | all | ? x | = 15 | + $x 10`);
 cos.add(`element 3 | all | ? x | = (* $x 3) (+ $x 6)`);
 
+cos.intro("set:0");
 cos.add(`define set:0 | vector`);
 cos.add(`element 0 $set:int:+`);
 cos.add(`forall | ? x | => (element $x $set:int:+) (element (+ $x 1) $set:int:+)`);

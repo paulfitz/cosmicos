@@ -5,6 +5,8 @@ use cosmic;
 
 sub ShowTrueFalseLesson {
   my $txt = "";
+  $txt .= ShowLine(Op("intro", "true"));
+  $txt .= ShowLine(Op("intro", "false"));
   $txt .= ShowLine(Op("define","true",Op2("=",0,0)));
   $txt .= ShowLine(Op("define","false",Op2("=",0,1)));
   for (my $i=0; $i<5; $i++)

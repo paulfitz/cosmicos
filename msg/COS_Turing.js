@@ -17,12 +17,14 @@ cos.add(`define tape:next | lambda (tape n x) |
   if (= $n 0) (pair (tape:tail | first $tape) (prepend (tape:head | first $tape) (prepend $x (tape:tail | second $tape)))) |
   pair (first $tape) (prepend $x (tape:tail | second $tape))`);
 
+cos.intro("tape:do");
 cos.add(`define tape:do | lambda (x:function current end tape) |
   if (= $current $end) $tape |
   let ((next | x:function $current | tape:get $tape)) | 
     tape:do $x:function (list-ref $next 0) $end |
     tape:next $tape (list-ref $next 1) (list-ref $next 2)`);
 
+cos.intro("tape:make");
 cos.add(`define tape:make | ? x | pair (vector) $x`);
 
 cos.add(`define tape:-:tail | ? x | ? x:list |
@@ -30,8 +32,10 @@ cos.add(`define tape:-:tail | ? x | ? x:list |
   if (not | equal $x | last $x:list) $x:list |
   tape:-:tail $x (except-last $x:list)`);
 
+cos.intro("tape:result");
 cos.add(`define tape:result | ? x | tape:-:tail (vector) (second $x)`);
 
+cos.intro("demo:tape:function:+:1");
 cos.add(`define demo:tape:function:+:1 | make-hash | vector 
   (pair next (make-hash | vector
     (pair 0 (vector next 1 0))

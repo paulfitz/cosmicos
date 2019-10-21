@@ -10,6 +10,7 @@ sub ShowPureLesson {
   $txt .= "# since thinking of everything as a function requires headscratching\n";
   $txt .= "# it would be better to use these as a parallel means of evaluation\n";
   $txt .= "# ... for expressions\n";
+  $txt .= "intro pure:if;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:if",
 		       Proc(Lit("x"),
@@ -18,16 +19,19 @@ sub ShowPureLesson {
 				      Apply("x",
 					    Ref("y"),
 					    Ref("z")))))));
+  $txt .= "intro pure:true;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:true",
 		       Proc(Lit("y"),
 			    Proc(Lit("z"),
 				 Apply("y")))));
+  $txt .= "intro pure:false;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:false",
 		       Proc(Lit("y"),
 			    Proc(Lit("z"),
 				 Apply("z")))));
+  $txt .= "intro pure:cons;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:cons",
 		       Proc(Lit("x"),
@@ -37,26 +41,31 @@ sub ShowPureLesson {
 					 Ref("z"),
 					 Ref("x"),
 					 Ref("y")))))));
+  $txt .= "intro pure:car;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:car",
 		       Proc(Lit("x"),
 			    Apply(Lit("x"),
 				  Ref("pure:true")))));
+  $txt .= "intro pure:cdr;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:cdr",
 		       Proc(Lit("x"),
 			    Apply(Lit("x"),
 				  Ref("pure:false")))));
+  $txt .= "intro pure:0;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:0",
 		       Proc("y",
 			    Proc("x",Ref("x")))));
+  $txt .= "intro pure:1;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:1",
 		       Proc("y",
 			    Proc("x",
 				 Apply("y",
 				       Ref("x"))))));
+  $txt .= "intro pure:2;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:2",
 		       Proc("y",
@@ -64,6 +73,7 @@ sub ShowPureLesson {
 				 Apply("y",
 				       Apply("y",
 					     Ref("x")))))));
+  $txt .= "intro pure:next;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:next",
 		       Proc(Lit("n"),
@@ -73,18 +83,21 @@ sub ShowPureLesson {
 					    Apply(Apply("n", Ref("y")),
 						  Ref("x"))))))));
 
+  $txt .= "intro pure:+;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:+",
 		       Proc("x",
 			    Proc("y",
 				 Apply(Apply("x", Ref("pure:next")),
 				       Ref("y"))))));
+  $txt .= "intro pure:*;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:*",
 		       Proc("x",
 			    Proc("y",
 				 Apply(Apply("x", Op1("pure:+", Ref("y"))),
 				       Ref("pure:0"))))));
+  $txt .= "intro pure:prev;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:prev",
 		       Proc("x:pure",
@@ -96,6 +109,7 @@ sub ShowPureLesson {
 							 Op1("pure:car", Ref("x:?"))),
 						     Op1("pure:car", Ref("x:?"))))),
 				      Op2("pure:cons", Ref("pure:0"), Ref("pure:0")))))));
+  $txt .= "intro pure:=:0;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:=:0",
 		       Proc("x:pure",
@@ -105,6 +119,7 @@ sub ShowPureLesson {
 					Ref("pure:true"))))));
 					
 
+  $txt .= "intro fixed-point;\n";
   $txt .= ShowLine(Op2("define",
 		       "fixed-point",
 		       Proc("x",
@@ -120,6 +135,7 @@ sub ShowPureLesson {
   $txt .= "# .. but for rest of message will assume that define does fixed-point for us\n";
 
   $txt .= "# now build a link between numbers and church number functions\n";
+  $txt .= "intro pure:int:get;\n";
   $txt .= ShowLine(Op2("define",
 		       "pure:int:get",
 		       Proc("y",

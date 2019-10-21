@@ -37,6 +37,7 @@ cos.add(`define translate | let ((prev $translate)) | ? x |
                 $formal-type))) $body`);
 
 cos.doc('add conditional form');
+cos.intro("cond");
 cos.add(`define translate | let ((prev $translate)) | ? x |
   if (not | function? $x) (prev $x) |
   if (not | = cond | head $x) (prev $x) |
@@ -63,6 +64,7 @@ cos.add(`define remove-element | ? x |
 cos.add(`list= (vector 1 2 3 5) | remove-element 4 | vector 1 2 3 4 5`);
 cos.add(`list= (vector 1 2 3 5) | remove-element 4 | vector 1 4 2 4 3 4 5`);
 
+cos.intro("instanceof");
 cos.add(`define instanceof | ? T | ? t |
   if (not | function? $t) (= $T int) |
   function? | (objectify $t) $T`);
@@ -78,6 +80,7 @@ cos.add(`instanceof int 10`);
 cos.add(`= 42 | tester (make-integer 10) (make-integer 32)`);
 cos.add(`= 42 | tester 10 32`);
 
+cos.intro("reflective");
 cos.add(`define reflective | ? f |
   (? x | f | ? y | (x $x) $y)
   (? x | f | ? y | (x $x) $y)`);
@@ -87,6 +90,7 @@ cos.add(`= (woop 1) 22`);
 
 cos.header('OBJECT', 'message passing / object example - a 2D point');
 
+cos.intro("point");
 cos.add(`define point | lambda (x y) | reflective |
   lambda (self msg) | cond
     ((= $msg x) $x)
@@ -117,6 +121,7 @@ cos.add(`not | instanceof point 5`);
 
 cos.header('OBJECT', 'message passing / object example - a container');
 
+cos.intro("container");
 cos.add(`define container | ? x | assign contents (make-cell | vector) | reflective |
   lambda (self msg) | cond
     ((= $msg container) $self)
@@ -157,12 +162,14 @@ cos.add(`= 2 | cc1 count`);
 
 cos.header('OBJECT', 'adding a special form for classes');
 
+cos.intro("list-append");
 cos.add(`define list-append | lambda (lst1 lst2) |
   if (= 0 | list-length $lst1) $lst2 |
   list-append (except-last $lst1) | prepend (last | $lst1) $lst2`);
 
 cos.add(`list= (vector 1 2 3 4 5 6) | list-append (vector 1 2 3) (vector 4 5 6)`);
 
+cos.intro("append");
 cos.add(`define append | lambda (x lst) |
   if (= 0 | list-length $lst) (vector $x) |
   prepend (head | $lst) | append $x | tail $lst`);
@@ -207,6 +214,7 @@ cos.add(`define class-cond | lambda (name args fields) | prepend cond | list-app
   (custom-class-methods $name $args $fields)
   (standard-class-methods $name)`);
 
+cos.intro("class");
 cos.add(`define translate | assign prev $translate | ? x |
   if (not | function? $x) (prev $x) |
   if (not | = class | head $x) (prev $x) |
@@ -249,6 +257,7 @@ cos.add(`not | instanceof point 5`);
 
 cos.header('OBJECT', 'wrapper class for cells');
 
+cos.intro("cell");
 cos.add(`class cell (initial-value)
   (field content | make-cell $initial-value)
   (method get | get! $content)
@@ -272,6 +281,7 @@ cos.add(`cell-test2 = $cell-test3`);
 
 cos.header('MUD', 'playing around with doors and rooms');
 
+cos.intro("door");
 cos.add(`class door ((src room) (dest room))
   (method new | begin (src add $self) (dest add $self))
   (method access-from | lambda ((current room)) |
@@ -279,6 +289,7 @@ cos.add(`class door ((src room) (dest room))
   (method is-present | lambda ((current room)) |
      or (current == $src) (current == $dest))`);
 
+cos.intro("room");
 cos.add(`class room (name)
   (field content | container new)
   (method name $name)
@@ -313,6 +324,7 @@ cos.add(`define door2 | door new $hall $lawn`);
 cos.add(`define door3 | door new $hall $stairs`);
 cos.add(`define door4 | door new $stairs $bedroom`);
 
+cos.intro("character");
 cos.add(`class character ()
   (field location | cell new 0)
   (field name | cell new 0)

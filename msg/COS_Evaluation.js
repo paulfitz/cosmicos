@@ -22,6 +22,7 @@ cos.doc("An expression starting with `assign` is a way to name values for use " 
         "writing `(x)`. " +
         "The name is entirely arbitrary, and can be just an integer.");
 
+cos.intro("assign");
 cos.add("assign x 1 | = (x) 1");
 cos.add("assign x 2 | = (x) 2");
 cos.add("assign x 3 | = (x) 3");

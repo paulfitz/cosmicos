@@ -2,6 +2,7 @@ var cos = require("./cosmic");
 cos.language(2);
 cos.seed(42);
 
+cos.intro("list");
 cos.add(`
 define list:n | ? n | ? ret |
   if (= $n 1) (? x | ret 1 $x) |
@@ -19,12 +20,14 @@ cos.add("not | = $undefined 0");
 cos.add("not | = $undefined 1");
 cos.add("not | = $undefined 2");
 
+cos.intro("head");
 cos.add(`
 define head | ? x:list |
   if (= 0 | car $x:list) $undefined |
   if (= 1 | car $x:list) (cdr $x:list) |
   car | cdr $x:list`);
 
+cos.intro("tail");
 cos.add(`
 define tail | ? x:list |
   if (= 0 | car $x:list) $undefined |
@@ -59,6 +62,7 @@ for (var i=0; i<5; i++) {
     cos.add(["=",lst[2],[-1, "head", "|", "tail", "|", "tail", cos.listVerbose(lst)]]);
 }
 
+cos.intro("list-length");
 cos.add("define list-length $car");
 
 var examples = cos.prand(10,5);
@@ -69,6 +73,7 @@ for (var i=0; i<examples.length; i++) {
 }
 
 
+cos.intro("list-ref");
 cos.add(`
 define list-ref | ? x:list | ? n |
   if (= 0 | car $x:list) $undefined |
@@ -94,11 +99,13 @@ cos.add("function? | ? y | + $y 2");
 cos.add("function? $*");
 cos.add("not | function? | = 1 2");
 
+cos.intro("equal");
 cos.add(`
 define equal | ? x | ? y |
   if (not | = (function? $x) (function? $y)) $false |
   if (function? $x) (list= $x $y) (= $x $y)`);
 
+cos.intro("list=");
 cos.add(`
 define list= | ? x | ? y |
   if (not | = (list-length $x) (list-length $y)) $false |
@@ -148,6 +155,9 @@ for (var i=0; i<8; i++) {
 }
 
 
+cos.intro("pair");
+cos.intro("first");
+cos.intro("second");
 cos.add("define pair | list 2");
 cos.add("define first | ? x:list | head $x:list");
 cos.add("define second | ? x:list | head | tail $x:list");

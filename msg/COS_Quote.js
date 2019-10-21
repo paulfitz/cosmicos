@@ -15,6 +15,7 @@ cos.add(`list= (quote-f x | vector 1 2 3) | vector vector 1 2 3`);
 cos.add(`list= (quote-f x | vector 1 (vector 5 2) 3) | vector vector 1 (vector vector 5 2) 3`);
 cos.add(`list= (quote-f x | vector 1 (vector 5 2) (vector x + 5 2)) | vector vector 1 (vector vector 5 2) (vector + 5 2)`);
 
+cos.intro("quote");
 cos.add(`define translate | assign prev $translate | ? x |
   if (not | function? $x) $x |
   if (not | = quote | head $x) (prev $x) |

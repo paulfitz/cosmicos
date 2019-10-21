@@ -1,6 +1,7 @@
 
 # JAVA some preparatory work for integrating with Java code
 
+(intro Object);
 (class Object ()
    (method add-one | ? x | + $x 1)
    (method unknown | ? x $x)
@@ -18,6 +19,7 @@
 
 # inconsistency of various kinds of equality throughout message
 # needs to be cleaned up
+(intro Integer);
 (class Integer ()
    (field super | java-object new)
    (field value | cell new 0)
@@ -37,6 +39,7 @@
 
 
 # string is basically the same as an integer
+(intro String);
 (class String ()
    (field super | java-object new)
    (field value | cell new 0)
@@ -57,6 +60,7 @@
 
 # will need to install class hierarchy, just hardcode a few things for now
 
+(intro java);
 (define java | ? x | ? y |
   cond ((= $y String) $String)
        ((= $y Object) $java-object)
@@ -122,6 +126,7 @@
 
 (define minus-one | minus 1);
 
+(intro jvm-maker);
 (define jvm-maker | lambda (vars stack pc ret) | ? op | begin
    (pc set | + (pc get) 1) |
    cond

@@ -57,6 +57,10 @@ CosWrite.prototype.add = function(s) {
     console.log(s + ";");
 }
 
+CosWrite.prototype.intro = function(s) {
+  this.add(`intro ${s}`);
+}
+
 CosWrite.prototype.stringify = function(x,nested) {
     var txt = "";
     var mode = 0;
