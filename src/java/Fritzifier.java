@@ -42,7 +42,7 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 	String s = fritzParam(param);
 	int ct = 0;
 	for (int i=0; i<s.length(); i++) {
-	    if (s.charAt(i)=='(') {
+	    if (s.charAt(i)=='('||s.charAt(i)=='$') {
 		ct++;
 	    }
 	}
@@ -80,7 +80,7 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 
     private static String fritzParam(String param) {
 	if (param.indexOf("COS_")==0) {
-	    return "(" + param + ")";
+	    return "$" + param;
 	}
 	StringBuffer result = new StringBuffer("");
 	param = param.replace(';',' ');
@@ -115,55 +115,63 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 
     private static String fritzType(String jvmType) {
 	int ch = jvmType.charAt(0);
-	StringBuffer stringbuffer = new StringBuffer("(");
+	StringBuffer stringbuffer = new StringBuffer("");
 	switch (ch) {
 	case 66 : // 'B'
-	    stringbuffer.append("byte");
+	    stringbuffer.append("$byte");
 	    break;
 	    
 	case 67 : // 'C'
-	    stringbuffer.append("char");
+	    stringbuffer.append("$char");
 	    break;
 	    
 	case 68 : // 'D'
-	    stringbuffer.append("double");
+	    stringbuffer.append("$double");
 	    break;
 	    
 	case 70 : // 'F'
-	    stringbuffer.append("float");
+	    stringbuffer.append("$float");
 	    break;
 	    
 	case 73 : // 'I'
-	    stringbuffer.append("int");
+	    stringbuffer.append("$int");
 	    break;
 
 	case 74 : // 'J'
-	    stringbuffer.append("long");
+	    stringbuffer.append("$long");
 	    break;
 	    
 	case 83 : // 'S'
-	    stringbuffer.append("short");
+	    stringbuffer.append("$short");
 	    break;
 	    
 	case 90 : // 'Z'
-	    stringbuffer.append("boolean");
+	    stringbuffer.append("$boolean");
 	    break;
 	    
 	case 86 : // 'V'
-	    stringbuffer.append("void");
+	    stringbuffer.append("$void");
 	    break;
 	    
 	case 76 : // 'L'
 	    //special case for objects.
-	    stringbuffer.append(jvmType.substring(1,jvmType.length()).replace('/',' '));
+            String txt = jvmType.substring(1,jvmType.length()).replace('/',' ');
+            if (txt.indexOf(' ')==-1) {
+                stringbuffer.append("$");
+                stringbuffer.append(txt);
+            } else {
+                stringbuffer.append("(");
+                stringbuffer.append(txt);
+                stringbuffer.append(")");
+            }
 	    break;
 
 	    // also need case for arrays
 
 	default :
+            stringbuffer.append("()");
 	    break;
         }
-	stringbuffer.append(")");
 	return stringbuffer.toString();
     }
 
@@ -438,12 +446,12 @@ public class Fritzifier extends org.apache.bcel.classfile.EmptyVisitor {
 		    str = get(ih);
 		    desc = Constants.OPCODE_NAMES[bi.getOpcode()] + " " + str;
 		}
-		out.println("         "+pre+"(jvm " + fritzInstruction(desc) + ")" + post);
+		out.println("         "+pre+"| jvm " + fritzInstruction(desc) + post);
 	    }
 	    else {
 		String desc = inst.toString(cp.getConstantPool());
 		desc = fritzInstruction(desc);
-		out.println("         "+pre+"(jvm " + desc + ")"+post);
+		out.println("         "+pre+"| jvm " + desc + post);
 	    }
 	}
     
