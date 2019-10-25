@@ -66,3 +66,10 @@ cos.add(`define list:reverse | ? x:list |
 
 cos.add(`list= (list:reverse | vector 1 2 3) (vector 3 2 1)`);
 cos.add(`list= (list:reverse | vector 50 1 33 99) (vector 99 33 1 50)`);
+
+cos.intro("append");
+cos.add(`define append | ? x | ? lst |
+  if (= 0 | list-length $lst) (vector $x) |
+  prepend (head | $lst) | append $x | tail $lst`);
+
+cos.add(`list= (vector 1 2 5) | append 5 | vector 1 2`);

@@ -255,7 +255,7 @@ class Parse {
                 var str : String = cast v;
                 var ch0 = str.charAt(0);
                 if (ch0<'0'||ch0>'9') {
-                    if (ch0 == ":" || ch0 == ".") {
+                    if ((ch0 == ":" || ch0 == ".") && str.length > 1) {  // should use a different encoding
                         v = new BitString(str);
                     } else if (ch0 == "U" && ~/^U1*U$/.match(str)) {
                         // unary number e.g. U111U represent as string
@@ -282,7 +282,13 @@ class Parse {
                         }
                     }
                 } else {
-                    v = Std.parseInt(str);
+                    if (str.charAt(str.length - 1) == 'f') {
+                        // Secret way to insert floats for physical constants.
+                        // Please don't use in message.
+                        v = Std.parseFloat(str.substr(0, str.length - 1));
+                    } else {
+                        v = Std.parseInt(str);
+                    }
                 }
                 e[i] = v;
             }

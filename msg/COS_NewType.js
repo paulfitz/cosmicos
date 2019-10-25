@@ -169,13 +169,6 @@ cos.add(`define list-append | lambda (lst1 lst2) |
 
 cos.add(`list= (vector 1 2 3 4 5 6) | list-append (vector 1 2 3) (vector 4 5 6)`);
 
-cos.intro("append");
-cos.add(`define append | lambda (x lst) |
-  if (= 0 | list-length $lst) (vector $x) |
-  prepend (head | $lst) | append $x | tail $lst`);
-
-cos.add(`list= (vector 1 2 5) | append 5 | vector 1 2`);
-
 cos.add(`define select-match | lambda (test lst) |
   if (= 0 | list-length $lst) $lst |
   if (not | test | head $lst) (select-match $test | tail $lst) |

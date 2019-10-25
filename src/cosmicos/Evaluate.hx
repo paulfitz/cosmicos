@@ -28,7 +28,7 @@ class Evaluate {
                 return str;
             }
             if (Std.is(e0,Int)||Std.is(e0,BigInteger)||Std.is(e0,BitString)||
-                Std.is(e0,String)) {
+                Std.is(e0,String)||Std.is(e0,Float)) {
                 return e0;
             }
             var cursor = new Cursor(e0);
@@ -292,6 +292,7 @@ class Evaluate {
         vocab.set("unary", 255);   //0b11111111
 
         mem.add(vocab.get("intro"), function(x){ return 1; });
+        mem.add(vocab.get("assume"), function(x){ return x; });
         addStdMin();
         evaluateLine("@ 1 1");
         evaluateLine("@ true 1");
@@ -314,7 +315,7 @@ class Evaluate {
         mem.add(vocab.get("function?"), function(x){ return !(Std.is(x,Int)||Std.is(x,Float)||Std.is(x,BigInteger)||Std.is(x,String)||Std.is(x,BitString)||Std.is(x,Bool)); });
         mem.add(vocab.get("type?"), function(x) { return "type " + Std.is(x,Int) + " " + Std.is(x,Float) + " " + Std.is(x,Bool); });
         mem.add(vocab.get("translate"), function(x){ 
-                if (Std.is(x,Int)||Std.is(x,BigInteger)||Std.is(x,String)||Std.is(x,BitString)) return x;
+                if (Std.is(x,Int)||Std.is(x,BigInteger)||Std.is(x,String)||Std.is(x,BitString)||Std.is(x,Float)) return x;
                 var rep = function(x) {
                 }
                 var len = Cons.car(x);
@@ -397,7 +398,13 @@ class Evaluate {
         evaluateLine("@ is:square | ? x | has-square-divisor-within $x $x");
         evaluateLine("@ undefined 999");  // this should be a special value, not 999 :-)
         evaluateLine("@ even | ? x | = 0 | - $x | * 2 | div $x 2");
-        
+        // evaluateLine("@ proton:electron:mass:ratio 1836.15267343f");
+        mem.add(vocab.get("proton:electron:mass:ratio"), 1836.15267343);
+        mem.add(vocab.get("proton:mass"), 1.6726192369e-27);  // number should never be revealed
+                                                              // since arbitrary units (kg)
+        mem.add(vocab.get("neutron:mass"), 1.674927471e-27);  // ditto
+        mem.add(vocab.get("electron:mass"), 9.10938356e-31);  // ditto
+
         // meta-lambda-function
         id_lambda0 = vocab.get("??");
     }

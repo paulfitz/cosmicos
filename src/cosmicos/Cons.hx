@@ -22,6 +22,7 @@ class Cons {
         if (Std.is(e,BigInteger)) return e;
         if (Std.is(e,String)) return e;
         if (Std.is(e,BitString)) return e;
+        if (Std.is(e,Float)) return e;
         var c = new Cursor(e);
         var lst = new Array<Dynamic>();
         var len = c.length();
