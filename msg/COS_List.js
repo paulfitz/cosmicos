@@ -73,3 +73,12 @@ cos.add(`define append | ? x | ? lst |
   prepend (head | $lst) | append $x | tail $lst`);
 
 cos.add(`list= (vector 1 2 5) | append 5 | vector 1 2`);
+
+cos.intro("select-match");
+cos.add(`define select-match | ? test | ? lst |
+  if (= 0 | list-length $lst) $lst |
+  if (not | test | head $lst) (select-match $test | tail $lst) |
+  prepend (head $lst) (select-match $test | tail $lst)`);
+
+cos.add(`list= (vector 14 19 13) | select-match (? x | > $x 10) | vector 1 14 19 3 13 0 4`);
+

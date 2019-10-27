@@ -398,12 +398,6 @@ class Evaluate {
         evaluateLine("@ is:square | ? x | has-square-divisor-within $x $x");
         evaluateLine("@ undefined 999");  // this should be a special value, not 999 :-)
         evaluateLine("@ even | ? x | = 0 | - $x | * 2 | div $x 2");
-        // evaluateLine("@ proton:electron:mass:ratio 1836.15267343f");
-        mem.add(vocab.get("proton:electron:mass:ratio"), 1836.15267343);
-        mem.add(vocab.get("proton:mass"), 1.6726192369e-27);  // number should never be revealed
-                                                              // since arbitrary units (kg)
-        mem.add(vocab.get("neutron:mass"), 1.674927471e-27);  // ditto
-        mem.add(vocab.get("electron:mass"), 9.10938356e-31);  // ditto
 
         // meta-lambda-function
         id_lambda0 = vocab.get("??");

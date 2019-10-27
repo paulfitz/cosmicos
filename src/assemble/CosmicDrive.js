@@ -173,16 +173,21 @@ CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
     norm.encode(encoded);
     symbol.encode(encoded);
     var code = encoded.content[0];
+    var assume = false;
     if (part!=null) {
         part["preprocessed"] = preprocessed;
 	part["code"] = code;
 	part["parse"] = parsed.content;
         part["spider"] = this.spider.addString(code);
         part["dt"] = this.cosmicos.Parse.looksLikeMutation(parsed.content);
+        if (op.indexOf("assume ")==0) {
+          part["assume"] = true;
+          assume = true;
+        }
     }
     var cline = 999;
     console.log(cline + ": " + op + "  -->  " + code);
-    if (this.txt != null) {
+    if (this.txt != null && !assume) {
         this.txt += code;
         this.txt += "\n";
     }

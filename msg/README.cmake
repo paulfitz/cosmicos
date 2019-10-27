@@ -38,6 +38,7 @@ set(COSMIC_DEPENDS
   COS_Turing
   COS_Quote
   COS_NewType
+  COS_Element
   COS_CommentBase2
   COS_Unless
   COS_NOT

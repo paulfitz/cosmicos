@@ -169,13 +169,6 @@ cos.add(`define list-append | lambda (lst1 lst2) |
 
 cos.add(`list= (vector 1 2 3 4 5 6) | list-append (vector 1 2 3) (vector 4 5 6)`);
 
-cos.add(`define select-match | lambda (test lst) |
-  if (= 0 | list-length $lst) $lst |
-  if (not | test | head $lst) (select-match $test | tail $lst) |
-  prepend (head $lst) (select-match $test | tail $lst)`);
-
-cos.add(`list= (vector 14 19 13) | select-match (? x | > $x 10) | vector 1 14 19 3 13 0 4`);
-
 cos.add(`define unique | assign store (make-cell 0) | ? x |
   assign id (get! $store) |
   begin (set! $store (+ $id 1)) $id`);

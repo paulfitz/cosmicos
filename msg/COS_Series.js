@@ -37,6 +37,7 @@ define range | ? x:- | ? x:+ |
   prepend $x:- | range (+ 1 $x:-) $x:+`);
 cos.add("= 6 | reduce $+ | range 0 4");
 cos.add("= 12 | reduce $+ | map (? x | * $x 2) | range 0 4");
+cos.add("= 3 | reduce $+ | range 3 4");
 
 cos.add("intro even");
 cos.add("not | even 1");
