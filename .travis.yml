@@ -1,5 +1,7 @@
 sudo: required
 language: haxe
+haxe:
+  - "3.4.7"
 addons:
   apt:
     packages:
