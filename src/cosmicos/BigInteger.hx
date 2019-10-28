@@ -1432,8 +1432,8 @@ class BigInteger {
 	public static var F1 : Int;
 	public static var F2 : Int;
 
-	public static var ZERO(get_ZERO,null)	: BigInteger;
-	public static var ONE(get_ONE, null)		: BigInteger;
+	public static var ZERO(get,null)	: BigInteger;
+	public static var ONE(get, null)		: BigInteger;
 
 	// Digit conversions
 	#if as3gen public #end static var BI_RM : String;
