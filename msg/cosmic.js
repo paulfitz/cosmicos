@@ -178,6 +178,24 @@ CosWrite.prototype.vector = function(lst,wrap) {
   return result;
 }
 
+CosWrite.prototype.decimal = function(v, places, paren) {
+  if (Math.abs(v - Math.floor(v)) < 0.000000001) {
+    return String(v);
+  }
+  const result = [`decimal ${Math.floor(v)} | vector`];
+  v -= Math.floor(v);
+  for (let i = 0; i < places; i++) {
+    v *= 10;
+    result.push(`${Math.floor(v)}`);
+    v -= Math.floor(v);
+    if (Math.abs(v - Math.floor(v)) < 0.000000001) {
+      break;
+    }
+  }
+  const full = result.join(' ');
+  return paren ? `(${full})` : full;
+}
+
 CosWrite.prototype.header = function(section, header) {
     console.log(`# ${section} ${header}`);  
 }

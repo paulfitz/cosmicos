@@ -2,30 +2,6 @@
 
 const cos = require('./cosmic');
 
-cos.add("intro power:10");
-cos.add(`define power:10 | ? n |
-  if (= $n 0) 1 |
-  assign part (if (>= $n 0) 10 (frac 1 10)) |
-  reduce $* | map (? x $part) | range 0 (abs $n)`);
-
-cos.add(`define float:= | ? x | ? y |
-  if (= $x $y) $true |
-  within (frac (+ $x $y) 200000) $x $y`);
-cos.add(`float:= 10 | power:10 1`);
-cos.add(`float:= 100 | power:10 2`);
-cos.add(`float:= 1000 | power:10 3`);
-cos.add(`float:= (frac 1 10) | power:10 | minus 1`);
-cos.add(`float:= (frac 1 100) | power:10 | minus 2`);
-cos.add(`float:= 1 | power:10 0`);
-
-cos.add(`define decimal:power | ? x:power | ? x:int | ? x:list |
-  * (power:10 $x:power) (decimal $x:int $x:list)`);
-
-cos.add(`float:= 1530 | decimal:power 3 1 | vector 5 3`);
-cos.add(`float:= 15300 | decimal:power 4 1 | vector 5 3`);
-cos.add(`float:= (decimal 1 | vector 5 3) | decimal:power 0 1 | vector 5 3`);
-cos.add(`float:= (decimal 0 | vector 0 0 1 5 3) | decimal:power (minus 3) 1 | vector 5 3`);
-
 cos.intro("proton");
 cos.intro("electron");
 cos.intro("neutron");

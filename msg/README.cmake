@@ -20,9 +20,9 @@ set(COSMIC_DEPENDS
   COS_Mutable
   COS_ListPre
   COS_Map
-  COS_Series
   COS_Translate
   COS_List
+  COS_Series
   COS_Complex
   COS_Let
   COS_MultipleParameter

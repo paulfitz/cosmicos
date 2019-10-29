@@ -365,6 +365,12 @@ class Evaluate {
                 function(x) {
                     return Math.sqrt(x);
                 });
+        mem.add(vocab.get("pow"),
+                function(x) {
+                    return function(y) {
+                        return Math.pow(x, y);
+                    }
+                });
         mem.add(vocab.get("set:int:+"), 
                 mem.get(vocab.get("all"))(function (x) { return x>=0; }));
         mem.add(vocab.get("div"), function(x:Dynamic){ 
@@ -396,7 +402,7 @@ class Evaluate {
         // very very inefficient!        
         evaluateLine("@ has-square-divisor-within | ? top | ? x | if (< $top 0) 0 | if (= $x | * $top $top) 1 | has-square-divisor-within (- $top 1) $x");
         evaluateLine("@ is:square | ? x | has-square-divisor-within $x $x");
-        evaluateLine("@ undefined 999");  // this should be a special value, not 999 :-)
+        evaluateLine("@ undefined 999999");  // this should be a special value, not 999999 :-)
         evaluateLine("@ even | ? x | = 0 | - $x | * 2 | div $x 2");
 
         // meta-lambda-function
