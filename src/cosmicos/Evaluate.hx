@@ -214,7 +214,7 @@ class Evaluate {
     }
 
     static public function complex(x:Dynamic) : Complex {
-        if (Std.is(x, Int)) return new Complex(x);
+        if (Std.is(x, Int)||Std.is(x, Float)) return new Complex(x);
         return x;
     }
 
@@ -382,6 +382,9 @@ class Evaluate {
         mem.add(vocab.get("frac"), function(x:Dynamic){ 
                 return function(y:Dynamic) : Dynamic { 
                     if (isBi2(x,y)) throw("real division cannot deal with bigints yet");
+                    if (isComplex2(x,y)) {
+                        return complex(x).div(complex(y));
+                    }
                     return x/y; 
                 }}
             );

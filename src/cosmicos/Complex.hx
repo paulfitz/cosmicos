@@ -23,7 +23,12 @@ class Complex  {
     public function mul(alt: Complex) {
         return new Complex(re * alt.re - im * alt.im,  re * alt.im + alt.re * im);
     }
-	
+
+    public function div(alt: Complex) {
+        return new Complex((re*alt.re+im*alt.im)/(alt.re*alt.re+alt.im*alt.im),
+                           (im*alt.re-re*alt.im)/(alt.re*alt.re+alt.im*alt.im));
+    }
+
     public function add(alt: Complex) {
         return new Complex(re + alt.re, im + alt.im);
     }

@@ -27,6 +27,12 @@ cos.add("= (complex 5 6) | + (complex 3 2) (complex 2 4)");
 
 cos.add("= (complex 7 22) | * (complex 5 4) (complex 3 2)");
 
+cos.add("= (complex 10 8) | * (complex 5 4) 2");
+cos.add("= (complex 10 8) | * 2 (complex 5 4)");
+
+cos.doc("should work through how to divide complex numbers (multiply by conjugate)");
+cos.add("= (complex (frac 6 25) (frac 17 25)) | frac (complex 3 2) (complex 4 | minus 3)");
+
 cos.add(`
 all-equal | vector
   (+ 7 | * 22 $i)
@@ -40,3 +46,6 @@ all-equal | vector
     15 (* 10 $i) (* 12 $i) (minus 8))
   (sum | vector
     (+ 15 (minus 8)) (* (+ 10 12) $i))`);
+
+cos.doc("Hint at Euler's identity");
+cos.add(`float:= 0 | + 1 | exp:hat | * $pi $i`);
