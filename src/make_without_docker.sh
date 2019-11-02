@@ -29,7 +29,10 @@ if [[ "$message" = "" ]]; then
 fi
 
 if [[ "$message" = "" ]]; then
-    echo "Do not know which message to build"
+    echo "Do not know which message to build."
+    echo "Try any of:"
+    echo "  make tiny"
+    echo "  make standard"
     exit 1
 fi
 
