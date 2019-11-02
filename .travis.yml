@@ -11,8 +11,9 @@ addons:
     - libgd-gd2-perl
     - nodejs
 script: 
+    - npm install
     - mkdir build
-    - cd build 
+    - cd build
     - cmake ..
     - make
     - make test
