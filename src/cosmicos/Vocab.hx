@@ -7,6 +7,7 @@ class Vocab {
     private var nameToCode : Map<String,Int>;
     private var codeToName : Map<Int,String>;
     private var nameToMeta : Map<String,VocabMeta>;
+    private var used: Map<String,Int>;
     private var topCode : Int;
     private var useInt : Bool;
 
@@ -19,6 +20,7 @@ class Vocab {
         nameToCode = new Map<String,Int>();
         codeToName = new Map<Int,String>();
         nameToMeta = new Map<String, VocabMeta>();
+        used = new Map<String, Int>();
         topCode = 0;
     }
 
@@ -33,6 +35,10 @@ class Vocab {
             topCode++;
         }
         return nameToCode.get(name);
+    }
+
+    public function use(name: String) {
+        used.set(name, 1);
     }
 
     public function get(name: String) : Dynamic {
@@ -78,6 +84,12 @@ class Vocab {
     }
 
     public function getNames() : Array<String> {
-        return [for (i in nameToCode.keys()) i];
+        var result: Array<String> = [];
+        for (i in nameToCode.keys()) {
+            if (used.get(i) != null) {
+                result.push(i + " = " +nameToCode.get(i));
+            }
+        }
+        return result;
     }
 }

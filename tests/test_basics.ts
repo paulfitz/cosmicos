@@ -1,5 +1,6 @@
 import {FourSymbolCodecV2} from '../src/cosmicos/FourSymbolCodecV2';
 import {GlyphCode} from '../src/cosmicos/GlyphCode';
+import {Rename} from '../src/cosmicos/Rename';
 import {WideStatement} from '../src/cosmicos/Statement';
 import {WideVocab} from '../src/cosmicos/Vocab';
 
@@ -25,5 +26,13 @@ describe('four symbol encoding', function() {
       console.log(JSON.stringify(statement));
     }
   });
-});
 
+  it('renaming', function() {
+    const rename = new Rename();
+    rename.add('hello', 'hi');
+    console.log(rename.get('test'));
+    console.log(rename.get('hello'));
+    console.log(rename.get('hello:test'));
+    console.log(rename.rename(['test', 1, 2, ['test', 'hello', '1:hello:2']]));
+  });
+});

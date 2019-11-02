@@ -1,11 +1,13 @@
 export interface Vocab {
   get(name: string): number;
   reverse(id: number): string;
+  use(name: string): void;
 }
 
 export class WideVocab implements Vocab {
   private nameToCode = new Map<string, number>();
   private codeToName = new Map<number, string>();
+  private used = new Set<string>();
   private nextId: number = 1;
 
   public get(name: string): number {
@@ -18,6 +20,10 @@ export class WideVocab implements Vocab {
       this.nextId++;
     }
     return this.nameToCode.get(name)!;
+  }
+
+  public use(name: string): void {
+    this.used.add(name);
   }
 
   public reverse(id: number): string {

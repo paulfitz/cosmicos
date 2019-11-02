@@ -52,6 +52,12 @@ export class FourSymbolCodecV2 implements Codec {
     return b.join('');
   }
 
+  public getId(x: string): number {
+    const result = this._vocab.get(x);
+    this._vocab.use(x);
+    return result;
+  }
+  
   public codifyInner(e: any[], level: number, result: string[] = []): string[] {
     let needParen = level > 0;
     let first: number = 0;
@@ -77,7 +83,7 @@ export class FourSymbolCodecV2 implements Codec {
         result.push(symbolMarker);
         const parts = v.split(':');
         if (parts.length === 1) {
-          result.push(this.codifyNumber(this._vocab.get(v)));
+          result.push(this.codifyNumber(this.getId(v)));
         } else {
           result.push('2');
           for (const part of parts) {
@@ -86,7 +92,7 @@ export class FourSymbolCodecV2 implements Codec {
               result.push(this.codifyNumber(parseInt(part, 10)));
             } else {
               result.push(symbolMarker);
-              result.push(this.codifyNumber(this._vocab.get(part)));
+              result.push(this.codifyNumber(this.getId(part)));
             }
           }
           result.push('3');

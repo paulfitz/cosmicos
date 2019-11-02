@@ -1,0 +1,12 @@
+make-cell cell:make
+max >:>
+min <:<
+factorial *:<
+and true:*
+or true:+
+>= >:=
+<= <:=
+car cons:0
+cdr cons:1
+set! cell:assign
+get! cell:get

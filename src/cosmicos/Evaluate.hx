@@ -14,6 +14,7 @@ class Evaluate {
     private var id_if : Dynamic;
     private var id_assign : Dynamic;
     private var id_translate : Dynamic;
+    private var internal_id : Int;
 
     public function evaluateInContext(e0: Dynamic, cbase: Memory) : Dynamic {
         var c = cbase;
@@ -189,7 +190,14 @@ class Evaluate {
         id_if = vocab.get("if");
         id_assign = vocab.get("assign");
         id_translate = -1;
+        internal_id = 10000;
         this.config = state.getConfig();
+    }
+
+    private function iid(): Int {
+        var result = internal_id;
+        internal_id++;
+        return result;
     }
 
     static private function isBi(x:Dynamic) : Bool {
@@ -246,8 +254,8 @@ class Evaluate {
         vocab.check(">",4);
         explain(">", "is one integer greater than another", "> 42 41");
         vocab.check("not",5);
-        vocab.check("and",6);
-        vocab.check("or",7);
+        vocab.check("and",6);  // not used
+        vocab.check("or",7);   // not used
         
         vocab.check("equal",8);
         vocab.check("*",9);
@@ -276,9 +284,9 @@ class Evaluate {
         vocab.check("number?",24);
         id_translate = vocab.check("translate",25);
         vocab.check("lambda",26);
-        vocab.check("make-cell",27);
-        vocab.check("set!",28);
-        vocab.check("get!",29);
+        vocab.check("make",27);
+        vocab.check("set!",28);  // unused
+        vocab.check("get!",29);  // unused
         vocab.check("all",30);
         vocab.check("set:int:+",31);
         vocab.check("undefined",32);
@@ -286,10 +294,7 @@ class Evaluate {
         vocab.check("div",34);
         vocab.check("primer",35);
         vocab.check("demo",36); // was 7
-
-        // start using longer codes for early symbols
-        vocab.set("is:int", 40);  //0b00101000
-        vocab.set("unary", 255);   //0b11111111
+        vocab.check("cell",37);
 
         mem.add(vocab.get("intro"), function(x){ return 1; });
         mem.add(vocab.get("assume"), function(x){ return x; });
@@ -297,13 +302,13 @@ class Evaluate {
         evaluateLine("@ 1 1");
         evaluateLine("@ true 1");
         addDefinition("not", "? 0 | if $0 0 1");
-        addDefinition("and", "? 0 | ? 1 | if $0 $1 0");
-        addDefinition("or", "? 0 | ? 1 | if $0 1 $1");
-        mem.add(vocab.get("make-cell"), function(x){ return { data: x }; } );
-        mem.add(vocab.get("get!"), function(x){ 
+        addDefinition("true:*", "? 0 | ? 1 | if $0 $1 0");
+        addDefinition("true:+", "? 0 | ? 1 | if $0 1 $1");
+        mem.add(vocab.get("cell:make"), function(x){ return { data: x }; } );
+        mem.add(vocab.get("cell:get"), function(x){ 
                 return x.data; 
             } );
-        mem.add(vocab.get("set!"), function(x){ return function(y) { 
+        mem.add(vocab.get("cell:assign"), function(x){ return function(y) { 
                     x.data = y; 
                     return 1; 
                 }; } );
@@ -396,17 +401,23 @@ class Evaluate {
         mem.add(vocab.get("i"), new Complex(0, 1));
 
         // Transition vocabulary
-        evaluateLine("@ is:int $number?");
+        vocab.set("is-int", iid());
+        evaluateLine("@ is-int $number?");
         evaluateLine("@ unary-v | ? v | ? x | if (= $x 0) $v (unary-v | + $v 1)");
         evaluateLine("@ unary | unary-v 0");
         // inefficient
+        vocab.set("has-divisor-within", iid());
         evaluateLine("@ has-divisor-within | ? top | ? x | if (< $top 2) 0 | if (= $x | * $top | div $x $top) 1 | has-divisor-within (- $top 1) $x");
-        evaluateLine("@ is:prime | ? x | if (< $x 2) 0 | not | has-divisor-within (- $x 1) $x");
+        vocab.set("is-prime", iid());
+        evaluateLine("@ is-prime | ? x | if (< $x 2) 0 | not | has-divisor-within (- $x 1) $x");
         // very very inefficient!        
+        vocab.set("has-square-divisor-within", iid());
         evaluateLine("@ has-square-divisor-within | ? top | ? x | if (< $top 0) 0 | if (= $x | * $top $top) 1 | has-square-divisor-within (- $top 1) $x");
-        evaluateLine("@ is:square | ? x | has-square-divisor-within $x $x");
+        vocab.set("is-square", iid());
+        evaluateLine("@ is-square | ? x | has-square-divisor-within $x $x");
         evaluateLine("@ undefined 999999");  // this should be a special value, not 999999 :-)
         evaluateLine("@ even | ? x | = 0 | - $x | * 2 | div $x 2");
+        evaluateLine("@ is | ? x | if (= $x int) $is-int | if (= $x square) $is-square | if (= $x prime) $is-prime $undefined");
 
         // meta-lambda-function
         id_lambda0 = vocab.get("??");

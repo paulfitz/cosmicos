@@ -15,6 +15,9 @@ var CosmicDrive = function(options) {
     if (external_vocab_fname != null) {
         this.config.setExternalVocab(fs.readFileSync(external_vocab_fname, 'utf8'));
     }
+    var names_path = this.config.getNamesPath();
+    this.names = fs.readFileSync(names_path, 'utf8').split('\n').map(x => x.split(' '));
+    this.rename = new (require("Rename").Rename)(this.names);
     this.state = new this.cosmicos.State(this.config);
     this.vocab = this.state.getVocab();
     this.primer = null;
@@ -181,6 +184,7 @@ CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
     preprocess.encode(statement);
     var preprocessed = statement.content[0];
     parse.encode(statement);
+    this.rename.rename(statement.content);
     var parsed = statement.copy();
     var encoded = statement.copy();
     norm.encode(encoded);
@@ -188,9 +192,8 @@ CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
     var code = encoded.content[0];
     var assume = false;
     if (part!=null) {
-        part["preprocessed"] = preprocessed;
         part["dt"] = this.cosmicos.Parse.looksLikeMutation(parsed.content);
-	part["parse"] = parsed.content;
+        part["parse"] = parsed.content;
         var v2 = parsed.copy();
         fourV2.encode(v2);
         var v2x = v2.copy();

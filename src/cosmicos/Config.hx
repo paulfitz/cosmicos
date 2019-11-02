@@ -45,6 +45,13 @@ class Config {
         return fname;
     }
 
+    public function getNamesPath() : String {
+        if (config == null) return null;
+        var fname = Reflect.field(config, 'names');
+        if (fname == "") return null;
+        return fname;
+    }
+
     public function setExternalVocab(txt : String) {
         external_vocab = haxe.Json.parse(txt);
     }

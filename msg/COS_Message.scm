@@ -23,9 +23,10 @@
 
 # this line is referred to later - change/move carefully
 (equal (list-ref $primer 0) | vector intro unary);
-(equal (list-ref $primer 1) | vector intro is:int);
-(equal (list-ref $primer 2) | vector is:int | vector unary 0);
-(equal (list-ref $primer 3) | vector is:int | vector unary 1 0);
+(equal (list-ref $primer 1) | vector intro is);
+(equal (list-ref $primer 2) | vector intro int);
+(equal (list-ref $primer 3) | vector is int | vector unary 0);
+(equal (list-ref $primer 4) | vector is int | vector unary 1 0);
 (assign idx (list:find $primer | vector intro primer) |
   equal (list-ref $primer | + $idx 1) |
     quote @@ | equal (list-ref $primer 0) | vector intro unary);

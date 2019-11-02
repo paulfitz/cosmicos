@@ -102,6 +102,10 @@ if(NOT COSMIC_VOCAB)
   SET(COSMIC_VOCAB ${CMAKE_SOURCE_DIR}/variant/iconic/vocab.json)
 endif()
 
+if(NOT COSMIC_NAMES)
+  SET(COSMIC_NAMES ${CMAKE_SOURCE_DIR}/msg/names.txt)
+endif()
+
 get_target_property(UnlessDriverLoc UnlessDriver JAR_FILE)
 get_target_property(FritzifierLoc Fritzifier JAR_FILE)
 FILE(WRITE ${WORK}/setup.cmake "
@@ -226,6 +230,7 @@ add_custom_command(OUTPUT ${WORK}/assem2.json ${CMAKE_BINARY_DIR}/index.txt ${CM
   COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/q.txt ${CMAKE_BINARY_DIR}/index.txt
   WORKING_DIRECTORY ${WORK}
   DEPENDS ${WORK}/assem.json
+  ${COSMIC_NAMES}
   ${WORK}/primer.json
   ${WORK}/CosmicEval.js
   ${CMAKE_SOURCE_DIR}/src/assemble/CosmicDrive.js
@@ -355,6 +360,7 @@ file(GLOB ts_files ${CMAKE_SOURCE_DIR}/src/cosmicos/*.ts)
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/js/FourSymbolCodecV2.js
   COMMAND ${TSC} ${CMAKE_SOURCE_DIR}/src/cosmicos/FourSymbolCodecV2.ts
     ${CMAKE_SOURCE_DIR}/src/cosmicos/GlyphCode.ts
+    ${CMAKE_SOURCE_DIR}/src/cosmicos/Rename.ts
     --outDir ${CMAKE_BINARY_DIR}/js/
     --target esnext --module commonjs --lib esnext
     DEPENDS ${ts_files})

@@ -2,6 +2,7 @@
     "variant": "@COSMIC_VARIANT@",
     "use_flattener": @COSMIC_USE_FLATTENER@,
     "lines": @COSMIC_LINES@,
-    "vocab": "@COSMIC_VOCAB@"
+    "vocab": "@COSMIC_VOCAB@",
+    "names": "@COSMIC_NAMES@"
 }
 
