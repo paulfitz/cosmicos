@@ -27,7 +27,9 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^8.0.0",
+    "@types/mocha": "^5.2.7",
     "@types/node": "10.12.2",
+    "mocha": "^6.2.2",
     "ts-node": "^8.3.0",
     "typescript": "3.4.5"
   },

@@ -116,6 +116,8 @@ FILE(WRITE ${WORK}/setup.cmake "
   set(TSNODE \"${CMAKE_SOURCE_DIR}/node_modules/.bin/ts-node\")
 ")
 
+set(TSC "${CMAKE_SOURCE_DIR}/node_modules/.bin/tsc")
+
 include(${CMAKE_SOURCE_DIR}/msg/DEPEND.cmake)
 set_property(GLOBAL PROPERTY msg_list)
 
@@ -207,6 +209,7 @@ add_custom_command(OUTPUT ${WORK}/primer.json
   DEPENDS ${WORK}/assem.json
   ${WORK}/CosmicEval.js
   ${CMAKE_SOURCE_DIR}/src/assemble/CosmicDrive.js
+  ${CMAKE_BINARY_DIR}/js/FourSymbolCodecV2.js
   ${CMAKE_SOURCE_DIR}/src/assemble/primer.js)
 add_custom_target(primer ALL DEPENDS ${WORK}/primer.json)
 
@@ -226,6 +229,7 @@ add_custom_command(OUTPUT ${WORK}/assem2.json ${CMAKE_BINARY_DIR}/index.txt ${CM
   ${WORK}/primer.json
   ${WORK}/CosmicEval.js
   ${CMAKE_SOURCE_DIR}/src/assemble/CosmicDrive.js
+  ${CMAKE_BINARY_DIR}/js/FourSymbolCodecV2.js
   ${CMAKE_SOURCE_DIR}/src/assemble/evaluate.js)
 
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/wrapped.txt ${CMAKE_BINARY_DIR}/entropy.txt
@@ -345,3 +349,14 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/index.html
   ${CMAKE_SOURCE_DIR}/src/assemble/cosmicos.js)
 
 add_custom_target(html DEPENDS ${CMAKE_BINARY_DIR}/index.html)
+
+# TODO: replace glob with file list
+file(GLOB ts_files ${CMAKE_SOURCE_DIR}/src/cosmicos/*.ts)
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/js/FourSymbolCodecV2.js
+  COMMAND ${TSC} ${CMAKE_SOURCE_DIR}/src/cosmicos/FourSymbolCodecV2.ts
+    ${CMAKE_SOURCE_DIR}/src/cosmicos/GlyphCode.ts
+    --outDir ${CMAKE_BINARY_DIR}/js/
+    --target esnext --module commonjs --lib esnext
+    DEPENDS ${ts_files})
+
+add_custom_target(costs DEPENDS ${CMAKE_BINARY_DIR}/js/FourSymbolCodecV2.js)

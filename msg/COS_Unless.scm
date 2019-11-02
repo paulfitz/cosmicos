@@ -152,16 +152,16 @@
   if (= 0 | offset) (not | = $n | * 2 $div2) |
   bit-get $div2 | - $offset 1);
 
-(= 0 | bit-get (::.) 0);
-(= 1 | bit-get (::.) 1);
-(= 1 | bit-get (::.) 2);
-(= 0 | bit-get (::.) 3);
-(= 0 | bit-get (::.) 4);
-
-(= 0 | bit-get 8 0);
-(= 0 | bit-get 8 1);
-(= 0 | bit-get 8 2);
-(= 1 | bit-get 8 3);
+(= 0 | bit-get (::::::::::::::......:...:..::.) 0);
+(= 1 | bit-get (::::::::::::::......:...:..::.) 1);
+(= 1 | bit-get (::::::::::::::......:...:..::.) 2);
+(= 0 | bit-get (::::::::::::::......:...:..::.) 3);
+(= 0 | bit-get (::::::::::::::......:...:..::.) 4);
+(= 1 | bit-get (::::::::::::::......:...:..::.) 5);
+(= 0 | bit-get (::::::::::::::......:...:..::.) 6);
+(= 0 | bit-get (::::::::::::::......:...:..::.) 7);
+(= 0 | bit-get (::::::::::::::......:...:..::.) 8);
+(= 1 | bit-get (::::::::::::::......:...:..::.) 9);
 
 (intro make-image);
 (define make-image | lambda (h w lst) |
@@ -183,11 +183,11 @@
 (define image-width | ? image |
   list-ref $image 1);
 
-(define test-image | make-image 3 5 |
-  vector (:....) (:...:) (:....));
+(define test-image | make-image 3 20 |
+  vector (:...................) (:...:...............) (:...................));
 
 (= 3 | image-height $test-image);
-(= 5 | image-width $test-image);
+(= 20 | image-width $test-image);
 (= $true | image-get $test-image 0 0);
 (= $false | image-get $test-image 0 1);
 (= $false | image-get $test-image 0 4);

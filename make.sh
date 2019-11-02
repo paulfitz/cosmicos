@@ -32,6 +32,11 @@ docker ps -f name=cosmicos_build | grep -q cosmicos || {
 if [[ "$1" = "run" ]]; then
   shift
   docker exec -e VERBOSE=$VERBOSE cosmicos_build "$@"
+elif [[ "$1" = "console" ]]; then
+  shift
+  docker exec -it -e VERBOSE=$VERBOSE cosmicos_build /bin/bash
+elif [[ "$1" = "mocha" ]]; then
+  docker exec -e VERBOSE=$VERBOSE cosmicos_build node_modules/.bin/mocha tests/test_basics.ts
 else
   docker exec -e VERBOSE=$VERBOSE cosmicos_build src/make_without_docker.sh "$@"
 fi

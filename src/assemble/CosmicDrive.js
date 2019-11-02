@@ -3,8 +3,12 @@ var CosmicDrive = function(options) {
     var fs = require('fs');
     this.cosmicos = require("CosmicEval").cosmicos;
     this.spiders = require("SpiderScrawl").cosmicos;
-    this.spider = new this.spiders.GlyphCode('octo');
+    // this.spider = new this.spiders.GlyphCode('octo');
+    this.spider = new (require("GlyphCode").GlyphCode)('octo');
 
+    this.fourSymbolCodecV2 = require("FourSymbolCodecV2").FourSymbolCodecV2;
+    console.log(require("FourSymbolCodecV2"));
+  
     this.all = JSON.parse(fs.readFileSync("assem.json", 'utf8'));
     this.config = new this.cosmicos.Config(fs.readFileSync("config.json", 'utf8'));
     var external_vocab_fname = this.config.getExternalVocabPath();
@@ -61,6 +65,10 @@ CosmicDrive.prototype.get_message = function() {
 
 CosmicDrive.prototype.get_coded_message = function() {
     return this.txt;
+}
+
+CosmicDrive.prototype.get_vocab = function() {
+  return this.vocabInt.getNames();
 }
 
 CosmicDrive.prototype.text_to_list = function(op) {
@@ -130,7 +138,11 @@ CosmicDrive.prototype.complete_stanza = function(stanza, can_run) {
                                  }
                                  return run;
                              });
-
+    var fourSymbolCodecV2 = this.get_codec('four_v2',
+                                         function(self) {
+                                           return new self.fourSymbolCodecV2(self.vocabInt, true);
+                                         });
+  
     console.log("====================================================");
 
     var statement = this.complete_stanza_core(null, part, can_run);
@@ -164,6 +176,7 @@ CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
     var symbol = this.get_codec('symbol', null);
     var norm = this.get_codec('norm', null);
     var run = this.get_codec('run', null);
+    var fourV2 = this.get_codec('four_v2', null);
 
     preprocess.encode(statement);
     var preprocessed = statement.content[0];
@@ -176,10 +189,21 @@ CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
     var assume = false;
     if (part!=null) {
         part["preprocessed"] = preprocessed;
-	part["code"] = code;
-	part["parse"] = parsed.content;
-        part["spider"] = this.spider.addString(code);
         part["dt"] = this.cosmicos.Parse.looksLikeMutation(parsed.content);
+	part["parse"] = parsed.content;
+        var v2 = parsed.copy();
+        fourV2.encode(v2);
+        var v2x = v2.copy();
+        fourV2.decode(v2);
+        const newBack = v2.content;
+        if (JSON.stringify(part["parse"]) !== JSON.stringify(newBack).replace(/"@"/g, '"define"')) {
+          console.log("PROBLEM!", part);
+          console.log("MADE", JSON.stringify(newBack).replace('"@"', '"define"'));
+          console.log("EXPT", JSON.stringify(part["parse"]));
+          throw new Error("failure for " + JSON.stringify(part["lines"]));
+        }
+        var ncode = part["code"] = v2x.content[0];
+        part["spider"] = this.spider.addString(ncode);
         if (op.indexOf("assume ")==0) {
           part["assume"] = true;
           assume = true;
@@ -192,7 +216,11 @@ CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
         this.txt += "\n";
     }
     if (!can_run) return new this.cosmicos.Statement(1);
-    // to make sure we don't have a bug in the message, recover it from low-level
+
+    // This check isn't needed anymore since we check we can recover message
+    // exactly.
+    /*
+  // to make sure we don't have a bug in the message, recover it from low-level
     // coding before evaluating.
     var parsed2 = parsed.copy();
     this.cosmicos.Parse.encodeSymbols(parsed2.content, this.state.getVocab(), true);
@@ -204,6 +232,7 @@ CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
     if (!this.cosmicos.Parse.softCompare(zing.content, parsed2.content)) {
       throw new Error('code fails round-trip test');
     }
+    */
     try {
       run.encode(statement);
       return statement;

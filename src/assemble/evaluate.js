@@ -78,3 +78,4 @@ cosmicos.add_line_numbers();
 var fs = require('fs');
 fs.writeFileSync('q.txt', cosmicos.get_coded_message());
 fs.writeFileSync('assem2.json',JSON.stringify(all, null, 2));
+fs.writeFileSync('vocab.txt', JSON.stringify(cosmicos.get_vocab(), null, 2));

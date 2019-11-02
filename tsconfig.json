@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["es2015"],
+    "target": "esnext",
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
@@ -13,6 +12,7 @@
   },
   "include": [
     "src/gate/*",
+    "src/cosmicos/*",
     "src/font/*"
   ],
   "exclude": [

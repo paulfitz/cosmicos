@@ -5,20 +5,32 @@ FROM ubuntu:18.04
 # enough for main message
 RUN \
   apt-get update && \
-  apt-get install -y --no-install-recommends libbcel-java openjdk-8-jdk libgd-perl nodejs \
+  apt-get install -y --no-install-recommends libbcel-java openjdk-8-jdk libgd-perl \
     haxe cmake make && \
+  rm -rf /var/lib/apt/lists/*
+
+RUN \
+  apt-get update && \
+  apt-get install -y curl && \
+  curl -sL https://deb.nodesource.com/setup_12.x | bash && \
+  apt-get install -y nodejs && \
   rm -rf /var/lib/apt/lists/*
 
 # lots of stuff needed for node canvas for old spider script
 RUN \
   apt-get update && \
-  apt-get install -y --no-install-recommends npm libcairo2-dev libjpeg-dev libpango1.0-dev \
+  apt-get install -y --no-install-recommends libcairo2-dev libjpeg-dev libpango1.0-dev \
     libgif-dev build-essential g++ && \
   rm -rf /var/lib/apt/lists/*
 
+ENV NODE_PATH=/usr/local/lib/node_modules:/usr/log/node_modules
+
+RUN mkdir /tmp/.npm-global
+ENV PATH=/tmp/.npm-global/bin:$PATH
+ENV NPM_CONFIG_PREFIX=/tmp/.npm-global
+
 # I promise I'll start using package.json one day
-RUN npm install canvas -g
-ENV NODE_PATH=/usr/local/lib/node_modules
+RUN npm install canvas -g --unsafe
 
 RUN \
   apt-get update && \

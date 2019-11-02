@@ -128,13 +128,13 @@ export class OctoGlyph implements GlyphTool {
     const bw = hasNumber ? (w / 8) : (w - 2 * wb);
     if (hasNumber) {
       if (open) {
-        c.moveTo(wb, h - hb - bh);
-        c.bezierCurveTo(wb, h - hb, wb, h - hb, wb + bw, h - hb);
+        c.moveTo(w2 - wb, hb);
+        c.lineTo(w2 + wb, hb);
         c.stroke();
       }
       if (closed) {
-        c.moveTo(w - wb - bw, hb);
-        c.bezierCurveTo(w - wb, hb, w - hb, wb, w - hb, wb + bh);
+        c.moveTo(w2 - wb, h - hb);
+        c.lineTo(w2 + wb, h - hb);
         c.stroke();
       }
     } else {
