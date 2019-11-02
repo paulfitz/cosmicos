@@ -9,9 +9,8 @@ addons:
     - libbcel-java
     - openjdk-8-jdk
     - libgd-gd2-perl
-    - nodejs
-script: 
-    - npm install
+  script:
+    - nvm install 12
     - mkdir build
     - cd build
     - cmake ..
