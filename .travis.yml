@@ -9,7 +9,7 @@ addons:
     - libbcel-java
     - openjdk-8-jdk
     - libgd-gd2-perl
-  script:
+script:
     - nvm install 12
     - mkdir build
     - cd build
