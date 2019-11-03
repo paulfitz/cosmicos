@@ -199,9 +199,9 @@ CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
         var v2x = v2.copy();
         fourV2.decode(v2);
         const newBack = v2.content;
-        if (JSON.stringify(part["parse"]) !== JSON.stringify(newBack).replace(/"@"/g, '"define"')) {
+        if (JSON.stringify(part["parse"]) !== JSON.stringify(newBack)) {
           console.log("PROBLEM!", part);
-          console.log("MADE", JSON.stringify(newBack).replace('"@"', '"define"'));
+          console.log("MADE", JSON.stringify(newBack));
           console.log("EXPT", JSON.stringify(part["parse"]));
           throw new Error("failure for " + JSON.stringify(part["lines"]));
         }

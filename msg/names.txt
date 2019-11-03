@@ -1,3 +1,4 @@
+define @
 make-cell cell:make
 max >:>
 min <:<

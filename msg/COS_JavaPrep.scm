@@ -33,7 +33,7 @@
       = (value get) (o value get))
    (method equals | self equals-Object-Z)
    (method get | value get)
-   (method set | ? x | value set | if (number? $x) $x | x intValue)
+   (method set | ? x | value set | if (not | function? $x) $x | x intValue)
    (method classname Integer)
    (method unknown | ? x | super $x));
 
@@ -54,7 +54,7 @@
       = (value get) (o value get))
    (method equals | self equals-Object-Z)
    (method get | value get)
-   (method set | ? x | value set | if (number? $x) $x | x intValue)
+   (method set | ? x | value set | if (not | function? $x) $x | x intValue)
    (method classname String)
    (method unknown | ? x | super $x));
 
@@ -121,7 +121,7 @@
 (= 40 | java-test1 get);
 
 (define compare-object-reference | ? o1 | ? o2 |
-   if (number? $o1) (number? $o2) |
+   if (not | function? $o1) (not | function? $o2) |
    = (o1 unique-id) (o2 unique-id));
 
 (define minus-one | minus 1);
@@ -140,7 +140,7 @@
      ((or (= $op iconst) (= $op ldc)) | ? val | stack-push $stack $val)
      ((= $op aconst_null) | stack-push $stack 0)
      ((= $op instanceof) | ? t |
-        stack-push $stack | not | number? | (stack-pop $stack) (t new classname))
+        stack-push $stack | function? | (stack-pop $stack) (t new classname))
      ((= $op getfield) | ? key | ? ignore |
 	stack-push $stack | (stack-pop $stack) $key get)
      ((= $op putfield) | ? key | ? ignore |
@@ -204,9 +204,9 @@
         assign v1 (stack-pop $stack) |
         if (< $v1 $v2) (pc set $x) 0)
      ((= $op ifnull) | ? x |
-	if (number? | stack-pop $stack) (pc set $x) 0)
+	if (not | function? | stack-pop $stack) (pc set $x) 0)
      ((= $op ifnonnull) | ? x |
-	if (not | number? | stack-pop $stack) (pc set $x) 0)
+	if (function? | stack-pop $stack) (pc set $x) 0)
      ((= $op return) | begin
 	(ret set | hash-ref (vars get) 0)
         (pc set $minus-one))

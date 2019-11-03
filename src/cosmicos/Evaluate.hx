@@ -254,10 +254,7 @@ class Evaluate {
         vocab.check(">",4);
         explain(">", "is one integer greater than another", "> 42 41");
         vocab.check("not",5);
-        vocab.check("and",6);  // not used
-        vocab.check("or",7);   // not used
         
-        vocab.check("equal",8);
         vocab.check("*",9);
         explain("*", "multiply two integers", "* 2 21");
         vocab.check("+",10);
@@ -267,7 +264,7 @@ class Evaluate {
 
         id_lambda = vocab.check("?",12);
         explain("?", "create an anonymous function", "? x | - $x 1");
-        id_define = vocab.check("define",13);
+        id_define = vocab.check("@",13);
         // define and @ are fudged together, TODO fix this
         explain("@", "store an expression in memory", "@ dec | ? x | - $x 1");
         id_assign = vocab.check("assign",14);
@@ -279,24 +276,18 @@ class Evaluate {
         vocab.check("forall",19);
         vocab.check("exists",20);
         vocab.check("cons",21);
-        vocab.check("car",22);
-        vocab.check("cdr",23);
-        vocab.check("number?",24);
         id_translate = vocab.check("translate",25);
         vocab.check("lambda",26);
         vocab.check("make",27);
-        vocab.check("set!",28);  // unused
-        vocab.check("get!",29);  // unused
         vocab.check("all",30);
-        vocab.check("set:int:+",31);
         vocab.check("undefined",32);
-        vocab.check("!",33);
         vocab.check("div",34);
         vocab.check("primer",35);
-        vocab.check("demo",36); // was 7
+        vocab.check("demo",36);
         vocab.check("cell",37);
 
         mem.add(vocab.get("intro"), function(x){ return 1; });
+        vocab.set("assume", iid());
         mem.add(vocab.get("assume"), function(x){ return x; });
         addStdMin();
         evaluateLine("@ 1 1");
@@ -312,9 +303,6 @@ class Evaluate {
                     x.data = y; 
                     return 1; 
                 }; } );
-        mem.add(vocab.get("number?"), function(x){ return Std.is(x,Int)||Std.is(x,BigInteger); } );
-        mem.add(vocab.get("symbol?"), function(x){ return Std.is(x,String); } );
-        mem.add(vocab.get("single?"), function(x){ return Std.is(x,Int)||Std.is(x,Float)||Std.is(x,BigInteger)||Std.is(x,String)||Std.is(x,BitString)||Std.is(x,Bool); } );
         // it is a little awkward to test for a function, so we just eliminate all other
         // types in the message - this is a bit dodgy.
         mem.add(vocab.get("function?"), function(x){ return !(Std.is(x,Int)||Std.is(x,Float)||Std.is(x,BigInteger)||Std.is(x,String)||Std.is(x,BitString)||Std.is(x,Bool)); });
@@ -402,7 +390,7 @@ class Evaluate {
 
         // Transition vocabulary
         vocab.set("is-int", iid());
-        evaluateLine("@ is-int $number?");
+        evaluateLine("@ is-int | ? x 1");  // should make this more precise
         evaluateLine("@ unary-v | ? v | ? x | if (= $x 0) $v (unary-v | + $v 1)");
         evaluateLine("@ unary | unary-v 0");
         // inefficient
@@ -466,8 +454,8 @@ class Evaluate {
                     return function(x:Dynamic) { return function(y:Dynamic) { return y; }};
                 }
             });
-        //evaluateLine("@ if | ? v | (pure $v) (? x | ?? y $x) (?? x | ? y $y)");
-        evaluateLine("@ eval | ? x | x 1");
+        // evaluateLine("@ if | ? v | (pure $v) (? x | ?? y $x) (?? x | ? y $y)");
+        // evaluateLine("@ eval | ? x | x 1");
     }
 
     public function addDefinition(name: String, body: String, ?example: String) {

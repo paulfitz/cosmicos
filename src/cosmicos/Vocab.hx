@@ -58,9 +58,15 @@ class Vocab {
     }
 
     public function check(name: String, id : Int) : Dynamic {
-        var nid : Int = getBase(name);
-        if (id!=nid) {
-            throw("id for " + name + " is unexpected (" + nid + " vs " + id + ")");
+        if (nameToCode.exists(name)) {
+            var nid : Int = getBase(name);
+            if (id!=nid) {
+                throw("id for " + name + " is unexpected (" + nid + " vs " + id + ")");
+            }
+        } else if (codeToName.exists(id)) {
+            throw("problem with " + name);
+        } else {
+            set(name, id);
         }
         return get(name);
     }
@@ -88,6 +94,8 @@ class Vocab {
         for (i in nameToCode.keys()) {
             if (used.get(i) != null) {
                 result.push(i + " = " +nameToCode.get(i));
+            } else {
+                result.push("((" + i + " = " +nameToCode.get(i) + "))");
             }
         }
         return result;

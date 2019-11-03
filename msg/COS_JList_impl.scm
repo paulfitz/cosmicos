@@ -2,11 +2,11 @@
 
 (define flex-equals
   (lambda (x y) 
-    (if (number? | x)
-	(if (number? | y)
+    (if (not | function? | x)
+	(if (not | function? | y)
 	    (= (x) (y))
 	    (false))
-	(if (number? | y)
+	(if (not | function? | y)
 	    (false)
 	    (x equals (y))))));
 
