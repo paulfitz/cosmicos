@@ -1,19 +1,19 @@
 {
   "compilerOptions": {
     "target": "esnext",
+    "lib": "esnext",
+    "module": "commonjs",
     "moduleResolution": "node",
     "baseUrl": ".",
-    "paths": {
-      "*": [
-        "*",
-        "src/font/*"
-      ]
-    }
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   },
   "include": [
     "src/gate/*",
     "src/cosmicos/*",
-    "src/font/*"
+    "src/font/*",
+    "src/cmd/*",
+    "msg/*.json"
   ],
   "exclude": [
     "node_modules"

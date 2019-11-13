@@ -31,7 +31,9 @@
     "@types/node": "10.12.2",
     "mocha": "^6.2.2",
     "ts-node": "^8.3.0",
-    "typescript": "3.4.5"
+    "typescript": "3.4.5",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10"
   },
   "scripts": {
     "old-prepublish": "mkdir -p build && mkdir -p lib && mkdir -p bin && cd build && cmake .. && make cli && cp lib/cosmicos.js ../lib && cp bin/cosmicos.js ../bin",

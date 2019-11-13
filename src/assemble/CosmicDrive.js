@@ -4,10 +4,9 @@ var CosmicDrive = function(options) {
     this.cosmicos = require("CosmicEval").cosmicos;
     this.spiders = require("SpiderScrawl").cosmicos;
     // this.spider = new this.spiders.GlyphCode('octo');
-    this.spider = new (require("GlyphCode").GlyphCode)('octo');
+    this.spider = new (require("src/cosmicos/GlyphCode").GlyphCode)('octo');
 
-    this.fourSymbolCodecV2 = require("FourSymbolCodecV2").FourSymbolCodecV2;
-    console.log(require("FourSymbolCodecV2"));
+    this.fourSymbolCodecV2 = require("src/cosmicos/FourSymbolCodecV2").FourSymbolCodecV2;
   
     this.all = JSON.parse(fs.readFileSync("assem.json", 'utf8'));
     this.config = new this.cosmicos.Config(fs.readFileSync("config.json", 'utf8'));
@@ -15,9 +14,7 @@ var CosmicDrive = function(options) {
     if (external_vocab_fname != null) {
         this.config.setExternalVocab(fs.readFileSync(external_vocab_fname, 'utf8'));
     }
-    var names_path = this.config.getNamesPath();
-    this.names = fs.readFileSync(names_path, 'utf8').split('\n').map(x => x.split(' '));
-    this.rename = new (require("Rename").Rename)(this.names);
+    this.rename = new (require("src/cosmicos/Rename").Rename)();
     this.state = new this.cosmicos.State(this.config);
     this.vocab = this.state.getVocab();
     this.primer = null;
@@ -106,6 +103,10 @@ CosmicDrive.prototype.text_to_list_int = function(op) {
 
 CosmicDrive.prototype.complete_stanza = function(stanza, can_run) {
     var part = stanza;
+    if (part.role === 'code') {
+      part["lines"] = part["lines"].map(line => this.rename.renameWithinString(line));
+      console.log("OUT", part["lines"]);
+    }
     var op = part.lines.join("\n");
 
     var preprocess = this.get_codec('preprocess',
@@ -184,7 +185,7 @@ CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
     preprocess.encode(statement);
     var preprocessed = statement.content[0];
     parse.encode(statement);
-    this.rename.rename(statement.content);
+    // this.rename.rename(statement.content);
     var parsed = statement.copy();
     var encoded = statement.copy();
     norm.encode(encoded);

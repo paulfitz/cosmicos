@@ -11,3 +11,6 @@ car cons:0
 cdr cons:1
 set! cell:assign
 get! cell:get
+pair list:2
+head list:0
+tail list:remainder

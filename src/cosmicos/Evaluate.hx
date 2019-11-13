@@ -254,6 +254,7 @@ class Evaluate {
         vocab.check(">",4);
         explain(">", "is one integer greater than another", "> 42 41");
         vocab.check("not",5);
+        vocab.check("unary", 7);
         
         vocab.check("*",9);
         explain("*", "multiply two integers", "* 2 21");
@@ -306,7 +307,6 @@ class Evaluate {
         // it is a little awkward to test for a function, so we just eliminate all other
         // types in the message - this is a bit dodgy.
         mem.add(vocab.get("function?"), function(x){ return !(Std.is(x,Int)||Std.is(x,Float)||Std.is(x,BigInteger)||Std.is(x,String)||Std.is(x,BitString)||Std.is(x,Bool)); });
-        mem.add(vocab.get("type?"), function(x) { return "type " + Std.is(x,Int) + " " + Std.is(x,Float) + " " + Std.is(x,Bool); });
         mem.add(vocab.get("translate"), function(x){ 
                 if (Std.is(x,Int)||Std.is(x,BigInteger)||Std.is(x,String)||Std.is(x,BitString)||Std.is(x,Float)) return x;
                 var rep = function(x) {
@@ -391,6 +391,7 @@ class Evaluate {
         // Transition vocabulary
         vocab.set("is-int", iid());
         evaluateLine("@ is-int | ? x 1");  // should make this more precise
+        vocab.set("unary-v", iid());
         evaluateLine("@ unary-v | ? v | ? x | if (= $x 0) $v (unary-v | + $v 1)");
         evaluateLine("@ unary | unary-v 0");
         // inefficient

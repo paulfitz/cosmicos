@@ -89,7 +89,10 @@ class Vocab {
         return codeToName.get(id);
     }
 
-    public function getNames() : Array<String> {
+    public function getNames(decorated: Bool = false) : Array<String> {
+        if (!decorated) {
+            return [for (i in nameToCode.keys()) i];
+        }
         var result: Array<String> = [];
         for (i in nameToCode.keys()) {
             if (used.get(i) != null) {

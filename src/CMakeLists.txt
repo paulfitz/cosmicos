@@ -33,6 +33,7 @@ add_custom_command(OUTPUT ${WORK}/CosmicAudio.js
 
 add_custom_command(OUTPUT ${WORK}/CosmicEval.js
   COMMAND ${HAXE} -js CosmicEval.js -main cosmicos.Evaluate -cp ${SRC}
+  COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/CosmicEval.js ${CMAKE_BINARY_DIR}/lib/cosmicos.js
   WORKING_DIRECTORY ${WORK}
   DEPENDS 
   ${SRC}/cosmicos/BitString.hx
@@ -121,6 +122,7 @@ FILE(WRITE ${WORK}/setup.cmake "
 ")
 
 set(TSC "${CMAKE_SOURCE_DIR}/node_modules/.bin/tsc")
+set(WEBPACK "${CMAKE_SOURCE_DIR}/node_modules/.bin/webpack")
 
 include(${CMAKE_SOURCE_DIR}/msg/DEPEND.cmake)
 set_property(GLOBAL PROPERTY msg_list)
@@ -213,7 +215,7 @@ add_custom_command(OUTPUT ${WORK}/primer.json
   DEPENDS ${WORK}/assem.json
   ${WORK}/CosmicEval.js
   ${CMAKE_SOURCE_DIR}/src/assemble/CosmicDrive.js
-  ${CMAKE_BINARY_DIR}/js/FourSymbolCodecV2.js
+  ${CMAKE_BINARY_DIR}/js/src/cosmicos/FourSymbolCodecV2.js
   ${CMAKE_SOURCE_DIR}/src/assemble/primer.js)
 add_custom_target(primer ALL DEPENDS ${WORK}/primer.json)
 
@@ -234,7 +236,7 @@ add_custom_command(OUTPUT ${WORK}/assem2.json ${CMAKE_BINARY_DIR}/index.txt ${CM
   ${WORK}/primer.json
   ${WORK}/CosmicEval.js
   ${CMAKE_SOURCE_DIR}/src/assemble/CosmicDrive.js
-  ${CMAKE_BINARY_DIR}/js/FourSymbolCodecV2.js
+  ${CMAKE_BINARY_DIR}/js/src/cosmicos/FourSymbolCodecV2.js
   ${CMAKE_SOURCE_DIR}/src/assemble/evaluate.js)
 
 add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/wrapped.txt ${CMAKE_BINARY_DIR}/entropy.txt
@@ -293,26 +295,6 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/assets/fonts/spider/cosmic_spider.
 
 add_custom_target(spider DEPENDS ${CMAKE_BINARY_DIR}/assets/fonts/spider/cosmic_spider.ttf)
 
-##############################################################################
-##
-## Make a toy command-line cosmicos repl called cosh
-##
-
-make_directory(${CMAKE_BINARY_DIR}/bin)
-make_directory(${CMAKE_BINARY_DIR}/lib)
-set(PERM_CMD)
-if (UNIX)
-  set(PERM_CMD COMMAND chmod +x ${CMAKE_BINARY_DIR}/bin/cosh.js)
-endif()
-add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/bin/cosh.js
-  COMMAND ${CMAKE_COMMAND} -E copy ${WORK}/CosmicEval.js ${CMAKE_BINARY_DIR}/lib/cosmicos.js
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/src/cmd/cosh.js ${CMAKE_BINARY_DIR}/bin/cosh.js
-  ${PERM_CMD}
-  WORKING_DIRECTORY ${WORK}
-  DEPENDS ${WORK}/CosmicEval.js ${WORK}/CosmicAudio.js
-  ${CMAKE_SOURCE_DIR}/src/cmd/cosh.js)
-add_custom_target(cli ALL DEPENDS ${CMAKE_BINARY_DIR}/bin/cosh.js)
-
 
 ##############################################################################
 ##
@@ -356,13 +338,30 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/index.html
 add_custom_target(html DEPENDS ${CMAKE_BINARY_DIR}/index.html)
 
 # TODO: replace glob with file list
-file(GLOB ts_files ${CMAKE_SOURCE_DIR}/src/cosmicos/*.ts)
-add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/js/FourSymbolCodecV2.js
+file(GLOB ts_files ${CMAKE_SOURCE_DIR}/src/**/*.ts)
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/js/src/cosmicos/FourSymbolCodecV2.js
   COMMAND ${TSC} ${CMAKE_SOURCE_DIR}/src/cosmicos/FourSymbolCodecV2.ts
     ${CMAKE_SOURCE_DIR}/src/cosmicos/GlyphCode.ts
     ${CMAKE_SOURCE_DIR}/src/cosmicos/Rename.ts
+    ${CMAKE_SOURCE_DIR}/src/cmd/cosh.ts
     --outDir ${CMAKE_BINARY_DIR}/js/
-    --target esnext --module commonjs --lib esnext
-    DEPENDS ${ts_files})
+    --target esnext --module commonjs --lib esnext --resolveJsonModule --moduleResolution node
+    DEPENDS ${ts_files} ${CMAKE_SOURCE_DIR}/msg/names.json)
 
-add_custom_target(costs DEPENDS ${CMAKE_BINARY_DIR}/js/FourSymbolCodecV2.js)
+add_custom_target(costs DEPENDS ${CMAKE_BINARY_DIR}/js/src/cosmicos/FourSymbolCodecV2.js)
+
+##############################################################################
+##
+## Make a toy command-line cosmicos repl called cosh
+##
+
+add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/bin/cosh.js
+  COMMAND
+    ${CMAKE_COMMAND} -E env COSMIC_VARIANT=${COSMIC_VARIANT}
+    ${WEBPACK} --config ${CMAKE_SOURCE_DIR}/src/webpack.config.js
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  DEPENDS ${CMAKE_BINARY_DIR}/js/src/cosmicos/FourSymbolCodecV2.js jshelpers)
+
+add_custom_target(bundle DEPENDS ${CMAKE_BINARY_DIR}/bin/cosh.js)
+add_custom_target(cli ALL DEPENDS ${CMAKE_BINARY_DIR}/bin/cosh.js)
+
