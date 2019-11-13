@@ -12,8 +12,5 @@ addons:
 script:
     - nvm install 12
     - npm install
-    - mkdir build
-    - cd build
-    - cmake ..
-    - make
-    - make test
+    - src/make_without_docker.sh tiny
+    - src/make_without_docker.sh test
