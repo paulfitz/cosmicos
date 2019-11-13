@@ -104,7 +104,7 @@ if(NOT COSMIC_VOCAB)
 endif()
 
 if(NOT COSMIC_NAMES)
-  SET(COSMIC_NAMES ${CMAKE_SOURCE_DIR}/msg/names.txt)
+  SET(COSMIC_NAMES ${CMAKE_SOURCE_DIR}/msg/names.json)
 endif()
 
 get_target_property(UnlessDriverLoc UnlessDriver JAR_FILE)
