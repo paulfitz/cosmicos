@@ -1,9 +1,13 @@
+import {Rename} from '../cosmicos/Rename';
 
 const cosmicos = require('lib/cosmicos').cosmicos;
 
-export class Eval {
+export type PrintCallback = (x: string) => void;
+
+export default class Eval {
   private cc: any;
   private cache: string = '';
+  private rename: Rename = new Rename();
 
   public constructor() {
     this.cc = new cosmicos.Evaluate(null,true);
@@ -13,6 +17,7 @@ export class Eval {
   }
 
   public clean(input: string): string {
+    input = this.rename.renameWithinString(input);
     input = "" + input;  // make sure this really is a string :-/
     let len = input.length;
     if (len>=3) {
@@ -38,7 +43,7 @@ export class Eval {
     return input;
   }
   
-  public apply(input: string): string|number|boolean|undefined {
+  public apply(input: string, print: PrintCallback): string|number|boolean|undefined {
     input = this.clean(input);
     var input0 = input;
     if (this.cache!="") {
@@ -48,26 +53,29 @@ export class Eval {
     try {
       if (input==="help") {
         out+= "Syntax:\n";
-        out+= "  Space-separated lists of integers with nesting e.g.: 1 2 3 (4 5) (6 7 (8 9))\n";
-        out+= "  Shorthand: symbols (listed below) can be used to stand for integers.\n";
-        out+= "  Shorthand: \"$x\" is equivalent to \"(x)\"\n";
-        out+= "  Shorthand: \"/\" nests to end of expression: (1 2 / 3 4) is equiv. to (1 2 (3 4))\n";
+        out+= "  Space-separated lists of names and numbers with nesting e.g.: * 3 (+ 1 (+ 2 3))\n";
+        out+= "  Shorthand: \"|\" nests to end of expression: (+ 1 | + 2 3) is equiv. to (+ 1 (+ 2 3))\n";
+        out+= "             \"$x\" is equivalent to \"(x)\"\n";
         out+= "  Lists are evaluated by calling the first element with each of the others in turn.\n";
-        out+= "  If the first element of the list is a number, it is treated as a variable lookup.\n\n";
-        out+= "  Int Symbol  Meaning when called               Example\n";
+        out+= "  If the first element of the list is a name or number, it is treated as a lookup.\n";
+        out+= "  Exception: \"? x body\" makes a function\n";
+        out+= "             \"if cond A B\" evaluates to A if cond is true, otherwise B\n";
+        out+= "             \"define x v\" means that looking up $x will return v\n\n";
+        out+= "      Symbol  Meaning when called               Example\n";
         var vocab = this.cc.getVocab();
         var names = vocab.getNames();
         for (var i=0; i<names.length; i++) {
           var lout = "";
-	  var name = names[i];
-	  var idx = "" + vocab.get(i);
+          var name = names[i];
+	  var origName = this.rename.unget(name);
+	  var idx = "";
 	  for (let j=idx.length; j<5; j++) {
 	    lout += " ";
 	  }
 	  lout += idx;
 	  lout += " ";
-	  lout += name;
-	  for (let j=name.length; j<7; j++) {
+	  lout += origName;
+	  for (let j=origName.length; j<7; j++) {
 	    lout += " ";
 	  }
           var meta = vocab.getMeta(name);
@@ -87,11 +95,11 @@ export class Eval {
             out += lout;
           }
         }
-        console.log(out);
-        out = true;
+        print(out);
+        out = null;
       } else if (input==="examples") {
-        console.log(this.cc.examples().join("\n"));
-        out = true;
+        print(this.cc.examples().join("\n") + "\n");
+        out = null;
       } else {
         out = this.cc.evaluateLine(input);
         if (out==null) {

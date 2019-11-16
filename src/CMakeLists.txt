@@ -360,7 +360,11 @@ add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/bin/cosh.js
     ${CMAKE_COMMAND} -E env COSMIC_VARIANT=${COSMIC_VARIANT}
     ${WEBPACK} --config ${CMAKE_SOURCE_DIR}/src/webpack.config.js
   WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-  DEPENDS ${CMAKE_BINARY_DIR}/js/src/cosmicos/FourSymbolCodecV2.js jshelpers)
+  DEPENDS
+    ${CMAKE_BINARY_DIR}/js/src/cosmicos/FourSymbolCodecV2.js
+    jshelpers
+    ${WORK}/CosmicEval.js
+  )
 
 add_custom_target(bundle DEPENDS ${CMAKE_BINARY_DIR}/bin/cosh.js)
 add_custom_target(cli ALL DEPENDS ${CMAKE_BINARY_DIR}/bin/cosh.js)

@@ -37,5 +37,7 @@ describe('four symbol encoding', function() {
     console.log(rename.renameWithinString('1 2 hello hello:there (3 4 hello there)\n hello;'));
     rename.add('make-cell', 'cell:make');
     console.log(rename.renameWithinString('@ demo:make-cell:x | make-cell 14;'));
+    console.log(rename.unget('hi'));
+    console.log(rename.unrenameWithinString('hi there'));
   });
 });

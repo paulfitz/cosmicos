@@ -237,7 +237,8 @@ class Parse {
         } else {
             // very approximate and message-dependent, but this is just an optimization
             // for website, not something fundamental.
-            if (v == 'define' || v == 'set!' || v == 'class' || v == 'act') { return true; }
+            if (v == '@' || v == 'define' || v == 'set!' || v == 'class' ||
+                v == 'act') { return true; }
         }
         return false;
     }

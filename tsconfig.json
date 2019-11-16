@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": "esnext",
+    "lib": ["esnext"],
     "module": "commonjs",
     "moduleResolution": "node",
     "baseUrl": ".",
-    "resolveJsonModule": true,
-    "esModuleInterop": true
+    "resolveJsonModule": true
   },
   "include": [
     "src/gate/*",

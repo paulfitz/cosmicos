@@ -267,8 +267,9 @@ class Evaluate {
         explain("?", "create an anonymous function", "? x | - $x 1");
         id_define = vocab.check("@",13);
         // define and @ are fudged together, TODO fix this
-        explain("@", "store an expression in memory", "@ dec | ? x | - $x 1");
+        explain("@", "store an expression in memory", "@ decrement | ? x | - $x 1");
         id_assign = vocab.check("assign",14);
+        explain("assign", "memory within expression", "assign x 15 | = $x 15");
         id_if = vocab.check("if",15);
         explain("if", "conditional evaluation", "if (> $x 1) (dec $x) $x");
         vocab.check("vector",16);
@@ -466,9 +467,11 @@ class Evaluate {
     
     public function addStd() {
         addStdMin();
+        explain("false", "not true ;-)", "= (> 10 20) $false");
+        explain("true", "not false ;-)", "= (> 20 10) $true");
         addDefinition("not", "? x | if $x 0 1", "not (> 41 42)");
-        addDefinition("and", "? x | ? y | if $x $y 0", "and (> 42 41) (< 41 42)");
-        addDefinition("or", "? x | ? y | if $x 1 $y", "or (> 42 41) (< 42 41)");
+        explain("true:*", "true if both args are true", "and (> 42 41) (< 41 42)");
+        explain("true:+", "true if either arg is true", "or (> 42 41) (< 42 41)");
     }
 
     public function addPrimer(primer: Dynamic) {

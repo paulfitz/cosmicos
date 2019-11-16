@@ -8,7 +8,6 @@ if (!variant) {
 
 const common = {
   mode: 'development',
-  target: 'node',
   resolve: {
     modules: [`./build/${variant}/js`, `./build/${variant}`]
   }
@@ -17,11 +16,24 @@ const common = {
 const cosh = {
   ...common,
   entry: `./build/${variant}/js/src/cmd/cosh.js`,
+  target: 'node',
   output: {
-    path: path.resolve('.', 'build', variant, 'bin'),
+    path: path.resolve('build', variant, 'bin'),
     filename: 'cosh.js'
   }
 };
 
-module.exports = [ cosh ];
+const libCosmicos = {
+  ...common,
+  entry: `./build/${variant}/js/src/cmd/Eval.js`,
+  target: 'web',
+  output: {
+    path: path.resolve('build', variant, 'bin'),
+    filename: 'lib_cosmicos.js',
+    library: 'Eval',
+    libraryExport: 'default'
+  }
+};
+
+module.exports = [ cosh, libCosmicos ];
 

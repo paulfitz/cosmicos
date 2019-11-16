@@ -103,9 +103,9 @@ CosmicDrive.prototype.text_to_list_int = function(op) {
 
 CosmicDrive.prototype.complete_stanza = function(stanza, can_run) {
     var part = stanza;
+    part["original"] = part["lines"];
     if (part.role === 'code') {
       part["lines"] = part["lines"].map(line => this.rename.renameWithinString(line));
-      console.log("OUT", part["lines"]);
     }
     var op = part.lines.join("\n");
 
@@ -164,7 +164,10 @@ CosmicDrive.prototype.complete_stanza = function(stanza, can_run) {
         part["lines"] = [op];
         this.complete_stanza_core(op,part,false);
 	v = 1;
+    } else {
+      part["lines"] = part["original"];
     }
+    delete part["original"];
 
     return v;
 }
