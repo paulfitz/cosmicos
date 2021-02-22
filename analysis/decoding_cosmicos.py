@@ -17,6 +17,8 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
+import argparse
+
 class DecoderClass(object):
 
     def __init__(self):
@@ -578,6 +580,13 @@ def main(argv):
     #d.preparePyPM('lm.txt')
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("arg1", help="arg1 help")
+    parser.add_argument("arg2", help="arg2 help")
+
+    args = parser.parse_args()
+    print(args.arg1)
+
     main(sys.argv)
 
 
