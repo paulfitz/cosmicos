@@ -35,18 +35,16 @@ class DecoderClass(object):
         print("Generating random message with limit %d characters" % (limit,))
         np.random.seed(1337)
         preliminary = [str(i) for i in list(np.random.randint(0, 3 + 1, (limit,)))]
-        self.origmsgtext = ''.join(preliminary)
-        self.msgtext = self.origmsgtext
-        return (limit, self.msgtext)
+        result = ''.join(preliminary)
+        return (limit, result)
 
     def generateBinomialRandomMessage(self, p=0.5, limit=10000):
         print('---------')
         print("Generating binomial distributed message with limit %d characters" % (limit,))
         np.random.seed(1337)
         preliminary = [str(i) for i in list(np.random.binomial(3, p, (limit,)))]
-        self.origmsgtext = ''.join(preliminary)
-        self.msgtext = self.origmsgtext
-        return (limit, self.msgtext)
+        result = ''.join(preliminary)
+        return (limit, result)
 
 
 
@@ -54,10 +52,9 @@ class DecoderClass(object):
         print('---------')
         print("Reading text from file %s with limit %d characters" % (filename, limit))
 
-        fl = open(filename,'r')
-        s = fl.read()
-        s.lower()
-        fl.close()
+        with open(filename,'r') as fl:
+            s = fl.read()
+        s = " ".join(s.lower().split())  # substituted all \n by spaces
         if limit > 0:
             s = s[0:limit]
         lenmsg = len(s)
@@ -480,20 +477,9 @@ class DecoderClass(object):
         plt.show()
 
 
-def main(argv):
+def main(args_from_argsparse):
 
-    # TODO: rewrite main function into different analysis
-    # steps per command line to clean up this section
-    # TODO: argparse
-
-    if len(argv) != 2:
-        print("Shows a few properties of the message:")
-        print("string frequencies -- to determine delimiters")
-        print("graphics -- fulfillment of Zipf's law")
-        print("preliminary decoding -- as far as possible")
-        print("dictionaries -- of commands, data, ...")
-        print("%s msgfile\n" % (argv[0],))
-        return
+    print(args_from_argsparse)
 
     d = DecoderClass()
 
@@ -505,7 +491,7 @@ def main(argv):
 
     #(txtlen, mobytext) = d.readStandardTextFromFile("../moby_dick.txt", limit=0)
     #(metilen, metitext) = d.readStandardTextFromFile("../meti.txt", limit=0)
-    d.readMessage(argv[1], limit=0)
+    d.readMessage(args_from_argsparse.files[0], limit=0)
 
     #d.doesItObeyZipfsLaw([randomtext], [r'[23]+'], [r'[01]+'], ['g'], ['g'])
     # check various texts or messages for their ranked frequency content
@@ -580,14 +566,33 @@ def main(argv):
     #d.preparePyPM('lm.txt')
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("arg1", help="arg1 help")
-    parser.add_argument("arg2", help="arg2 help")
+    program_description ="""
+    Analyse different text files (including the message file from
+    CosmicOS) from the perspective of different measures of information.
+    This is to be thought as a naive investigation whether such a
+    peace of information contains a message and if possible to derive
+    the format of the message.
+    """
+    parser = argparse.ArgumentParser(description=program_description)
+    parser.add_argument("files", metavar="file", type=str, nargs="+",
+                        help="a file to be analysed")
+    parser.add_argument("--ngram", action="store_true",
+                        help="show ngram entropy for files")
+    parser.add_argument("--zipf", action="store_true",
+                        help="show whether files obey Zipf's law")
+    parser.add_argument("--linerep", type=int, default=512,
+                        help="show line representation of files (length int)")
+    parser.add_argument("--generate", choices=["uniform", "binomial"],
+                        nargs="*",
+                        help="show generated distributions together with files")
+    parser.add_argument("--genmsglength", type=int, default=10000,
+                        help="cutoff length of generated message")
+    parser.add_argument("--filmsglength", type=int, default=0,
+                        help="cutoff length of file message")
 
     args = parser.parse_args()
-    print(args.arg1)
 
-    main(sys.argv)
+    main(args)
 
 
 
