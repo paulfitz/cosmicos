@@ -574,7 +574,7 @@ if __name__ == '__main__':
     the format of the message.
     """
     parser = argparse.ArgumentParser(description=program_description)
-    parser.add_argument("files", metavar="file", type=str, nargs="+",
+    parser.add_argument("--files", metavar="file", type=str, nargs="+",
                         help="a file to be analysed")
     parser.add_argument("--ngram", action="store_true",
                         help="show ngram entropy for files")
@@ -582,9 +582,10 @@ if __name__ == '__main__':
                         help="show whether files obey Zipf's law")
     parser.add_argument("--linerep", type=int, default=512,
                         help="show line representation of files (length int)")
-    parser.add_argument("--generate", choices=["uniform", "binomial"],
+    parser.add_argument("--generate", #choices=["uniform", "binomial"],
                         nargs="*",
                         help="show generated distributions together with files")
+    # TODO: decompose into binomial, uniform with different parameters
     parser.add_argument("--genmsglength", type=int, default=10000,
                         help="cutoff length of generated message")
     parser.add_argument("--filmsglength", type=int, default=0,
