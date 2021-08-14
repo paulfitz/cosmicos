@@ -30,21 +30,21 @@ class DecoderClass(object):
         self.defcounter = 0
 
 
-    def generateRandomMessage(self, limit=10000):
+    def generateRandomMessage(self, seed=1337, limit=10000):
         print('---------')
         print("Generating random message with limit %d characters" % (limit,))
-        np.random.seed(1337)
+        np.random.seed(seed)
         preliminary = [str(i) for i in list(np.random.randint(0, 3 + 1, (limit,)))]
         result = ''.join(preliminary)
-        return (limit, result)
+        return (limit, result, {"type": "random", "seed": seed})
 
-    def generateBinomialRandomMessage(self, p=0.5, limit=10000):
+    def generateBinomialRandomMessage(self, p=0.5, seed=1337, limit=10000):
         print('---------')
         print("Generating binomial distributed message with limit %d characters" % (limit,))
-        np.random.seed(1337)
+        np.random.seed(seed)
         preliminary = [str(i) for i in list(np.random.binomial(3, p, (limit,)))]
         result = ''.join(preliminary)
-        return (limit, result)
+        return (limit, result, {"type": "binomial", "seed": seed, "p": p})
 
 
 
@@ -59,22 +59,22 @@ class DecoderClass(object):
             s = s[0:limit]
         lenmsg = len(s)
         print('---------')
-        return (lenmsg, s)
+        return (lenmsg, s, {"type": "standardtext", "filename": filename})
 
 
     def readMessage(self, filename, limit=10000):
         print('---------')
         print("Reading message from file %s with limit %d characters" % (filename, limit))
 
-        fl = open(filename,'r')
-        self.origmsgtext = fl.read()
-        fl.close()
-        self.msgtext = re.sub(r'[\n]+', '', self.origmsgtext) # remove end line symbols
+        with open(filename,'rt') as fl:
+            self.origmsgtext = fl.read()
+
+        self.msgtext = "".join(self.origmsgtext.split()) # remove end line symbols
         if limit > 0:
             self.msgtext = self.msgtext[0:limit]
         lenmsg = len(self.msgtext)
         print('---------')
-        return lenmsg
+        return (lenmsg, self.msgtext, {"type": "message", "filename": filename})
 
 
     def performStatistics(self, msgtext, lets, maxlen=2):
@@ -476,22 +476,64 @@ class DecoderClass(object):
 
         plt.show()
 
+def parse_generate_parameter(generate_parameter):
+    if generate_parameter is None:
+        return []
+    else:
+        if isinstance(generate_parameter, list):
+            return [tuple(x.strip().split())
+                    for x in generate_parameter]
 
 def main(args_from_argsparse):
 
     print(args_from_argsparse)
 
+    generate_lengthlimit = args_from_argsparse.genmsglength
+    file_lengthlimit = args_from_argsparse.filmsglength
+    generate_list = parse_generate_parameter(args_from_argsparse.generate)
+    message_file_no = args_from_argsparse.messagenumber
+
+    MAX_NGRAM_LENGTH = 100
+    analyse_chars_list = args_from_argsparse.messagechars.split()
+
     d = DecoderClass()
 
-    (msglen, randomtext) = d.generateRandomMessage(limit=60000)
-    (mlenb1, binomialtext1) = d.generateBinomialRandomMessage(p=0.1, limit=600000)
-    #(mlenb2, binomialtext2) = d.generateBinomialRandomMessage(p=0.2, limit=600000)
-    #(mlenb3, binomialtext3) = d.generateBinomialRandomMessage(p=0.3, limit=600000)
-    #(mlenb4, binomialtext4) = d.generateBinomialRandomMessage(p=0.5, limit=600000)
+    statistics_list = []  # list of texts to analyze
 
-    #(txtlen, mobytext) = d.readStandardTextFromFile("../moby_dick.txt", limit=0)
-    #(metilen, metitext) = d.readStandardTextFromFile("../meti.txt", limit=0)
-    d.readMessage(args_from_argsparse.files[0], limit=0)
+    for generate_tuple in generate_list:
+        if len(generate_tuple) > 0:
+            type_of_generation = generate_tuple[0].lower()
+            if type_of_generation == "random":
+                statistics_list.append(
+                    d.generateRandomMessage(limit=generate_lengthlimit))
+            elif type_of_generation == "binomial":
+                if len(generate_tuple) > 1:
+                    try:
+                        p = float(generate_tuple[1])
+                    except ValueError:
+                        print("ERROR: value " + generate_tuple[1] + " is no valid float number!")
+                    else:
+                        statistics_list.append(
+                            d.generateBinomialRandomMessage(
+                                p=p, limit=generate_lengthlimit))
+            else:
+                print("ERROR: unknown type \"" + type_of_generation + "\"")
+
+    for (parsed_filename_no, parsed_filename) in enumerate(args_from_argsparse.files):
+        try:
+            if parsed_filename_no == message_file_no:
+                statistics_list.append(
+                    d.readMessage(parsed_filename,
+                                  limit=file_lengthlimit))
+            else:
+                statistics_list.append(
+                    d.readStandardTextFromFile(parsed_filename,
+                                               limit=file_lengthlimit))
+        except FileNotFoundError:
+            print("ERROR: file not found: " + parsed_filename)
+
+    if len(analyse_chars_list) == 1:
+        analyse_chars_list *= len(statistics_list)
 
     #d.doesItObeyZipfsLaw([randomtext], [r'[23]+'], [r'[01]+'], ['g'], ['g'])
     # check various texts or messages for their ranked frequency content
@@ -523,44 +565,38 @@ def main(args_from_argsparse):
     #        cdstr = (''.join(['0' for i in range(4-lcdstr)])) + cdstr
     #    encodedmeti += cdstr
 
-    randomtext2 = "".join([str(v) for v in (np.fromfile("./rnd60kb.bin", dtype="uint8") % 4).tolist()])
+    if args_from_argsparse.ngram:
 
-    Srnd = np.array(d.performStatistics(randomtext, '0123', maxlen=100))
-    Srnd2 = np.array(d.performStatistics(randomtext2, '0123', maxlen=100))
-    Sbinomial1 = np.array(d.performStatistics(binomialtext1, '0123', maxlen=100))
+        plot_ngram_entropy_plots = []
+        plot_ngram_entropy_colors = []
+        plot_ngram_entropy_labels = []
+        for ((length, text, typedict), analyse_chars) in zip(statistics_list, analyse_chars_list):
+            Splot = np.array(
+                d.performStatistics(text,
+                                    analyse_chars,
+                                    maxlen=MAX_NGRAM_LENGTH))
+            Scolor = "#" + "".join(
+                [hex(x)[2:].zfill(2)
+                 for x in np.random.randint(256, size=3).tolist()])
+            Slabel = " ".join([k + ": " + str(v) for (k, v) in typedict.items()]).strip()
+            Slabel += " (" + analyse_chars + ")"
+            plot_ngram_entropy_plots.append(Splot)
+            plot_ngram_entropy_colors.append(Scolor)
+            plot_ngram_entropy_labels.append(Slabel)
+
+    #Srnd = np.array(d.performStatistics(randomtext, '0123', maxlen=100))
+    #Srnd2 = np.array(d.performStatistics(randomtext2, '0123', maxlen=100))
+    #Sbinomial1 = np.array(d.performStatistics(binomialtext1, '0123', maxlen=100))
     #Sbinomial2 = np.array(d.performStatistics(binomialtext2, '0123', maxlen=100))
     #Sbinomial3 = np.array(d.performStatistics(binomialtext3, '0123', maxlen=100))
     #Sbinomial4 = np.array(d.performStatistics(binomialtext4, '0123', maxlen=100))
-    Scos = np.array(d.performStatistics(d.msgtext, '0123', maxlen=100))
+    #Scos = np.array(d.performStatistics(d.msgtext, '0123', maxlen=100))
     #Smoby = np.array(d.performStatistics(mobytext, '0123456789abcdefghijklmnopqrstuvwxyz', maxlen=100))
     #Smeti = np.array(d.performStatistics(metitext, '01234567', maxlen=100))
 
-    d.plotNGramEntropy([Srnd,
-                        Srnd2,
-                        Sbinomial1,
-                        #Sbinomial2,
-                        #Sbinomial3,
-                        #Sbinomial4,
-                        Scos,
-                        #Smoby,
-                        #Smeti
-                        ],
-                       ['r',
-                       r'#000000',
-                       r'#220000',
-                       #r'#440000',
-                       #r'#880000',
-                       'g',
-                       'b',
-                       'm'],
-                        ['Random text (uniformly distributed 0123)',
-                         'Random text (uniformly distributed 0123)',
-                        'Random text (binomial distributed 0123 p=0.1)',
-                        #'Random text (binomial distributed 0123 p=0.2)',
-                        #'Random text (binomial distributed 0123 p=0.3)',
-                        #'Random text (binomial distributed 0123 p=0.5)',
-                        'CosmicOS',
-                        'Moby Dick (lowercase + numbers)', 'METI (dearet.org, removed space and \\n)'])
+        d.plotNGramEntropy(plot_ngram_entropy_plots,
+                           plot_ngram_entropy_colors,
+                           plot_ngram_entropy_labels)
 
     # used later for automated process analysis
     #d.preparePyPM('lm.txt')
@@ -574,7 +610,7 @@ if __name__ == '__main__':
     the format of the message.
     """
     parser = argparse.ArgumentParser(description=program_description)
-    parser.add_argument("--files", metavar="file", type=str, nargs="+",
+    parser.add_argument("files", metavar="file", type=str, nargs="+",
                         help="a file to be analysed")
     parser.add_argument("--ngram", action="store_true",
                         help="show ngram entropy for files")
@@ -582,14 +618,27 @@ if __name__ == '__main__':
                         help="show whether files obey Zipf's law")
     parser.add_argument("--linerep", type=int, default=512,
                         help="show line representation of files (length int)")
-    parser.add_argument("--generate", #choices=["uniform", "binomial"],
-                        nargs="*",
-                        help="show generated distributions together with files")
-    # TODO: decompose into binomial, uniform with different parameters
+    parser.add_argument("--generate",
+                        action="append",
+                        type=str,
+                        help="""
+show generated distributions together with files:
+
+    --generate random
+    --generate binomial p
+""")
     parser.add_argument("--genmsglength", type=int, default=10000,
-                        help="cutoff length of generated message")
+                        help="Cutoff length of generated message")
     parser.add_argument("--filmsglength", type=int, default=0,
-                        help="cutoff length of file message")
+                        help="Cutoff length of file message")
+    parser.add_argument("--messagenumber", type=int, default=0,
+                        help="Which filename in the list is the message?")
+    parser.add_argument("--messagechars", type=str, default="0123",
+                        help="Which chars can occur in the message?" +
+                            " Either \"--messagechars 0123\" or " +
+                            "space separated strings\"--messagechars 0123 0123"+
+                            " ... 01234567\" (no of texts). " +
+                            "First generated then files.")
 
     args = parser.parse_args()
 
