@@ -9,6 +9,15 @@ The complexity of this decoder is IMHO a measure
 for the simplicity of the message.
 Format was taken from an old form of message.
 
+20220415:
+    - removed decoding stuff (only statistical and graphical analysis needed)
+    - added command line switches
+    - cleaned up file
+20160627:
+    - played around a bit with message
+    - added Zipf's law analysis
+    - added N-gram entropy analysis
+
 """
 
 import re
@@ -16,31 +25,46 @@ import sys
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+import logging
+from operator import itemgetter
 
 import argparse
 
-class DecoderClass(object):
+class DecoderClass:
 
-    def __init__(self):
+    def __init__(self, logger):
         self.datadict = {}
         self.datacounter = 0
         self.commanddict = {}
         self.commandcounter = 0
         self.defdict = {}
         self.defcounter = 0
+        self.logger = logger
+
+    def convert_args_to_string(self, *args):
+        return " ".join([str(a) for a in args])
+
+    def info(self, *args):
+        self.logger.info(self.convert_args_to_string(*args))
+
+    def debug(self, *args):
+        self.logger.debug(self.convert_args_to_string(*args))
+
+    def error(self, *args):
+        self.logger.error(self.convert_args_to_string(*args))
 
 
     def generateRandomMessage(self, seed=1337, limit=10000):
-        print('---------')
-        print("Generating random message with limit %d characters" % (limit,))
+        self.info('---------')
+        self.info("Generating random message with limit %d characters" % (limit,))
         np.random.seed(seed)
         preliminary = [str(i) for i in list(np.random.randint(0, 3 + 1, (limit,)))]
         result = ''.join(preliminary)
         return (limit, result, {"type": "random", "seed": seed})
 
     def generateBinomialRandomMessage(self, p=0.5, seed=1337, limit=10000):
-        print('---------')
-        print("Generating binomial distributed message with limit %d characters" % (limit,))
+        self.info('---------')
+        self.info("Generating binomial distributed message with limit %d characters" % (limit,))
         np.random.seed(seed)
         preliminary = [str(i) for i in list(np.random.binomial(3, p, (limit,)))]
         result = ''.join(preliminary)
@@ -49,8 +73,8 @@ class DecoderClass(object):
 
 
     def readStandardTextFromFile(self, filename, limit=10000):
-        print('---------')
-        print("Reading text from file %s with limit %d characters" % (filename, limit))
+        self.info('---------')
+        self.info("Reading text from file %s with limit %d characters" % (filename, limit))
 
         with open(filename,'r') as fl:
             s = fl.read()
@@ -58,13 +82,13 @@ class DecoderClass(object):
         if limit > 0:
             s = s[0:limit]
         lenmsg = len(s)
-        print('---------')
+        self.info('---------')
         return (lenmsg, s, {"type": "standardtext", "filename": filename})
 
 
     def readMessage(self, filename, limit=10000):
-        print('---------')
-        print("Reading message from file %s with limit %d characters" % (filename, limit))
+        self.info('---------')
+        self.info("Reading message from file %s with limit %d characters" % (filename, limit))
 
         with open(filename,'rt') as fl:
             self.origmsgtext = fl.read()
@@ -73,13 +97,13 @@ class DecoderClass(object):
         if limit > 0:
             self.msgtext = self.msgtext[0:limit]
         lenmsg = len(self.msgtext)
-        print('---------')
+        self.info('---------')
         return (lenmsg, self.msgtext, {"type": "message", "filename": filename})
 
 
     def performStatistics(self, msgtext, lets, maxlen=2):
 
-        print("msglen %d" % (len(msgtext),))
+        self.info("msglen %d" % (len(msgtext),))
 
         printentropies = False
 
@@ -94,7 +118,7 @@ class DecoderClass(object):
             matchedpattern = re.findall(pattern, msgtext)
 
             if matchedpattern == []:
-                print('empty matching for %s at length %d' % (letters, kp))
+                self.debug('empty matching for %s at length %d' % (letters, kp))
             numpatterns = len(matchedpattern)
 
             for w in matchedpattern:
@@ -121,16 +145,17 @@ class DecoderClass(object):
 
             hsum = 0.0
             for (mon, hmon) in monograms:
-                print("h(\'%c\') = %f" % (mon, -hmon*math.log(hmon, numletters)))
+                self.debug("h(\'%c\') = %f" % (mon, -hmon*math.log(hmon, numletters)))
                 hsum += -hmon*math.log(hmon, numletters)
-                print("hsum = %f" % (hsum,))
+                self.debug("hsum = %f" % (hsum,))
 
             numdigrams = len(digrams)
             hsumdi = 0.0
             for (di, hdi) in digrams:
-                print("h(\'%s\') = %f" % (di, -hdi*math.log(hdi, numdigrams)))
+                self.debug("h(\'%s\') = %f"
+                           % (di, -hdi*math.log(hdi, numdigrams)))
                 hsumdi += -hdi*math.log(hdi, numdigrams)
-            print("hsumdi = %f" % (hsumdi,))
+            self.debug("hsumdi = %f" % (hsumdi,))
 
         entropyngramlist = []
         for (ind, wd) in enumerate(ngramlist):
@@ -145,21 +170,11 @@ class DecoderClass(object):
                 hsumn += sn
 
             if hsumn < 1e-6:
-                print(wd)
+                self.debug(wd)
 
-            print("%d %f" % (ind+1, hsumn))
+            self.debug("%d %f" % (ind+1, hsumn))
             entropyngramlist.append([ind+1, hsumn])
         return(entropyngramlist)
-
-    def preparePyPM(self, outputfile):
-        outputmsgtext = re.sub(r'2233', '\n', self.msgtext)
-
-        outputmsgtext = re.sub(r'([0123]{1})', r'\1 ', outputmsgtext)
-
-        fo = open(outputfile, 'w')
-        fo.write(outputmsgtext)
-        fo.close()
-
 
     def performFrequencyRankOrderingAndFit(self, msgtext, delimsymbols, wordre, rankcutoff=100):
         modifiedmsg = re.sub(delimsymbols, ' ', msgtext)
@@ -173,9 +188,10 @@ class DecoderClass(object):
                 worddict[w] = 1
             else:
                 worddict[w] += 1
-        print(sorted(worddict.items()))
+        self.debug(sorted(worddict.items()))
         ranklist = [pair for pair in sorted(worddict.items(),
-                                            key=lambda word, rank: rank, reverse=True)]
+                                            key=itemgetter(1), reverse=True)]
+        # sort by rank
 
         if rankcutoff > 0:
             ranklist = ranklist[0:rankcutoff]
@@ -192,13 +208,19 @@ class DecoderClass(object):
         return (freqranking, decreasing, intersection)
 
 
-    def doesItObeyZipfsLaw(self, textlist, delimiterlist, wordrelist, colorlist_points, colorlist_fits, rankcutoff=100):
+    def doesItObeyZipfsLaw(self, textlist,
+                           delimiterlist,
+                           wordrelist,
+                           colorlist_points,
+                           colorlist_fits,
+                           labels,
+                           rankcutoff=100):
 
-        print("Printing word frequency over ordered by frequency rank.")
-        print("This obviously relies on the correct choice of delimiter symbols.")
-        print("This should give a power law according to Zipf\'s law.")
+        self.info("Printing word frequency over ordered by frequency rank.")
+        self.info("This obviously relies on the correct choice of delimiter symbols.")
+        self.info("This should give a power law according to Zipf\'s law.")
 
-        fig = plt.figure(1)
+        fig = plt.figure()
         ax = fig.add_subplot(111)
 
         ax.axis('equal')
@@ -209,15 +231,25 @@ class DecoderClass(object):
         ax.set_xlabel('rank # according to frequency (-> decreasing frequency)')
         ax.set_ylabel('word frequency')
 
-        texts_to_analyse = [self.msgtext] + textlist
-        delimiters_to_use = [r'[23]+'] + delimiterlist
-        wordres_to_use = [r'[01]+'] + wordrelist
-        colorlist_points_to_use = ['r'] + colorlist_points
-        colorlist_fits_to_use = ['r'] + colorlist_fits
+        # self.msgtext: [r'[23]+'], [r'[01]+'], r, r
+        texts_to_analyse = textlist
+        delimiters_to_use = delimiterlist
+        wordres_to_use = wordrelist
+        colorlist_points_to_use = colorlist_points
+        colorlist_fits_to_use = colorlist_fits
 
-        for (text, delimiters, wordre, color_points, color_fits) in zip(texts_to_analyse, delimiters_to_use, wordres_to_use, colorlist_points_to_use, colorlist_fits_to_use):
+        for (text, delimiters, wordre, color_points, color_fits) \
+            in zip(texts_to_analyse,
+                   delimiters_to_use,
+                   wordres_to_use,
+                   colorlist_points_to_use,
+                   colorlist_fits_to_use):
 
-            (freqranking, decreasing, intersection) = self.performFrequencyRankOrderingAndFit(text, delimiters, wordre, rankcutoff)
+            (freqranking, decreasing, intersection) =\
+                self.performFrequencyRankOrderingAndFit(text,
+                                                        delimiters,
+                                                        wordre,
+                                                        rankcutoff)
 
             # formulas for the log-log plot
             # y = a*x^b
@@ -229,24 +261,26 @@ class DecoderClass(object):
 
             ax.set_title('Zipf\'s Law y = a*x^b')
 
-            print('a = %f, b = %f' % (10.0**intersection, decreasing))
-            print(freqranking)
+            self.info('a = %f, b = %f' % (10.0**intersection, decreasing))
+            self.debug(freqranking)
 
-            ax.plot(freqranking[:, 0], freqranking[:, 1], color_points+'.', xfit, yfit, color_fits)
+            ax.scatter(freqranking[:, 0], freqranking[:, 1], color=color_points)
+            ax.plot(xfit, yfit, color_fits)
+
+        ax.legend(labels, loc='lower right')
 
 
         try:
             plt.show()
         except ValueError:
-            print('something wrong with values in log plot')
+            self.error('something wrong with values in log plot')
 
 
-    def showGraphicalRepresentation(self, width=128):
+    def showGraphicalRepresentation(self, msgtext, width=128):
 
-        msgtext = self.msgtext
         lenmsg = len(msgtext)
 
-        numlines = lenmsg/width
+        numlines = lenmsg//width
         numoverhead = lenmsg % width
         padding = width - numoverhead
 
@@ -254,7 +288,7 @@ class DecoderClass(object):
 
         floatmsg = []
         for c in msgtext:
-            if c != 'X':
+            if c != 'X' and c != " ":
                 floatmsg.append(float(c))
             else:
                 floatmsg.append(np.NaN)
@@ -281,9 +315,7 @@ class DecoderClass(object):
 
         ax.imshow(Data, interpolation='None')
 
-    def showGraphicalRepresentationLineTerminal(self, terminalsymbol='2233', maxlen=1000):
-
-        msgtext = self.msgtext
+    def showGraphicalRepresentationLineTerminal(self, msgtext, terminalsymbol='2233', maxlen=1000):
 
         # split msg at terminalsymbol
         # fill all lines up with X until length of longest line
@@ -315,11 +347,11 @@ class DecoderClass(object):
             if len(line) < width:
                 paddedline = line + (''.join(['X' for i in range(width - len(line))]))
             elif len(line) > width:
-                print("truncated line %d" % (linnum,))
+                self.debug("truncated line %d" % (linnum,))
                 paddedline = line[:width]
             tmplist = []
             for c in paddedline:
-                if c != 'X':
+                if c != 'X' and c != " ":
                     tmplist = tmplist + [float(c) for i in range(howmanypixel)]
                 else:
                     tmplist = tmplist + [np.NaN for i in range(howmanypixel)]
@@ -348,21 +380,19 @@ class DecoderClass(object):
 
         ax.imshow(Data, interpolation='None')
 
-
-
-    def guessShortControlSymbols(self, maxlen=5):
-        print('---------')
-        print('Guessing control symbols by counting')
-        print('every occurence of strings of fixed')
-        print('length up to %d characters. Are these (nearly)' % (maxlen,))
-        print('identical for two strings, there is a high chance')
-        print('that these are delimiters of blocks. They may not occur at a higher')
-        print('level together, to be delimiters. A single occurence')
-        print('will not be shown.')
+    def guessShortControlSymbols(self, text, maxlen=5):
+        self.info('---------')
+        self.info('Guessing control symbols by counting')
+        self.info('every occurence of strings of fixed')
+        self.info('length up to %d characters. Are these (nearly)' % (maxlen,))
+        self.info('identical for two strings, there is a high chance')
+        self.info('that these are delimiters of blocks. They may not occur at a higher')
+        self.info('level together, to be delimiters. A single occurence')
+        self.info('will not be shown.')
         for k in range(maxlen):
             wordlength = k+1
             pk = re.compile(r'[0-3]{'+str(wordlength)+'}')
-            nk = pk.findall(self.msgtext)
+            nk = pk.findall(text)
 
             nkdict = {}
             for wk in nk:
@@ -377,92 +407,11 @@ class DecoderClass(object):
                 if i > 1:
                     occur.append((w,i))
             if occur != []:
-                print("%d-char strings: %s" % (wordlength, occur))
-        print('--------')
-
-
-    def decodeLine(self, linetext, leftdelimiter='', rightdelimiter=''):
-
-        scanner=re.Scanner([
-            (r"2032[01]+3", lambda scanner, token: ("DEFINITION", token[4:-1])),
-            (r"2[01]+3*", lambda scanner, token: ("DATA", token[1:-1])),
-            (r"2[0123]+3*", lambda scanner, token: ("NESTED_COMMAND", token[1:-1])),
-            (r"023", lambda scanner, token: ("HASPROPERTY", token))
-        ])
-
-        (results, remain) = scanner.scan(linetext)
-
-        # the first data cell in the line is typically a command
-
-        if linetext != '':
-            if results[0][0] == 'DATA':
-                results[0] = ('COMMAND', results[0][1])
-
-        # now add commands and definitions to dictionaries
-
-        for w in results:
-            if w[0] == 'DEFINITION':
-                if  self.defdict.get(w[1]) == None:
-                    self.defdict[w[1]] = 'DEFINITION' + str(self.defcounter)
-                    self.defcounter += 1
-            if w[0] == 'COMMAND':
-                if  self.defdict.get(w[1]) == None:
-                    print("ERROR COMMAND NOT DEFINED (%s); INSERTING INTO DEFINITION DICT\n" % (w[1],))
-                    self.defdict[w[1]] = 'DEFINITION' + str(self.defcounter)
-                    self.defcounter += 1
-            if w[0] == 'DATA':
-                if  self.datadict.get(w[1]) == None:
-                    self.datadict[w[1]] = 'DATA' + str(self.datacounter)
-                    self.datacounter += 1
-
-
-        # is there something remaining which is not covered by our pattern matching?
-        if remain != '':
-            print('CANNOT INTERPRET %s \n' % (remain,))
-
-        return results
-
-    def parseBlock(self, leftdelimiter='', rightdelimiter='', eol=''):
-        print('--------')
-        print("Using leftdelimiter '%s', rightdelimiter '%s', EOL '%s'" % (leftdelimiter, rightdelimiter, eol))
-
-        modifiedmsg = self.msgtext
-
-        if eol!='':
-            modifiedmsg = re.sub(eol, '\n', modifiedmsg)
-
-        modifiedmsg = modifiedmsg.split('\n')
-
-        decoded = [self.decodeLine(line, leftdelimiter, rightdelimiter) for line in modifiedmsg]
-
-
-
-        print('--------')
-        return decoded
-
-    def decodeBlock(self, parsedBlocks):
-        print('decoding blocks ...')
-        lines = []
-        for line in parsedBlocks:
-            linestring = ''
-
-            for parsedPair in line:
-                if parsedPair[0] == 'DEFINITION':
-                    linestring += 'DEFINITION ' + self.defdict[parsedPair[1]] + ' '
-                if parsedPair[0] == 'COMMAND':
-                    linestring += 'COMMAND ' + self.defdict[parsedPair[1]] + ' '
-                if parsedPair[0] == 'DATA':
-                    linestring += self.datadict[parsedPair[1]] + ' '
-                if parsedPair[0] == 'HASPROPERTY':
-                    linestring += 'HASPROPERTY '
-                if parsedPair[0] == 'NESTED_COMMAND':
-                    linestring += 'NESTED_COMMAND ' + parsedPair[1]
-            lines.append(linestring)
-        return lines
-
+                self.info("%d-char strings: %s" % (wordlength, occur))
+        self.info('--------')
 
     def plotNGramEntropy(self, entlengtharrays, colors, labels):
-        fig = plt.figure(1)
+        fig = plt.figure()
         ax = fig.add_subplot(111)
 
         ax.set_xlabel('n-gram length')
@@ -495,30 +444,55 @@ def main(args_from_argsparse):
 
     MAX_NGRAM_LENGTH = 100
     analyse_chars_list = args_from_argsparse.messagechars.split()
+    verbose = args_from_argsparse.verbose
+    if verbose:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
 
-    d = DecoderClass()
+    showgraphical = args_from_argsparse.graphical
+
+    d = DecoderClass(logging.getLogger("analysis"))
 
     statistics_list = []  # list of texts to analyze
 
+    # first grab texts from articially generated ones
     for generate_tuple in generate_list:
         if len(generate_tuple) > 0:
             type_of_generation = generate_tuple[0].lower()
             if type_of_generation == "random":
+                if len(generate_tuple) == 1:
+                    seed = 1337
+                else:
+                    (_, seed, *rest) = generate_tuple
+                    try:
+                        seed = int(seed)
+                    except ValueError:
+                        print("ERROR: value " + seed + " is no valid float number!")
                 statistics_list.append(
-                    d.generateRandomMessage(limit=generate_lengthlimit))
+                    d.generateRandomMessage(limit=generate_lengthlimit,
+                                            seed=seed))
             elif type_of_generation == "binomial":
                 if len(generate_tuple) > 1:
+                    (_, p, *rest) = generate_tuple
+                    if len(rest) >= 1:
+                        (seed, *_) = rest
+                    else:
+                        seed = 1337
                     try:
-                        p = float(generate_tuple[1])
+                        p = float(p)
+                        seed = int(seed)
                     except ValueError:
-                        print("ERROR: value " + generate_tuple[1] + " is no valid float number!")
+                        print("ERROR: value " + str(p) + " is no valid float number " +
+                              "or value " + str(seed) + " is no valid int number!")
                     else:
                         statistics_list.append(
                             d.generateBinomialRandomMessage(
-                                p=p, limit=generate_lengthlimit))
+                                p=p, limit=generate_lengthlimit, seed=seed))
             else:
                 print("ERROR: unknown type \"" + type_of_generation + "\"")
 
+    # second grab texts from provided text files
     for (parsed_filename_no, parsed_filename) in enumerate(args_from_argsparse.files):
         try:
             if parsed_filename_no == message_file_no:
@@ -535,35 +509,15 @@ def main(args_from_argsparse):
     if len(analyse_chars_list) == 1:
         analyse_chars_list *= len(statistics_list)
 
-    #d.doesItObeyZipfsLaw([randomtext], [r'[23]+'], [r'[01]+'], ['g'], ['g'])
-    # check various texts or messages for their ranked frequency content
+    if showgraphical:
+        for (length, text, props) in statistics_list:
+            d.showGraphicalRepresentation(text,
+                                          width=args_from_argsparse.linerep)
+            d.showGraphicalRepresentationLineTerminal(text, maxlen=128)
 
-    #d.showGraphicalRepresentation(width=512)
-    #d.showGraphicalRepresentationLineTerminal(maxlen=128)
-    #d.guessShortControlSymbols(maxlen=2)
-    #res = d.parseBlock(leftdelimiter='2', rightdelimiter='3', eol='2233')
-    #d.decodeBlock(res)
-
-    #mobytext = re.sub(r'\n', '', mobytext) # remove punctuation
-
-    #metitext = re.sub(r'[ \n]+', '', metitext)
-
-    #wmeti = metitext.split()
-    #encodedmeti = ''
-    #metidict = {}
-    #count = 0
-    #for w in wmeti:
-    #    cdstr = ''
-    #    if metidict.get(w) == None:
-    #        metidict[w] = count
-    #        cdstr = hex(count)[2:]
-    #        count += 1
-    #    else:
-    #        cdstr = hex(metidict[w])[2:]
-    #    lcdstr = len(cdstr)
-    #    if lcdstr < 4:
-    #        cdstr = (''.join(['0' for i in range(4-lcdstr)])) + cdstr
-    #    encodedmeti += cdstr
+    if args_from_argsparse.guesscontrolsymbols:
+        for (_, text, _) in statistics_list:
+            d.guessShortControlSymbols(text, maxlen=2)
 
     if args_from_argsparse.ngram:
 
@@ -584,22 +538,26 @@ def main(args_from_argsparse):
             plot_ngram_entropy_colors.append(Scolor)
             plot_ngram_entropy_labels.append(Slabel)
 
-    #Srnd = np.array(d.performStatistics(randomtext, '0123', maxlen=100))
-    #Srnd2 = np.array(d.performStatistics(randomtext2, '0123', maxlen=100))
-    #Sbinomial1 = np.array(d.performStatistics(binomialtext1, '0123', maxlen=100))
-    #Sbinomial2 = np.array(d.performStatistics(binomialtext2, '0123', maxlen=100))
-    #Sbinomial3 = np.array(d.performStatistics(binomialtext3, '0123', maxlen=100))
-    #Sbinomial4 = np.array(d.performStatistics(binomialtext4, '0123', maxlen=100))
-    #Scos = np.array(d.performStatistics(d.msgtext, '0123', maxlen=100))
-    #Smoby = np.array(d.performStatistics(mobytext, '0123456789abcdefghijklmnopqrstuvwxyz', maxlen=100))
-    #Smeti = np.array(d.performStatistics(metitext, '01234567', maxlen=100))
+    if args_from_argsparse.zipf:
+        d.doesItObeyZipfsLaw([text
+                              for (length, text, props) in statistics_list],
+                             [r'[23]+']*len(statistics_list),
+                             [r'[01]+']*len(statistics_list),
+                             plot_ngram_entropy_colors,
+                             plot_ngram_entropy_colors,
+                             plot_ngram_entropy_labels)
 
         d.plotNGramEntropy(plot_ngram_entropy_plots,
                            plot_ngram_entropy_colors,
                            plot_ngram_entropy_labels)
 
-    # used later for automated process analysis
-    #d.preparePyPM('lm.txt')
+    # check various texts or messages for their ranked frequency content
+    # analyse chars list can be submitted by arg to the programm
+    # but beware: while for 4-char text 0123 is sufficient, for meti
+    # you have to use 01234567 and for a normal text e.g.
+    # 0123456789abcdefghijklmnopqrstuvwxyz
+
+    # TODO: use PyPM later for automated process analysis
 
 if __name__ == '__main__':
     program_description ="""
@@ -624,8 +582,8 @@ if __name__ == '__main__':
                         help="""
 show generated distributions together with files:
 
-    --generate random
-    --generate binomial p
+    --generate "random"
+    --generate "binomial p"
 """)
     parser.add_argument("--genmsglength", type=int, default=10000,
                         help="Cutoff length of generated message")
@@ -639,11 +597,14 @@ show generated distributions together with files:
                             "space separated strings\"--messagechars 0123 0123"+
                             " ... 01234567\" (no of texts). " +
                             "First generated then files.")
+    parser.add_argument("--verbose", action="store_true",
+                        help="Increases the debug output.")
+    parser.add_argument("--graphical", action="store_true",
+                        help="Show graphical representations.")
+    parser.add_argument("--guesscontrolsymbols", action="store_true",
+                        help="Guess control symbols (aka data delimiters)")
 
     args = parser.parse_args()
 
     main(args)
-
-
-
 
