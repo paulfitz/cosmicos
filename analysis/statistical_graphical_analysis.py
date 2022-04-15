@@ -509,6 +509,19 @@ def main(args_from_argsparse):
     if len(analyse_chars_list) == 1:
         analyse_chars_list *= len(statistics_list)
 
+    # generate colors and labels for unified labelling and coloring
+    plot_colors = []
+    plot_labels = []
+
+    for ((length, _, props), analyse_chars) in zip(statistics_list, analyse_chars_list):
+        color = "#" + "".join(
+            [hex(x)[2:].zfill(2)
+             for x in np.random.randint(256, size=3).tolist()])
+        label = " ".join([k + ": " + str(v) for (k, v) in props.items()]).strip()
+        label += " (" + analyse_chars + ")"
+        plot_colors.append(color)
+        plot_labels.append(label)
+
     if showgraphical:
         for (length, text, props) in statistics_list:
             d.showGraphicalRepresentation(text,
@@ -522,34 +535,27 @@ def main(args_from_argsparse):
     if args_from_argsparse.ngram:
 
         plot_ngram_entropy_plots = []
-        plot_ngram_entropy_colors = []
-        plot_ngram_entropy_labels = []
         for ((length, text, typedict), analyse_chars) in zip(statistics_list, analyse_chars_list):
             Splot = np.array(
                 d.performStatistics(text,
                                     analyse_chars,
                                     maxlen=MAX_NGRAM_LENGTH))
-            Scolor = "#" + "".join(
-                [hex(x)[2:].zfill(2)
-                 for x in np.random.randint(256, size=3).tolist()])
-            Slabel = " ".join([k + ": " + str(v) for (k, v) in typedict.items()]).strip()
-            Slabel += " (" + analyse_chars + ")"
             plot_ngram_entropy_plots.append(Splot)
-            plot_ngram_entropy_colors.append(Scolor)
-            plot_ngram_entropy_labels.append(Slabel)
+
+        d.plotNGramEntropy(plot_ngram_entropy_plots,
+                           plot_colors,
+                           plot_labels)
+
 
     if args_from_argsparse.zipf:
         d.doesItObeyZipfsLaw([text
                               for (length, text, props) in statistics_list],
                              [r'[23]+']*len(statistics_list),
                              [r'[01]+']*len(statistics_list),
-                             plot_ngram_entropy_colors,
-                             plot_ngram_entropy_colors,
-                             plot_ngram_entropy_labels)
+                             plot_colors,
+                             plot_colors,
+                             plot_labels)
 
-        d.plotNGramEntropy(plot_ngram_entropy_plots,
-                           plot_ngram_entropy_colors,
-                           plot_ngram_entropy_labels)
 
     # check various texts or messages for their ranked frequency content
     # analyse chars list can be submitted by arg to the programm
