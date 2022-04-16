@@ -57,16 +57,17 @@ class DecoderClass:
     def generateRandomMessage(self, seed=1337, limit=10000):
         self.info('---------')
         self.info("Generating random message with limit %d characters" % (limit,))
-        np.random.seed(seed)
-        preliminary = [str(i) for i in list(np.random.randint(0, 3 + 1, (limit,)))]
+        rng = np.random.default_rng(seed)
+        preliminary = [str(c)
+                       for c in rng.integers(3+1, size=limit).tolist()]
         result = ''.join(preliminary)
         return (limit, result, {"type": "random", "seed": seed})
 
     def generateBinomialRandomMessage(self, p=0.5, seed=1337, limit=10000):
         self.info('---------')
         self.info("Generating binomial distributed message with limit %d characters" % (limit,))
-        np.random.seed(seed)
-        preliminary = [str(i) for i in list(np.random.binomial(3, p, (limit,)))]
+        rng = np.random.default_rng(seed)
+        preliminary = [str(c) for c in rng.binomial(3, p, size=limit).tolist()]
         result = ''.join(preliminary)
         return (limit, result, {"type": "binomial", "seed": seed, "p": p})
 
