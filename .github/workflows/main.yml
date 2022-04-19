@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows running this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        haxe-version: [3.4.7]
+        python-version: [2.7]
+        node-version: [12.x]
+
+    steps:
+      - name: Install system packages
+        run: sudo apt update && sudo apt install -y cmake libbcel-java openjdk-8-jdk-headless libgd-gd2-perl
+
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Set up Haxe ${{ matrix.haxe-version }}
+        uses: krdlab/setup-haxe@v1
+        with:
+          haxe-version: ${{ matrix.haxe-version }}
+
+      - name: Install Node.js packages
+        run: npm install
+
+      - name: make tiny
+        run: src/make_without_docker.sh tiny
+
+      - name: make test
+        run: src/make_without_docker.sh test
