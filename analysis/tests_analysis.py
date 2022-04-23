@@ -19,13 +19,13 @@ NUM_TESTS = 10
 class TestMessagesContainEveryCharacter(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.d = DecoderClass(logging.getLogger("random msg test"))
 
     def test_uniform_random_message(self):
 
         def create_random_message(seed, length):
-            d = DecoderClass(logging.getLogger("random msg test"))
-            (_, message, _) = d.generateRandomMessage(seed=seed, limit=length)
+            (_, message, _) = self.d.generateRandomMessage(seed=seed,
+                                                           limit=length)
             return message
 
         for i in range(NUM_TESTS):
@@ -37,10 +37,9 @@ class TestMessagesContainEveryCharacter(unittest.TestCase):
     def test_binomial_random_message(self):
 
         def create_binomial_message(p, seed, length):
-            d = DecoderClass(logging.getLogger("random msg test"))
-            (_, message, _) = d.generateBinomialRandomMessage(p=p,
-                                                              seed=seed,
-                                                              limit=length)
+            (_, message, _) = self.d.generateBinomialRandomMessage(p=p,
+                                                                   seed=seed,
+                                                                   limit=length)
             return message
 
 
