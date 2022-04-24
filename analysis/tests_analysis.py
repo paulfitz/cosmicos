@@ -19,6 +19,9 @@ import numpy as np
 NUM_TESTS = 10
 
 class TestMessagesContainEveryCharacter(unittest.TestCase):
+    """
+    Checks whether the different random messages contain every symbol.
+    """
 
     def setUp(self):
         self.d = DecoderClass(logging.getLogger("random msg test"))
@@ -58,6 +61,11 @@ class TestMessagesContainEveryCharacter(unittest.TestCase):
 
 
 class TestMessagesEntropy(unittest.TestCase):
+    """
+    Checks certain limiting cases for the entropy.
+    The same symbol over and over again in the stream should lead to zero
+    entropy. A random stream of symbols should lead to an entropy near one.
+    """
 
     def setUp(self):
         self.d = DecoderClass(logging.getLogger("entropy test"))
@@ -103,6 +111,10 @@ class TestMessagesEntropy(unittest.TestCase):
 
 
 class TestMessageZipf(unittest.TestCase):
+    """
+    Test whether the function calculating the ranks and frequencies
+    gives the correct results.
+    """
 
     def setUp(self):
         self.d = DecoderClass(logging.getLogger("zipf test"))
@@ -138,7 +150,8 @@ class TestMessageZipf(unittest.TestCase):
 
         sorted_word_counts = sorted(wordcount.items(), key=lambda x: x[1], reverse=True)
         sorted_ranked_word_counts =\
-            [[rank0+1, count/self.text_length_words] for (rank0, (_, count)) in enumerate(sorted_word_counts)]
+            [[rank0+1, count/self.text_length_words]
+             for (rank0, (_, count)) in enumerate(sorted_word_counts)]
         (rank_frequency, _, _) = self.d.performFrequencyRankOrderingAndFit(
             text, self.delimiter, "["+self.letters+"]+")
         assert np.allclose(rank_frequency, sorted_ranked_word_counts)
