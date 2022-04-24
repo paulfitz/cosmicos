@@ -179,10 +179,11 @@ class DecoderClass:
 
     def performFrequencyRankOrderingAndFit(self, msgtext, delimsymbols, wordre, rankcutoff=100):
         modifiedmsg = re.sub(delimsymbols, ' ', msgtext)
-        lenmodifiedmsg = len(modifiedmsg)
-        pwords = re.compile(wordre) # usually \w+ but we have digits instead of letters
-        wordlist = pwords.findall(modifiedmsg)
 
+        pwords = re.compile(wordre)
+        # usually \w+ but we have digits instead of letters
+        wordlist = pwords.findall(modifiedmsg)
+        len_wordlist = len(wordlist)
         worddict = {}
         for w in wordlist:
             if worddict.get(w) == None:
@@ -197,10 +198,8 @@ class DecoderClass:
         if rankcutoff > 0:
             ranklist = ranklist[0:rankcutoff]
 
-
-
-        freqranking = np.array([(k+1, float(i)/float(lenmodifiedmsg))
-            for (k, (w, i)) in enumerate(ranklist)])
+        freqranking = np.array([(rank+1, float(counter)/float(len_wordlist))
+            for (rank, (_, counter)) in enumerate(ranklist)])
 
         log10freqranking = np.log10(freqranking)
 

@@ -13,6 +13,8 @@ from statistical_graphical_analysis import DecoderClass
 import unittest
 import random
 import logging
+import numpy as np
+
 
 NUM_TESTS = 10
 
@@ -28,7 +30,7 @@ class TestMessagesContainEveryCharacter(unittest.TestCase):
                                                            limit=length)
             return message
 
-        for i in range(NUM_TESTS):
+        for _ in range(NUM_TESTS):
             seed = random.randint(0, 1000)
             length = random.randint(1000, 20000)
             msg = create_random_message(seed, length)
@@ -43,7 +45,7 @@ class TestMessagesContainEveryCharacter(unittest.TestCase):
             return message
 
 
-        for i in range(NUM_TESTS):
+        for _ in range(NUM_TESTS):
             p = 0.5
             seed = random.randint(0, 1000)
             length = random.randint(1000, 20000)
@@ -69,7 +71,7 @@ class TestMessagesEntropy(unittest.TestCase):
         assert len(self.d.performStatistics("", "0123", maxlen=10)) == 10
 
     def test_zero_entropy(self):
-        for i in range(NUM_TESTS):
+        for _ in range(NUM_TESTS):
             text_length = random.randint(0, 100)
             max_length = random.randint(0, 20)
             statistics = self.d.performStatistics("0"*text_length,
@@ -82,7 +84,7 @@ class TestMessagesEntropy(unittest.TestCase):
             assert all([abs(value) < 1e-15 for (_, value) in statistics])
 
     def test_high_entropy(self):
-        for i in range(NUM_TESTS):
+        for _ in range(NUM_TESTS):
             text_length = random.randint(1000, 10000)
             (_, text, _) = self.d.generateRandomMessage(limit=text_length)
             max_length = random.randint(0, 20)
@@ -95,6 +97,51 @@ class TestMessagesEntropy(unittest.TestCase):
             # check entropy > 0.95
             assert all([abs(value) > 0.95 for (_, value) in statistics])
 
+
+    def tearDown(self):
+        pass
+
+
+class TestMessageZipf(unittest.TestCase):
+
+    def setUp(self):
+        self.d = DecoderClass(logging.getLogger("zipf test"))
+        self.letters = "ABCD"
+        self.delimiter = "XX"
+        self.text_length_words = 20000
+        self.max_word_length = 8
+        self.max_number_words = 100
+        self.words = []
+        for _ in range(self.max_number_words):
+            self.words.append("".join(
+                [self.letters[random.randint(0, len(self.letters)-1)]
+                 for _ in range(random.randint(3, self.max_word_length))]))
+        self.words = tuple(self.words)
+
+    def test_short_frequency_distribution(self):
+        text = "AAAXXAAAXXAAAXXBBXXBBXXCXX"
+        (rank_frequency, _, _) = self.d.performFrequencyRankOrderingAndFit(
+            text, self.delimiter, "["+self.letters+"]+")
+        assert np.allclose(np.array(rank_frequency),
+                           np.array([[1, 0.5],
+                                     [2, 0.33333333333],
+                                     [3, 0.16666666666]]))
+
+    def test_long_frequency_distribution(self):
+        text = ""
+        wordcount = {}
+        for _ in range(self.text_length_words):
+            # choose word
+            word = self.words[random.randint(0, self.max_number_words-1)]
+            text += word + self.delimiter
+            wordcount[word] = wordcount.get(word, 0) + 1
+
+        sorted_word_counts = sorted(wordcount.items(), key=lambda x: x[1], reverse=True)
+        sorted_ranked_word_counts =\
+            [[rank0+1, count/self.text_length_words] for (rank0, (_, count)) in enumerate(sorted_word_counts)]
+        (rank_frequency, _, _) = self.d.performFrequencyRankOrderingAndFit(
+            text, self.delimiter, "["+self.letters+"]+")
+        assert np.allclose(rank_frequency, sorted_ranked_word_counts)
 
     def tearDown(self):
         pass
