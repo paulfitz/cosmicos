@@ -107,76 +107,33 @@ class DecoderClass:
 
         self.info("msglen %d" % (len(msgtext),))
 
-        printentropies = False
-
         letters = r'['+lets+']'
-        numletters = len(lets)
-        worddict = {}
-        ngramlist = []
-        for k in range(maxlen):
-            worddictngram = {}
-            kp = k + 1
-            pattern = re.compile(letters+"{"+str(kp)+"}")
-            matchedpattern = re.findall(pattern, msgtext)
 
-            if matchedpattern == []:
-                self.debug('empty matching for %s at length %d' % (letters, kp))
-            numpatterns = len(matchedpattern)
+        list_entropy_ngrams = []
+        for n_gram_length in range(1, maxlen + 1):
+            pattern = re.compile(letters+"{"+str(n_gram_length)+"}")
+            matched_patterns = re.findall(pattern, msgtext)
 
-            for w in matchedpattern:
-                if worddict.get(w) == None:
-                    worddict[w] = 1.0/numpatterns
+            if matched_patterns == []:
+                self.debug('empty matching for %s at length %d' % (letters, n_gram_length))
+
+            ngram_counter = Counter(matched_patterns)  # count ngrams in patterns
+            ngrams_found = len(ngram_counter)  # how many ngrams found?
+            if ngrams_found > 0:
+                ngram_counts = np.array(list(ngram_counter.values()))
+                ngram_overall_count = np.sum(ngram_counts)
+                ps = ngram_counts/ngram_overall_count  # relative counts
+                if np.abs(np.log(ngrams_found)) > 0:
+                    Hs = -ps*np.log(ps)/np.log(ngrams_found)
                 else:
-                    worddict[w] += 1.0/numpatterns
+                    Hs = np.zeros_like(ps)
+                Hngram = float(np.sum(Hs))  # calculate entropy
+            else:
+                Hngram = 0.
 
-                if worddictngram.get(w) == None:
-                    worddictngram[w] = 1.0/numpatterns
-                else:
-                    worddictngram[w] += 1.0/numpatterns
+            list_entropy_ngrams.append([n_gram_length, Hngram])
+        return list_entropy_ngrams
 
-            ngramlist.append(worddictngram)
-
-        if printentropies:
-            digrams = []
-            monograms = []
-            for (gr, hgr) in worddict.items():
-                if len(gr) == 2:
-                    digrams.append((gr, hgr))
-                if len(gr) == 1:
-                    monograms.append((gr, hgr))
-
-            hsum = 0.0
-            for (mon, hmon) in monograms:
-                self.debug("h(\'%c\') = %f" % (mon, -hmon*math.log(hmon, numletters)))
-                hsum += -hmon*math.log(hmon, numletters)
-                self.debug("hsum = %f" % (hsum,))
-
-            numdigrams = len(digrams)
-            hsumdi = 0.0
-            for (di, hdi) in digrams:
-                self.debug("h(\'%s\') = %f"
-                           % (di, -hdi*math.log(hdi, numdigrams)))
-                hsumdi += -hdi*math.log(hdi, numdigrams)
-            self.debug("hsumdi = %f" % (hsumdi,))
-
-        entropyngramlist = []
-        for (ind, wd) in enumerate(ngramlist):
-
-            hsumn = 0.0
-            numngrams = len(wd)
-
-            for (ngram, hn) in wd.items():
-                sn = 0.0
-                if numngrams > 1 and hn != 0:
-                    sn = -hn*math.log(hn, numngrams)
-                hsumn += sn
-
-            if hsumn < 1e-6:
-                self.debug(wd)
-
-            self.debug("%d %f" % (ind+1, hsumn))
-            entropyngramlist.append([ind+1, hsumn])
-        return(entropyngramlist)
 
     def performFrequencyRankOrderingAndFit(self, msgtext, delimsymbols, wordre, rankcutoff=100):
         modifiedmsg = re.sub(delimsymbols, ' ', msgtext)
