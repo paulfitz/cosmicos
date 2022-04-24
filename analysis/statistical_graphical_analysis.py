@@ -347,17 +347,11 @@ class DecoderClass:
         self.info('that these are delimiters of blocks. They may not occur at a higher')
         self.info('level together, to be delimiters. A single occurence')
         self.info('will not be shown.')
-        for k in range(maxlen):
-            wordlength = k+1
+        for wordlength in range(1, maxlen + 1):
             pk = re.compile(r'[0-3]{'+str(wordlength)+'}')
             nk = pk.findall(text)
 
-            nkdict = {}
-            for wk in nk:
-                try:
-                    nkdict[wk] += 1
-                except KeyError:
-                    nkdict[wk] = 1
+            nkdict = Counter(nk)
 
             sortednkdict = sorted(nkdict.items(), key=lambda pair: pair[1])
             occur = []
