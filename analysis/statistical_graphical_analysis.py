@@ -34,12 +34,6 @@ import argparse
 class DecoderClass:
 
     def __init__(self, logger):
-        self.datadict = {}
-        self.datacounter = 0
-        self.commanddict = {}
-        self.commandcounter = 0
-        self.defdict = {}
-        self.defcounter = 0
         self.logger = logger
 
     def convert_args_to_string(self, *args):
