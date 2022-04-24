@@ -27,6 +27,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import logging
 from operator import itemgetter
+from collections import Counter
 
 import argparse
 
@@ -182,14 +183,10 @@ class DecoderClass:
 
         pwords = re.compile(wordre)
         # usually \w+ but we have digits instead of letters
-        wordlist = pwords.findall(modifiedmsg)
+
+        wordlist = pwords.findall(modifiedmsg)  # find all words
         len_wordlist = len(wordlist)
-        worddict = {}
-        for w in wordlist:
-            if worddict.get(w) == None:
-                worddict[w] = 1
-            else:
-                worddict[w] += 1
+        worddict = Counter(wordlist) # count them
         self.debug(sorted(worddict.items()))
         ranklist = [pair for pair in sorted(worddict.items(),
                                             key=itemgetter(1), reverse=True)]
@@ -199,11 +196,13 @@ class DecoderClass:
             ranklist = ranklist[0:rankcutoff]
 
         freqranking = np.array([(rank+1, float(counter)/float(len_wordlist))
-            for (rank, (_, counter)) in enumerate(ranklist)])
+            for (rank, (_, counter)) in enumerate(ranklist)])  # add frequencies
 
-        log10freqranking = np.log10(freqranking)
+        log10freqranking = np.log10(freqranking)  # perform logarithm
 
-        [decreasing, intersection] = np.lib.polynomial.polyfit(log10freqranking[:,0],log10freqranking[:,1],1)
+        decreasing, intersection =\
+            np.lib.polynomial.polyfit(log10freqranking[:,0],
+                                      log10freqranking[:,1],1)  # fit loglog
 
         return (freqranking, decreasing, intersection)
 
