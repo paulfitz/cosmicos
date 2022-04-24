@@ -125,6 +125,14 @@ class DecoderClass:
                 ps = ngram_counts/ngram_overall_count  # relative counts
                 if np.abs(np.log(ngrams_found)) > 0:
                     Hs = -ps*np.log(ps)/np.log(ngrams_found)
+                    # Notice: reference of ngrams_found as "size of the alphabet"
+                    # leads to entropy limit of 1 for long ngrams because every
+                    # found ngram appears only once. While choosing lets**n_gram_length
+                    # as reference would lead to a decay of the entropy to zero,
+                    # because only few of the large ngrams compared to the
+                    # large pool are found in the message (which is comparable
+                    # to the only one letter in the stream limit).
+                    # Therefore we go by the first choice.
                 else:
                     Hs = np.zeros_like(ps)
                 Hngram = float(np.sum(Hs))  # calculate entropy
