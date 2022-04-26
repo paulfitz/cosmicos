@@ -23,13 +23,14 @@ Format was taken from an old form of message.
 import re
 import sys
 import math
-import numpy as np
-import matplotlib.pyplot as plt
 import logging
 from operator import itemgetter
 from collections import Counter
-
 import argparse
+
+import numpy as np
+import matplotlib.pyplot as plt
+
 
 class DecoderClass:
 

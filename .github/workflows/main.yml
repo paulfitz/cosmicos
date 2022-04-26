@@ -34,10 +34,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install numpy
+      - name: Install numpy and matplotlib
         run: |
             python -m pip install --upgrade pip
             pip install numpy
+            pip install matplotlib
 
       - name: Set up Haxe ${{ matrix.haxe-version }}
         uses: krdlab/setup-haxe@v1
