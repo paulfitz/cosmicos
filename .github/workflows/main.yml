@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Install system packages
-        run: sudo apt update && sudo apt install -y cmake libbcel-java openjdk-8-jdk-headless libgd-gd2-perl
+        run: sudo apt update && sudo apt install -y cmake libbcel-java openjdk-8-jdk-headless libgd-gd2-perl python3-numpy
 
       - uses: actions/checkout@v2
 
