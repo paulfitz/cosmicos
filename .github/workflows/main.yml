@@ -47,3 +47,7 @@ jobs:
 
       - name: make test
         run: src/make_without_docker.sh test
+
+      - name: analysis test
+        run: python analysis/tests_runner.py
+
