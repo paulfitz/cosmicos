@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         haxe-version: [3.4.7]
-        python-version: [2.7]
+        python-version: [3.8]
         node-version: [12.x]
 
     steps:
