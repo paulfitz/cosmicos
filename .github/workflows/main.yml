@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         haxe-version: [3.4.7]
-        python-version: [2.7]
+        python-version: [3.8]
         node-version: [12.x]
 
     steps:
@@ -34,6 +34,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install numpy and matplotlib
+        run: |
+            python -m pip install --upgrade pip
+            pip install numpy
+            pip install matplotlib
+
       - name: Set up Haxe ${{ matrix.haxe-version }}
         uses: krdlab/setup-haxe@v1
         with:
@@ -47,3 +53,7 @@ jobs:
 
       - name: make test
         run: src/make_without_docker.sh test
+
+      - name: analysis test
+        run: python analysis/tests_runner.py
+
