@@ -219,7 +219,7 @@ CosmicDrive.prototype.complete_stanza_core = function(op, stanza, can_run) {
     var cline = 999;
     console.log(cline + ": " + op + "  -->  " + code);
     if (this.txt != null && !assume) {
-        this.txt += code;
+        this.txt += ncode;   // transmit the V2 (FourSymbolCodecV2) encoding, not the old FourSymbolCodec `code`
         this.txt += "\n";
     }
     if (!can_run) return new this.cosmicos.Statement(1);
